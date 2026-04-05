@@ -12,21 +12,21 @@ const cormorantGaramond = Cormorant_Garamond({
   weight: ["300", "400", "500", "600"],
   style: ["normal", "italic"],
   variable: "--font-display",
-  display: "swap",
+  display: "block",
 });
 
 const barlow = Barlow({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   variable: "--font-body",
-  display: "swap",
+  display: "block",
 });
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-condensed",
-  display: "swap",
+  display: "block",
 });
 
 export const metadata: Metadata = {
@@ -52,7 +52,7 @@ export default function RootLayout({
       className={`${cormorantGaramond.variable} ${barlow.variable} ${barlowCondensed.variable}`}
     >
       <head>
-        <link rel="preload" href="/robot.splinecode" as="fetch" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
         <SmoothScroll>
