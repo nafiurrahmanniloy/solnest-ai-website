@@ -107,7 +107,7 @@ export function FooterCTA() {
             <span
               style={{
                 display: "block",
-                fontSize: "clamp(55px, 7.4vw, 115px)",
+                fontSize: "clamp(32px, 7vw, 96px)",
               }}
             >
               The operators who move
@@ -115,7 +115,7 @@ export function FooterCTA() {
             <span
               style={{
                 display: "block",
-                fontSize: "clamp(55px, 7.4vw, 115px)",
+                fontSize: "clamp(32px, 7vw, 96px)",
               }}
             >
               fast{" "}

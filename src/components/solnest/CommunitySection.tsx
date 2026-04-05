@@ -148,7 +148,7 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
           right: "-4px",
           fontFamily: "var(--font-display)",
           fontWeight: 300,
-          fontSize: "144px",
+          fontSize: "clamp(72px, 18vw, 144px)",
           lineHeight: 1,
           color: hovered ? `rgba(${data.accentRgb},0.07)` : "rgba(240,235,225,0.03)",
           userSelect: "none",
@@ -498,7 +498,7 @@ export function CommunitySection() {
                 </p>
                 <div className="flex items-start lg:justify-end">
                   <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "22px", color: "rgba(240,235,225,0.65)", marginTop: "10px" }}>$</span>
-                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "77px", color: "#F0EBE1", lineHeight: 1, letterSpacing: "-0.02em" }}>67</span>
+                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(48px, 10vw, 77px)", color: "#F0EBE1", lineHeight: 1, letterSpacing: "-0.02em" }}>67</span>
                   <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "16px", color: "rgba(240,235,225,0.45)", alignSelf: "flex-end", paddingBottom: "10px", marginLeft: "5px" }}>/mo</span>
                 </div>
               </div>

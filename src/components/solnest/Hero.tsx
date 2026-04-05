@@ -309,6 +309,7 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1.4 }}
           aria-hidden="true"
+          className="hidden lg:block"
           style={{
             position: "relative",
             height: "clamp(440px, 58vw, 780px)",

@@ -416,86 +416,204 @@ function WithoutAIPanel() {
 
 // ─── Section ──────────────────────────────────────────────────────────────────
 
+// ─── Mobile comparison card ─────────────────────────────────────────────────
+
+function MobileComparisonCard({ type }: { type: 'with' | 'without' }) {
+	const isWith = type === 'with'
+	return (
+		<div style={{
+			background: isWith ? '#0D0D0B' : '#0A0A08',
+			border: `1px solid ${isWith ? 'rgba(192,82,43,0.25)' : 'rgba(180,70,60,0.15)'}`,
+			padding: '24px 20px',
+		}}>
+			<div className="flex items-center gap-2 mb-4">
+				<div style={{
+					width: '6px', height: '6px', borderRadius: '50%',
+					background: isWith ? '#C0522B' : 'rgba(180,70,60,0.45)',
+					boxShadow: isWith ? '0 0 8px rgba(192,82,43,0.6)' : 'none',
+				}} />
+				<span style={{
+					fontFamily: 'var(--font-condensed)', fontWeight: 600,
+					fontSize: '10px', letterSpacing: '0.24em',
+					textTransform: 'uppercase',
+					color: isWith ? '#C0522B' : 'rgba(200,120,100,0.7)',
+				}}>
+					{isWith ? 'With Solnest AI' : 'Without AI'}
+				</span>
+			</div>
+
+			<h3 style={{
+				fontFamily: 'var(--font-display)', fontWeight: 300,
+				fontSize: '22px', lineHeight: 1.15,
+				color: isWith ? '#F0EBE1' : 'rgba(210,195,180,0.72)',
+				marginBottom: '12px',
+			}}>
+				{isWith
+					? <>You wake up. <span style={{ fontStyle: 'italic', color: '#C0522B' }}>It&apos;s already done.</span></>
+					: <>You <span style={{ fontStyle: 'italic', color: 'rgba(200,120,100,0.55)' }}>are</span> the bottleneck.</>
+				}
+			</h3>
+
+			<div className="flex gap-6 mt-4">
+				<div>
+					<span style={{
+						fontFamily: 'var(--font-condensed)', fontWeight: 600,
+						fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase',
+						color: isWith ? 'rgba(192,82,43,0.65)' : 'rgba(200,120,100,0.55)',
+						display: 'block', marginBottom: '4px',
+					}}>
+						{isWith ? 'Time Saved' : 'Time Lost'}
+					</span>
+					<span style={{
+						fontFamily: 'var(--font-display)', fontWeight: 300,
+						fontSize: '32px', lineHeight: 1, letterSpacing: '-0.04em',
+						color: isWith ? '#C0522B' : 'rgba(200,120,100,0.42)',
+						textShadow: isWith ? '0 0 30px rgba(192,82,43,0.4)' : 'none',
+					}}>
+						21hrs
+					</span>
+				</div>
+				<div>
+					<span style={{
+						fontFamily: 'var(--font-condensed)', fontWeight: 600,
+						fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase',
+						color: isWith ? 'rgba(201,168,76,0.65)' : 'rgba(200,120,100,0.55)',
+						display: 'block', marginBottom: '4px',
+					}}>
+						{isWith ? 'Revenue Impact' : 'Revenue Leaked'}
+					</span>
+					<span style={{
+						fontFamily: 'var(--font-display)', fontWeight: 300,
+						fontSize: '32px', lineHeight: 1, letterSpacing: '-0.04em',
+						color: isWith ? '#C9A84C' : 'rgba(200,120,100,0.42)',
+						textShadow: isWith ? '0 0 30px rgba(201,168,76,0.4)' : 'none',
+						textDecoration: isWith ? 'none' : 'line-through',
+					}}>
+						{isWith ? '+$2,400' : '-$2,400'}
+					</span>
+				</div>
+			</div>
+		</div>
+	)
+}
+
+// ─── Section ────────────────────────────────────────────────────────────────
+
 export function VDIvsVWASection() {
 	return (
 		<section className="relative w-full overflow-hidden" style={{ background: '#0D0D0B' }}>
-			<ContainerScroll
-				titleComponent={
-					<div className="flex flex-col items-center px-6 pt-10 pb-2">
-						<div
-							className="mb-5 inline-flex items-center gap-2"
-							style={{
-								background: 'rgba(192,82,43,0.07)',
-								border: '1px solid rgba(192,82,43,0.18)',
-								padding: '5px 14px',
-							}}
-						>
-							<div style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#C0522B' }} />
+
+			{/* ── Mobile version ── */}
+			<div className="md:hidden px-5 py-16">
+				<div className="text-center mb-8">
+					<div className="inline-flex items-center gap-2 mb-4" style={{
+						background: 'rgba(192,82,43,0.07)',
+						border: '1px solid rgba(192,82,43,0.18)',
+						padding: '5px 14px',
+					}}>
+						<div style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#C0522B' }} />
+						<span style={{
+							fontFamily: 'var(--font-condensed)', fontWeight: 600,
+							fontSize: '10px', letterSpacing: '0.24em',
+							textTransform: 'uppercase', color: '#C0522B',
+						}}>
+							Your Airbnb Right Now
+						</span>
+					</div>
+					<h2 style={{
+						fontFamily: 'var(--font-display)', fontWeight: 300,
+						fontSize: '32px', lineHeight: 1.08, color: '#F0EBE1',
+						letterSpacing: '-0.02em',
+					}}>
+						Still doing it{' '}
+						<span style={{ fontStyle: 'italic', color: '#C0522B' }}>all yourself?</span>
+					</h2>
+				</div>
+				<div className="flex flex-col gap-3">
+					<MobileComparisonCard type="with" />
+					<MobileComparisonCard type="without" />
+				</div>
+			</div>
+
+			{/* ── Desktop version ── */}
+			<div className="hidden md:block">
+				<ContainerScroll
+					titleComponent={
+						<div className="flex flex-col items-center px-6 pt-10 pb-2">
+							<div
+								className="mb-5 inline-flex items-center gap-2"
+								style={{
+									background: 'rgba(192,82,43,0.07)',
+									border: '1px solid rgba(192,82,43,0.18)',
+									padding: '5px 14px',
+								}}
+							>
+								<div style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#C0522B' }} />
+								<span style={{
+									fontFamily: 'var(--font-condensed)', fontWeight: 600,
+									fontSize: '11px', letterSpacing: '0.24em',
+									textTransform: 'uppercase', color: '#C0522B',
+								}}>
+									Your Airbnb Right Now
+								</span>
+							</div>
+
+							<h2
+								className="text-center mb-4"
+								style={{
+									fontFamily: 'var(--font-display)', fontWeight: 300,
+									fontSize: 'clamp(41px, 6vw, 106px)',
+									lineHeight: 1.04, color: '#F0EBE1',
+									letterSpacing: '-0.03em',
+								}}
+							>
+								Still doing it{' '}
+								<span style={{ fontStyle: 'italic', color: '#C0522B' }}>all yourself?</span>
+							</h2>
+
+							<p
+								className="text-center mb-6"
+								style={{
+									fontFamily: 'var(--font-body)', fontWeight: 300,
+									fontSize: 'clamp(16px, 1.02vw, 19px)', lineHeight: 1.75,
+									color: 'rgba(212,204,184,0.52)', maxWidth: '580px',
+								}}
+							>
+								The hosts scaling to 6 figures aren&apos;t working harder. They&apos;re running AI that never sleeps, never forgets, and never underprices.
+							</p>
+
+							<div style={{
+								height: '1px',
+								width: '100%', maxWidth: '560px',
+								background: 'linear-gradient(to right, transparent, rgba(192,82,43,0.2) 35%, rgba(201,168,76,0.12) 50%, rgba(192,82,43,0.08) 65%, transparent)',
+							}} />
+						</div>
+					}
+				>
+					<div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
+						<LightningSplit
+							leftComponent={<WithAIPanel />}
+							rightComponent={<WithoutAIPanel />}
+						/>
+						<div className="pointer-events-none absolute bottom-4 z-40 w-full flex justify-between px-[3.5%]">
 							<span style={{
 								fontFamily: 'var(--font-condensed)', fontWeight: 600,
-								fontSize: '11px', letterSpacing: '0.24em',
-								textTransform: 'uppercase', color: '#C0522B',
+								fontSize: '10px', letterSpacing: '0.22em',
+								textTransform: 'uppercase', color: 'rgba(192,82,43,0.45)',
 							}}>
-								Your Airbnb Right Now
+								← With AI
+							</span>
+							<span style={{
+								fontFamily: 'var(--font-condensed)', fontWeight: 600,
+								fontSize: '10px', letterSpacing: '0.22em',
+								textTransform: 'uppercase', color: 'rgba(200,120,100,0.4)',
+							}}>
+								Without AI →
 							</span>
 						</div>
-
-						<h2
-							className="text-center mb-4"
-							style={{
-								fontFamily: 'var(--font-display)', fontWeight: 300,
-								fontSize: 'clamp(41px, 6vw, 106px)',
-								lineHeight: 1.04, color: '#F0EBE1',
-								letterSpacing: '-0.03em',
-							}}
-						>
-							Still doing it{' '}
-							<span style={{ fontStyle: 'italic', color: '#C0522B' }}>all yourself?</span>
-						</h2>
-
-						<p
-							className="text-center mb-6"
-							style={{
-								fontFamily: 'var(--font-body)', fontWeight: 300,
-								fontSize: 'clamp(16px, 1.02vw, 19px)', lineHeight: 1.75,
-								color: 'rgba(212,204,184,0.52)', maxWidth: '580px',
-							}}
-						>
-							The hosts scaling to 6 figures aren&apos;t working harder. They&apos;re running AI that never sleeps, never forgets, and never underprices.
-						</p>
-
-						<div style={{
-							height: '1px',
-							width: '100%', maxWidth: '560px',
-							background: 'linear-gradient(to right, transparent, rgba(192,82,43,0.2) 35%, rgba(201,168,76,0.12) 50%, rgba(192,82,43,0.08) 65%, transparent)',
-						}} />
 					</div>
-				}
-			>
-				<div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
-					<LightningSplit
-						leftComponent={<WithAIPanel />}
-						rightComponent={<WithoutAIPanel />}
-					/>
-					{/* Half-labels */}
-					<div className="pointer-events-none absolute bottom-4 z-40 w-full flex justify-between px-[3.5%]">
-						<span style={{
-							fontFamily: 'var(--font-condensed)', fontWeight: 600,
-							fontSize: '10px', letterSpacing: '0.22em',
-							textTransform: 'uppercase', color: 'rgba(192,82,43,0.45)',
-						}}>
-							← With AI
-						</span>
-						<span style={{
-							fontFamily: 'var(--font-condensed)', fontWeight: 600,
-							fontSize: '10px', letterSpacing: '0.22em',
-							textTransform: 'uppercase', color: 'rgba(200,120,100,0.4)',
-						}}>
-							Without AI →
-						</span>
-					</div>
-				</div>
-			</ContainerScroll>
+				</ContainerScroll>
+			</div>
 		</section>
 	)
 }

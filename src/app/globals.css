@@ -16,8 +16,14 @@
 
 html {
   scroll-behavior: smooth;
-  zoom: 1.1;
   text-rendering: optimizeLegibility;
+}
+
+/* Desktop-only zoom — disabled on mobile to prevent overflow */
+@media (min-width: 768px) {
+  html {
+    zoom: 1.1;
+  }
 }
 
 body {

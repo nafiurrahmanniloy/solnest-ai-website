@@ -112,7 +112,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
         overflow: "hidden",
         background: hovered ? "#111110" : "#0F0F0D",
         border: `1px solid ${hovered ? "rgba(192,82,43,0.45)" : "rgba(192,82,43,0.14)"}`,
-        padding: "48px 44px 44px",
+        padding: "clamp(24px, 4vw, 48px) clamp(20px, 3.5vw, 44px) clamp(24px, 4vw, 44px)",
         display: "flex",
         flexDirection: "column",
         transition: "background 0.3s ease, border-color 0.3s ease, transform 0.35s cubic-bezier(0.215,0.61,0.355,1), box-shadow 0.35s ease",

@@ -236,7 +236,7 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
 
         {/* Stats row */}
         <div style={{
-          display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1px",
+          display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1px",
           background: `rgba(${cs.colorRgb},0.08)`,
           borderBottom: `1px solid rgba(${cs.colorRgb},0.12)`,
         }}>

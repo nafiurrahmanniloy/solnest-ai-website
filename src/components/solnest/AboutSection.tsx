@@ -301,8 +301,7 @@ export function AboutSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
           variants={containerVariants}
-          className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10"
-          style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}
+          className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 grid grid-cols-2 md:grid-cols-4"
         >
           {stats.map((s, i) => (
             <motion.div
