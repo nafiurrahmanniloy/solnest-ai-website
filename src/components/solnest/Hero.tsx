@@ -2,11 +2,16 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { SplineScene } from "@/components/ui/spline-scene";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { ShutterText } from "@/components/ui/hero-shutter-text";
 import { BlurText } from "@/components/ui/blur-text-animation";
-import TunnelBackground from "@/components/ui/tunnel-hero";
+
+const TunnelBackground = dynamic(() => import("@/components/ui/tunnel-hero"), {
+  ssr: false,
+  loading: () => <div style={{ position: "absolute", inset: 0, background: "#0D0D0B" }} />,
+});
 
 const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 const SCRAMBLE_DURATION = 1400;

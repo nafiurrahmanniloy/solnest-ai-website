@@ -1,9 +1,14 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { MagneticButton } from "@/components/ui/magnetic-button";
-import { ShaderBackground } from "@/components/ui/animated-shader-hero";
 import { BlurText } from "@/components/ui/blur-text-animation";
+
+const ShaderBackground = dynamic(
+  () => import("@/components/ui/animated-shader-hero").then((m) => ({ default: m.ShaderBackground })),
+  { ssr: false, loading: () => <div style={{ position: "absolute", inset: 0, background: "#000" }} /> }
+);
 
 const containerVariants = {
   hidden: {},
