@@ -1,0 +1,239 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --rust: #C0522B;
+  --rust-light: #D4693E;
+  --rust-dark: #9A3E1F;
+  --cream: #F0EBE1;
+  --cream-dim: #D4CCB8;
+  --charcoal: #2C2C2A;
+  --charcoal-mid: #1A1A18;
+  --black: #0D0D0B;
+  --gold: #C9A84C;
+}
+
+html {
+  scroll-behavior: smooth;
+  zoom: 1.1;
+}
+
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rust-dark);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rust);
+}
+
+/* Selection color */
+::selection {
+  background: var(--rust);
+  color: var(--cream);
+}
+
+::-moz-selection {
+  background: var(--rust);
+  color: var(--cream);
+}
+
+/* Border beam animation */
+@keyframes border-beam {
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+/* Fade up animation */
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Breathe animation */
+@keyframes breathe {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Pulse dot animation */
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(192, 82, 43, 0.4);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 6px rgba(192, 82, 43, 0);
+  }
+}
+
+.animate-pulse-dot {
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+/* Arc animation for about section */
+@keyframes arcRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Override for elements that shouldn't have transitions */
+.no-transition,
+.no-transition * {
+  transition: none !important;
+}
+
+/* Marquee animations */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marqueeReverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+.animate-marquee { animation: marquee 28s linear infinite; }
+.animate-marquee-reverse { animation: marqueeReverse 28s linear infinite; }
+
+/* Services section white bg text */
+.text-charcoal-900 { color: #1A1918; }
+
+/* Line grow animation */
+@keyframes lineGrow {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* Spotlight background component */
+.spotlight-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.spotlight-overlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.spotlight-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+
+.spotlight {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/*
+  Positioning key:
+  spotlight-left uses framer initial x:"-50%" y:"-50%" (translateX/Y = -50% of element size).
+  This is the standard CSS centering trick — the gradient centre ends up at the CSS left/top value.
+  So left:20% → gradient centre at 20% from left.
+
+  spotlight-mid and spotlight-right use initial x:"0%" y:"0%" — no offset.
+  Their centre = CSS left + half element width. We use calc() to compensate.
+*/
+
+/* Primary rust spotlight — top-left, covers the text column */
+.spotlight-left {
+  width: 68vw;
+  height: 68vw;
+  left: 18%;
+  top: 28%;
+  background: radial-gradient(ellipse at center, rgba(192, 82, 43, 0.40) 0%, rgba(192, 82, 43, 0.14) 38%, transparent 68%);
+  filter: blur(45px);
+}
+
+/* Secondary rust spotlight — centre sweep */
+.spotlight-mid {
+  width: 50vw;
+  height: 50vw;
+  /* centre at 48% from left: left = 48% - 25vw */
+  left: calc(48% - 25vw);
+  /* centre at 42% from top: top = 42% - 25vw */
+  top: calc(42% - 25vw);
+  background: radial-gradient(ellipse at center, rgba(192, 82, 43, 0.22) 0%, rgba(192, 82, 43, 0.07) 42%, transparent 68%);
+  filter: blur(52px);
+}
+
+/* Gold accent spotlight — right half */
+.spotlight-right {
+  width: 46vw;
+  height: 46vw;
+  /* centre at 74% from left: left = 74% - 23vw */
+  left: calc(74% - 23vw);
+  /* centre at 50% from top: top = 50% - 23vw */
+  top: calc(50% - 23vw);
+  background: radial-gradient(ellipse at center, rgba(201, 168, 76, 0.22) 0%, rgba(201, 168, 76, 0.07) 42%, transparent 68%);
+  filter: blur(50px);
+}
+
+/* Subtle noise grain overlay — premium tactile feel */
+body::after {
+  content: "";
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+}
