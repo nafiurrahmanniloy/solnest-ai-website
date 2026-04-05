@@ -8,6 +8,7 @@ import { ServicesSection } from "@/components/solnest/ServicesSection";
 import { AboutSection } from "@/components/solnest/AboutSection";
 import { FooterCTA } from "@/components/solnest/FooterCTA";
 import Footer from "@/components/solnest/Footer";
+import { MobileSolutions } from "@/components/solnest/MobileSolutions";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Hero />
       <VDIvsVWASection />
       <ShowcaseSection />
+      <MobileSolutions />
       <IntegrationStrip />
       <ServicesSection />
       <CommunitySection />
