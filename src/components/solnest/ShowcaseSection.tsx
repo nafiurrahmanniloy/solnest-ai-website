@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MagneticButton } from "@/components/ui/magnetic-button";
+import { MobileSolutions } from "@/components/solnest/MobileSolutions";
 
 // ─── Case Study Data ──────────────────────────────────────────────────────────
 
@@ -463,6 +464,12 @@ export function ShowcaseSection() {
   return (
     <>
       <section className="relative overflow-hidden" style={{ background: "#0D0D0B" }}>
+
+        {/* ── Mobile: stepper carousel ── */}
+        <MobileSolutions />
+
+        {/* ── Desktop: full layout ── */}
+        <div className="hidden md:block">
         {/* Ambient glows */}
         <div aria-hidden="true" style={{ position: "absolute", top: "5%", right: "5%", width: "50vw", height: "50vw", background: "radial-gradient(ellipse, rgba(192,82,43,0.07) 0%, transparent 65%)", filter: "blur(80px)", pointerEvents: "none", zIndex: 0 }} />
 
@@ -539,6 +546,7 @@ export function ShowcaseSection() {
             </motion.div>
 
           </div>
+        </div>
         </div>
       </section>
 
