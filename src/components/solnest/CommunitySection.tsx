@@ -11,36 +11,50 @@ import { BorderBeam } from "@/components/ui/border-beam";
 const classrooms = [
   {
     num: "01",
-    name: "The Runway",
-    desc: "Fresh drops, new AI tools, and things being tested right now. No fluff — just signal.",
+    name: "Pre Flight",
+    desc: "Start here. Get oriented on how the classroom is structured and what to do first.",
     accent: "#C0522B",
     accentRgb: "192,82,43",
   },
   {
     num: "02",
-    name: "The Hangar",
-    desc: "Every STR workshop, agent build, and system — recorded with SOPs so you can implement immediately.",
+    name: "Ground School: Claude",
+    desc: "The foundation. Learn how Claude actually works, set it up right, and teach it your business.",
     accent: "#C9A84C",
     accentRgb: "201,168,76",
   },
   {
     num: "03",
-    name: "The Flight Deck",
-    desc: "Bring your biggest operational problem. Watch AI solve it live — in real time.",
+    name: "Live Claude Series",
+    desc: "Weekly live builds. Real problems, real demos, recorded and added to the library.",
     accent: "#C0522B",
     accentRgb: "192,82,43",
   },
   {
     num: "04",
-    name: "The Ops",
-    desc: "Exact agents, prompts, and systems — copy-paste and deploy directly into your operation.",
+    name: "The Hangar",
+    desc: "Every STR session, build, and breakdown. SOPs, workflows, and tools built for short-term rentals.",
     accent: "#C9A84C",
     accentRgb: "201,168,76",
   },
   {
     num: "05",
+    name: "The Flight Deck",
+    desc: "General business AI sessions. Office hours, jam sessions, and live builds for any industry.",
+    accent: "#C0522B",
+    accentRgb: "192,82,43",
+  },
+  {
+    num: "06",
+    name: "The Runway",
+    desc: "Fresh drops. New tools, quick wins, and AI updates worth knowing about.",
+    accent: "#C9A84C",
+    accentRgb: "201,168,76",
+  },
+  {
+    num: "07",
     name: "The Logbook",
-    desc: "Demos, sessions, and past webinars — all archived. 24/7 access to a library that grows.",
+    desc: "The resource vault. Download agents, prompts, SOPs, Skills, and MCPs built inside the community.",
     accent: "#C0522B",
     accentRgb: "192,82,43",
   },
@@ -116,6 +130,7 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
         background: "#0D0D0B",
         border: `1px solid ${hovered ? `rgba(${data.accentRgb},0.45)` : "rgba(240,235,225,0.08)"}`,
         padding: "38px 28px 34px",
+        height: "100%",
         cursor: "default",
         transition: reduceMotion
           ? "none"
@@ -416,17 +431,48 @@ export function CommunitySection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
           variants={container}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-14"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-12 gap-3 mb-14"
           aria-label="Community classrooms"
         >
-          {classrooms.map((c) => (
-            <ClassroomCard key={c.num} data={c} />
+          {classrooms.map((c, i) => (
+            <div key={c.num} className={
+              i < 4
+                ? "lg:col-span-3"
+                : i === 4
+                  ? "lg:col-span-3 lg:col-start-2"
+                  : "lg:col-span-3"
+            }>
+              <ClassroomCard data={c} />
+            </div>
           ))}
         </motion.div>
 
-        {/* ════════════════════════════════════════
-            PRICING STRIP
-        ════════════════════════════════════════ */}
+      </div>
+
+      {/* ── Bottom border ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          height: "1px",
+          background: "linear-gradient(to right, transparent, rgba(192,82,43,0.15) 50%, transparent)",
+        }}
+      />
+    </section>
+  );
+}
+
+// ─── Pricing Strip (separate component) ─────────────────────────────────────
+
+export function CommunityPricing() {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <section
+      className="relative overflow-hidden"
+      style={{ background: "#0D0D0B" }}
+      aria-label="Community pricing"
+    >
+      <div className="relative z-10 max-w-[1360px] mx-auto px-5 md:px-8 py-20 md:py-28">
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -442,7 +488,6 @@ export function CommunitySection() {
           <BorderBeam colorFrom="#C0522B" colorTo="#C9A84C" duration={14} />
 
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-12 p-10 md:p-12 lg:p-14">
-
             {/* Features list */}
             <div className="flex-1">
               <p style={{
@@ -545,15 +590,6 @@ export function CommunitySection() {
           </div>
         </motion.div>
       </div>
-
-      {/* ── Bottom border ── */}
-      <div
-        aria-hidden="true"
-        style={{
-          height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(192,82,43,0.15) 50%, transparent)",
-        }}
-      />
     </section>
   );
 }

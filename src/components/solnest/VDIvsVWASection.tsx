@@ -71,8 +71,8 @@ function WithAIPanel() {
 						letterSpacing: '-0.02em', marginBottom: '8px',
 					}}
 				>
-					You wake up.{' '}
-					<span style={{ fontStyle: 'italic', color: '#C0522B' }}>It&apos;s already done.</span>
+					You slept 8 hours.{' '}
+					<span style={{ fontStyle: 'italic', color: '#E86A3A' }}>Your AI didn&apos;t.</span>
 				</motion.h2>
 
 				<motion.p
@@ -86,7 +86,7 @@ function WithAIPanel() {
 						color: 'rgba(212,204,184,0.65)', marginBottom: '14px',
 					}}
 				>
-					Calls answered. Leads booked. Follow-ups sent. All while you slept.
+					3 leads booked. 12 follow-ups sent. 1 review replied to. All before your alarm went off.
 				</motion.p>
 
 				{/* Separator */}
@@ -136,8 +136,8 @@ function WithAIPanel() {
 								fontFamily: 'var(--font-display)', fontWeight: 300,
 								fontSize: 'clamp(38px, 4vw, 74px)',
 								lineHeight: 1, letterSpacing: '-0.04em',
-								color: '#C0522B',
-								textShadow: '0 0 40px rgba(192,82,43,0.5), 0 0 80px rgba(192,82,43,0.2)',
+								color: '#E86A3A',
+								textShadow: '0 0 40px rgba(232,106,58,0.5), 0 0 80px rgba(232,106,58,0.25)',
 							}}
 						>
 							21hrs
@@ -147,7 +147,7 @@ function WithAIPanel() {
 							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(212,204,184,0.6)', marginTop: '5px', display: 'block',
 						}}>
-							Per week — no more doing manually what AI handles in seconds.
+							Per week reclaimed — guest messages, pricing updates, and scheduling run themselves.
 						</span>
 					</motion.div>
 
@@ -180,8 +180,8 @@ function WithAIPanel() {
 								fontFamily: 'var(--font-display)', fontWeight: 300,
 								fontSize: 'clamp(38px, 4vw, 74px)',
 								lineHeight: 1, letterSpacing: '-0.04em',
-								color: '#C9A84C',
-								textShadow: '0 0 40px rgba(201,168,76,0.45), 0 0 80px rgba(201,168,76,0.18)',
+								color: '#D4B84E',
+								textShadow: '0 0 40px rgba(212,184,78,0.5), 0 0 80px rgba(212,184,78,0.22)',
 							}}
 						>
 							+$2,400
@@ -191,7 +191,7 @@ function WithAIPanel() {
 							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(212,204,184,0.6)', marginTop: '5px', display: 'block',
 						}}>
-							Extra per month — AI captures every opportunity you&apos;d miss.
+							Extra per month — dynamic pricing, instant lead capture, zero missed bookings.
 						</span>
 					</motion.div>
 				</div>
@@ -276,7 +276,8 @@ function WithoutAIPanel() {
 						letterSpacing: '-0.02em', marginBottom: '8px',
 					}}
 				>
-					You <span style={{ fontStyle: 'italic', color: 'rgba(200,120,100,0.55)' }}>are</span> the bottleneck.
+					Your business runs{' '}
+					<span style={{ fontStyle: 'italic', color: 'rgba(220,90,70,0.6)' }}>only when you do.</span>
 				</h2>
 
 				<p style={{
@@ -284,7 +285,7 @@ function WithoutAIPanel() {
 					fontSize: 'clamp(10.5px, 0.72vw, 13px)', lineHeight: 1.7,
 					color: 'rgba(180,170,155,0.55)', marginBottom: '14px',
 				}}>
-					Every call, every lead, every follow-up — waiting on you.
+					Missed calls at 2am. Leads going cold. Reviews unanswered for days.
 				</p>
 
 				{/* Separator */}
@@ -337,7 +338,7 @@ function WithoutAIPanel() {
 							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(180,170,155,0.52)', marginTop: '5px', display: 'block',
 						}}>
-							Per week — answering calls, chasing leads, doing repetitive tasks.
+							Per week burned — copy-pasting messages, manually adjusting prices, chasing guests.
 						</span>
 					</motion.div>
 
@@ -383,7 +384,7 @@ function WithoutAIPanel() {
 							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(180,170,155,0.52)', marginTop: '5px', display: 'block',
 						}}>
-							Gone every month — opportunities lost while you&apos;re busy with busywork.
+							Leaked every month — underpriced nights, lost leads, guests who booked your competitor instead.
 						</span>
 					</motion.div>
 				</div>
@@ -406,8 +407,8 @@ function WithoutAIPanel() {
 						borderRadius: '2px',
 					}}
 				>
-					This is what most business owners accept as &quot;normal.&quot;{' '}
-					<span style={{ color: '#C0522B', fontWeight: 500, fontStyle: 'normal' }}>It doesn&apos;t have to be.</span>
+					Every hour you spend on tasks AI could handle is an hour your competitor&apos;s AI is working for them.{' '}
+					<span style={{ color: '#E86A3A', fontWeight: 500, fontStyle: 'normal' }}>That gap compounds daily.</span>
 				</motion.p>
 			</div>
 		</div>
@@ -449,8 +450,8 @@ function MobileComparisonCard({ type }: { type: 'with' | 'without' }) {
 				marginBottom: '12px',
 			}}>
 				{isWith
-					? <>You wake up. <span style={{ fontStyle: 'italic', color: '#C0522B' }}>It&apos;s already done.</span></>
-					: <>You <span style={{ fontStyle: 'italic', color: 'rgba(200,120,100,0.55)' }}>are</span> the bottleneck.</>
+					? <>You slept 8 hours. <span style={{ fontStyle: 'italic', color: '#E86A3A' }}>Your AI didn&apos;t.</span></>
+					: <>Your business runs <span style={{ fontStyle: 'italic', color: 'rgba(220,90,70,0.6)' }}>only when you do.</span></>
 				}
 			</h3>
 
@@ -579,7 +580,7 @@ export function VDIvsVWASection() {
 									color: 'rgba(212,204,184,0.52)', maxWidth: '580px',
 								}}
 							>
-								The businesses scaling fastest aren&apos;t working harder. They&apos;re running AI that never sleeps, never forgets, and never drops the ball.
+								While you&apos;re sleeping, your competitor&apos;s AI is answering leads, adjusting prices, and booking guests. The gap between &quot;doing it manually&quot; and &quot;running AI&quot; isn&apos;t closing — it&apos;s accelerating.
 							</p>
 
 							<div style={{
