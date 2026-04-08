@@ -138,7 +138,7 @@ export function FooterCTA() {
             }}
           >
             <BlurText
-              text="$67/mo. Locked forever. 7-day free trial. When this founding window closes, the price goes up — permanently. The only question is whether you act before or after that happens."
+              text="$67/mo. Locked forever. When this founding window closes, the price goes up — permanently. The only question is whether you act before or after that happens."
               loopDelay={1500}
               style={{ color: "rgba(212,204,184,0.75)" }}
             />
@@ -200,7 +200,7 @@ export function FooterCTA() {
               lineHeight: 1.7,
             }}
           >
-            7-day free trial · Cancel anytime · Use browser to sign up (not the Skool app)
+            Cancel anytime · Use browser to sign up (not the Skool app)
           </motion.p>
         </motion.div>
       </div>

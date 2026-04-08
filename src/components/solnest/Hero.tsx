@@ -252,7 +252,7 @@ export default function Hero() {
                 letterSpacing: "0.18em", textTransform: "uppercase",
                 position: "relative", zIndex: 2,
               }}>
-                Start Free — $67/mo After Trial
+                Join for $67/mo
               </span>
             </MagneticButton>
 
@@ -285,7 +285,7 @@ export default function Hero() {
             transition={{ delay: 1.15, duration: 0.5 }}
             className="flex flex-wrap items-center gap-x-5 gap-y-2"
           >
-            {["7-day free trial", "Cancel anytime", "Founding rate locked forever"].map((item) => (
+            {["Cancel anytime", "Founding rate locked forever"].map((item) => (
               <span key={item} className="flex items-center gap-1.5" style={{
                 fontFamily: "var(--font-condensed)",
                 fontWeight: 600, fontSize: "12px",

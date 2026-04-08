@@ -50,7 +50,7 @@ const communityStats = [
   { value: "247+", label: "Active Members" },
   { value: "Weekly", label: "Live AI Builds" },
   { value: "$67", label: "Founding Rate" },
-  { value: "7-Day", label: "Free Trial" },
+  { value: "$67", label: "Per Month" },
 ];
 
 const features = [
@@ -494,7 +494,7 @@ export function CommunitySection() {
                   fontSize: "13px", letterSpacing: "0.24em", textTransform: "uppercase",
                   color: "rgba(192,82,43,0.7)", marginBottom: "6px",
                 }}>
-                  7-day free trial
+                  Founding rate
                 </p>
                 <div className="flex items-start lg:justify-end">
                   <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "22px", color: "rgba(240,235,225,0.65)", marginTop: "10px" }}>$</span>

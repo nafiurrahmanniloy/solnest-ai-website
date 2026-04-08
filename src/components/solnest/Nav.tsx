@@ -16,7 +16,6 @@ export default function Nav() {
 
   const navLinks = [
     { label: "Work With Ryan", href: "#services" },
-    { label: "Community", href: "https://skool.com/solnest-ai", external: true },
   ];
 
   return (
