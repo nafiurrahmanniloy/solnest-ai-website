@@ -49,8 +49,8 @@ const classrooms = [
 const communityStats = [
   { value: "40+", label: "Active Members" },
   { value: "Weekly", label: "Live AI Builds" },
-  { value: "$67", label: "Founding Rate" },
-  { value: "$67", label: "Per Month" },
+  { value: "$67/mo", label: "Founding Rate" },
+  { value: "∞", label: "Rate Locked Forever" },
 ];
 
 const features = [
