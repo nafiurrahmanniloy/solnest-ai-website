@@ -14,7 +14,7 @@ const services = [
     description:
       "In one session, Ryan maps every hour you're wasting on tasks AI can own. You leave with a prioritized roadmap — not theory, not guesswork. Just the exact moves that will get your time back fastest.",
     creditNote: "Every dollar applies toward a Done-For-You build.",
-    href: "mailto:hello@solneststays.com",
+    href: "mailto:hello@solnestai.com",
     linkLabel: "Book an Audit",
     badge: "Best starting point",
   },
@@ -27,7 +27,7 @@ const services = [
     description:
       "You stop doing it. Ryan's team builds it into your business — agents, automations, workflows — all running without you. You focus on growth. The machine handles the rest.",
     creditNote: null,
-    href: "mailto:hello@solneststays.com",
+    href: "mailto:hello@solnestai.com",
     linkLabel: "Start a Project",
     badge: "Most popular",
   },
@@ -40,7 +40,7 @@ const services = [
     description:
       "Ryan in your corner every month. Real-time strategy, implementation calls, and direct access when problems come up. Tailored to your business — because no two operations are the same.",
     creditNote: null,
-    href: "mailto:hello@solneststays.com",
+    href: "mailto:hello@solnestai.com",
     linkLabel: "Apply for Advisory",
     badge: "Limited spots",
   },

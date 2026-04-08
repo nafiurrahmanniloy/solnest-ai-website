@@ -6,7 +6,7 @@ import { SocialHandles } from "@/components/solnest/SocialHandles";
 const footerLinks = [
   { label: "Community", href: "https://skool.com/solnest-ai", external: true },
   { label: "Work With Ryan", href: "#services", external: false },
-  { label: "Contact", href: "mailto:hello@solneststays.com", external: false },
+  { label: "Contact", href: "mailto:hello@solnestai.com", external: false },
 ];
 
 export default function Footer() {
@@ -148,7 +148,7 @@ export default function Footer() {
             © 2026 Solnest AI. All rights reserved.
           </p>
           <a
-            href="mailto:hello@solneststays.com"
+            href="mailto:hello@solnestai.com"
             style={{
               fontFamily: "var(--font-body)",
               fontWeight: 300,
@@ -164,7 +164,7 @@ export default function Footer() {
               (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.30)";
             }}
           >
-            hello@solneststays.com
+            hello@solnestai.com
           </a>
         </div>
       </div>
