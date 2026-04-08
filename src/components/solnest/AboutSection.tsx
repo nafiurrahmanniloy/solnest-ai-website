@@ -14,7 +14,7 @@ const tags = [
 
 const stats = [
   { value: 40, suffix: "+", label: "AI Agents Built", accent: "#C0522B" },
-  { value: 5, suffix: "+", label: "STR Properties", accent: "#C9A84C" },
+  { value: 50, suffix: "+", label: "Businesses Automated", accent: "#C9A84C" },
   { value: 300, suffix: "+", label: "Hours Saved / Mo", accent: "#C0522B" },
   { value: 15, suffix: "+", label: "Years Automating", accent: "#C9A84C" },
 ];
