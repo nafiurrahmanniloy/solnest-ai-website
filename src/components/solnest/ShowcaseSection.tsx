@@ -13,12 +13,12 @@ const caseStudies = {
     badge: "STR Automation",
     headline: "0.3-second response time. Zero staff required.",
     what: "A fully autonomous AI agent that handles 100% of guest communication for short-term rental properties — from pre-booking questions to check-out follow-ups. Deployed directly into the host's existing phone number via Twilio.",
-    why: "Ryan was managing 12 properties and spending 3+ hours a day answering the same 8 questions. The agent now handles all of it, 24/7, in the host's voice.",
+    why: "Ryan was managing multiple properties and spending 3+ hours a day answering the same 8 questions. The agent now handles all of it, 24/7, in the host's voice.",
     results: [
       { stat: "100%", label: "Messages handled by AI" },
       { stat: "0.3s", label: "Avg response time" },
       { stat: "3 hrs", label: "Saved per day" },
-      { stat: "12", label: "Properties covered" },
+      { stat: "All", label: "Properties covered" },
     ],
     before: [
       "3+ hours/day replying to the same 8 questions",
@@ -30,7 +30,7 @@ const caseStudies = {
       "0 minutes spent on guest messaging",
       "Every message answered in under 0.3 seconds",
       "Late-night inquiries convert while Ryan sleeps",
-      "12 properties running fully hands-free",
+      "All properties running fully hands-free",
     ],
     process: [
       { step: "01", title: "Mapped every guest touchpoint", desc: "Pre-booking, check-in, mid-stay, check-out — all the messages Ryan was sending manually." },

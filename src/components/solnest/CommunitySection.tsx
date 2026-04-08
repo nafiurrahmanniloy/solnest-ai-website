@@ -32,7 +32,7 @@ const classrooms = [
   },
   {
     num: "04",
-    name: "The GPS",
+    name: "The Ops",
     desc: "Exact agents, prompts, and systems — copy-paste and deploy directly into your operation.",
     accent: "#C9A84C",
     accentRgb: "201,168,76",
@@ -47,7 +47,7 @@ const classrooms = [
 ];
 
 const communityStats = [
-  { value: "247+", label: "Active Members" },
+  { value: "40+", label: "Active Members" },
   { value: "Weekly", label: "Live AI Builds" },
   { value: "$67", label: "Founding Rate" },
   { value: "$67", label: "Per Month" },

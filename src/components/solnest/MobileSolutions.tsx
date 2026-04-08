@@ -14,7 +14,7 @@ const projects = [
       { stat: "100%", label: "Messages handled" },
       { stat: "0.3s", label: "Response time" },
       { stat: "3 hrs", label: "Saved per day" },
-      { stat: "12", label: "Properties" },
+      { stat: "5+", label: "Properties" },
     ],
     stack: ["Claude AI", "Twilio SMS", "Make.com", "Airtable"],
     color: "#C0522B",

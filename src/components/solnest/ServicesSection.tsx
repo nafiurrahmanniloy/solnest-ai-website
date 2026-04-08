@@ -34,11 +34,11 @@ const services = [
   {
     num: "03",
     name: "Ongoing Advisory",
-    price: "1,500",
-    priceNum: 1500,
-    priceNote: "per month",
+    price: "Custom",
+    priceNum: 0,
+    priceNote: "tailored to your business",
     description:
-      "Ryan in your corner every month. Real-time strategy, implementation calls, and direct access when problems come up. Reserved for operators serious about scaling.",
+      "Ryan in your corner every month. Real-time strategy, implementation calls, and direct access when problems come up. Tailored to your business — because no two operations are the same.",
     creditNote: null,
     href: "mailto:hello@solneststays.com",
     linkLabel: "Apply for Advisory",
@@ -281,6 +281,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
         >
           <div>
             <div className="flex items-start gap-0.5">
+              {service.priceNum > 0 && (
               <motion.span
                 initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -297,6 +298,8 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
               >
                 $
               </motion.span>
+              )}
+              {service.priceNum > 0 ? (
               <AnimatedPrice
                 target={service.priceNum}
                 suffix={service.price.includes("+") ? "+" : ""}
@@ -311,6 +314,20 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
                   textShadow: hovered ? "0 0 40px rgba(192,82,43,0.3)" : "none",
                 }}
               />
+              ) : (
+              <span style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 300,
+                fontSize: "clamp(32px, 3.5vw, 58px)",
+                lineHeight: 1,
+                color: hovered ? "#F0EBE1" : "rgba(240,235,225,0.85)",
+                letterSpacing: "-0.02em",
+                transition: "color 0.25s ease",
+                fontStyle: "italic",
+              }}>
+                Custom
+              </span>
+              )}
             </div>
             <motion.div
               initial={{ opacity: 0 }}

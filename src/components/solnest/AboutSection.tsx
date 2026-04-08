@@ -14,15 +14,15 @@ const tags = [
 
 const stats = [
   { value: 40, suffix: "+", label: "AI Agents Built", accent: "#C0522B" },
-  { value: 12, suffix: "", label: "STR Properties", accent: "#C9A84C" },
+  { value: 5, suffix: "+", label: "STR Properties", accent: "#C9A84C" },
   { value: 300, suffix: "+", label: "Hours Saved / Mo", accent: "#C0522B" },
-  { value: 3, suffix: "+", label: "Years Automating", accent: "#C9A84C" },
+  { value: 15, suffix: "+", label: "Years Automating", accent: "#C9A84C" },
 ];
 
 const roles = [
-  { role: "STR Operator", detail: "12 properties running fully automated — zero manual steps." },
+  { role: "STR Operator", detail: "Multiple properties running fully automated — zero manual steps." },
   { role: "AI Builder", detail: "40+ agents deployed across real businesses." },
-  { role: "Community Lead", detail: "247+ operators learning and building together." },
+  { role: "Community Lead", detail: "A growing community of operators learning and building together." },
 ];
 
 function AnimatedStat({ value, suffix, label, accent }: { value: number; suffix: string; label: string; accent: string }) {
