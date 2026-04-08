@@ -86,7 +86,7 @@ function WithAIPanel() {
 						color: 'rgba(212,204,184,0.65)', marginBottom: '14px',
 					}}
 				>
-					Guests booked. Prices optimized. Reviews responded to. All while you slept.
+					Calls answered. Leads booked. Follow-ups sent. All while you slept.
 				</motion.p>
 
 				{/* Separator */}
@@ -147,7 +147,7 @@ function WithAIPanel() {
 							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(212,204,184,0.6)', marginTop: '5px', display: 'block',
 						}}>
-							Per week — no more answering the same 47 guest messages manually.
+							Per week — no more doing manually what AI handles in seconds.
 						</span>
 					</motion.div>
 
@@ -191,7 +191,7 @@ function WithAIPanel() {
 							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(212,204,184,0.6)', marginTop: '5px', display: 'block',
 						}}>
-							Extra per month — AI pricing captures every demand spike you&apos;d miss.
+							Extra per month — AI captures every opportunity you&apos;d miss.
 						</span>
 					</motion.div>
 				</div>
@@ -216,7 +216,7 @@ function WithAIPanel() {
 						transition: 'border-color 0.3s',
 					}}
 				>
-					Stop working inside your business →
+					Stop doing it all yourself →
 				</motion.a>
 			</div>
 		</div>
@@ -284,7 +284,7 @@ function WithoutAIPanel() {
 					fontSize: 'clamp(10.5px, 0.72vw, 13px)', lineHeight: 1.7,
 					color: 'rgba(180,170,155,0.55)', marginBottom: '14px',
 				}}>
-					Every booking, every message, every pricing change — waiting on you.
+					Every call, every lead, every follow-up — waiting on you.
 				</p>
 
 				{/* Separator */}
@@ -337,7 +337,7 @@ function WithoutAIPanel() {
 							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(180,170,155,0.52)', marginTop: '5px', display: 'block',
 						}}>
-							Per week — copy-pasting replies, adjusting calendars, chasing reviews.
+							Per week — answering calls, chasing leads, doing repetitive tasks.
 						</span>
 					</motion.div>
 
@@ -383,7 +383,7 @@ function WithoutAIPanel() {
 							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(180,170,155,0.52)', marginTop: '5px', display: 'block',
 						}}>
-							Gone every month — you can&apos;t reprice at 2am when demand spikes.
+							Gone every month — opportunities lost while you&apos;re busy with busywork.
 						</span>
 					</motion.div>
 				</div>
@@ -406,7 +406,7 @@ function WithoutAIPanel() {
 						borderRadius: '2px',
 					}}
 				>
-					This is what most hosts accept as &quot;normal.&quot;{' '}
+					This is what most business owners accept as &quot;normal.&quot;{' '}
 					<span style={{ color: '#C0522B', fontWeight: 500, fontStyle: 'normal' }}>It doesn&apos;t have to be.</span>
 				</motion.p>
 			</div>
@@ -517,7 +517,7 @@ export function VDIvsVWASection() {
 							fontSize: '10px', letterSpacing: '0.24em',
 							textTransform: 'uppercase', color: '#C0522B',
 						}}>
-							Your Airbnb Right Now
+							Your Business Right Now
 						</span>
 					</div>
 					<h2 style={{
@@ -554,7 +554,7 @@ export function VDIvsVWASection() {
 									fontSize: '11px', letterSpacing: '0.24em',
 									textTransform: 'uppercase', color: '#C0522B',
 								}}>
-									Your Airbnb Right Now
+									Your Business Right Now
 								</span>
 							</div>
 
@@ -579,7 +579,7 @@ export function VDIvsVWASection() {
 									color: 'rgba(212,204,184,0.52)', maxWidth: '580px',
 								}}
 							>
-								The hosts scaling to 6 figures aren&apos;t working harder. They&apos;re running AI that never sleeps, never forgets, and never underprices.
+								The businesses scaling fastest aren&apos;t working harder. They&apos;re running AI that never sleeps, never forgets, and never drops the ball.
 							</p>
 
 							<div style={{
