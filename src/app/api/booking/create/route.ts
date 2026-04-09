@@ -17,6 +17,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Create or find contact in GHL
+    const contactBody: Record<string, string> = {
+      locationId: GHL_LOCATION_ID,
+      firstName,
+      lastName,
+      email,
+      source: "Website Booking",
+    };
+    if (phone) contactBody.phone = phone;
+
     const contactRes = await fetch(
       "https://services.leadconnectorhq.com/contacts/upsert",
       {
@@ -26,14 +35,7 @@ export async function POST(request: NextRequest) {
           Version: "2021-07-28",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          locationId: GHL_LOCATION_ID,
-          firstName,
-          lastName,
-          email,
-          phone: phone || undefined,
-          source: "Website Booking",
-        }),
+        body: JSON.stringify(contactBody),
       }
     );
 
@@ -41,9 +43,9 @@ export async function POST(request: NextRequest) {
     const contactId = contactData.contact?.id;
 
     if (!contactId) {
-      console.error("Failed to create contact:", contactData);
+      console.error("Failed to create contact:", JSON.stringify(contactData));
       return NextResponse.json(
-        { error: "Failed to create contact" },
+        { error: "Failed to create contact", details: contactData },
         { status: 500 }
       );
     }
@@ -80,9 +82,9 @@ export async function POST(request: NextRequest) {
     const appointmentData = await appointmentRes.json();
 
     if (!appointmentRes.ok) {
-      console.error("Failed to create appointment:", appointmentData);
+      console.error("Failed to create appointment:", JSON.stringify(appointmentData));
       return NextResponse.json(
-        { error: "Failed to create appointment" },
+        { error: "Failed to create appointment", details: appointmentData },
         { status: 500 }
       );
     }
