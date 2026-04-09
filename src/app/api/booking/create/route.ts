@@ -60,15 +60,7 @@ export async function POST(request: NextRequest) {
 
       if (!contactRes.ok) {
         return NextResponse.json(
-          {
-            error: "Failed to create contact",
-            searchStatus: searchRes.status,
-            searchResult: searchData,
-            createStatus: contactRes.status,
-            createResult: contactData,
-            keyPrefix: GHL_API_KEY?.substring(0, 10),
-            locationId: GHL_LOCATION_ID,
-          },
+          { error: "Failed to create contact" },
           { status: 500 }
         );
       }
