@@ -347,7 +347,7 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
             </div>
           </div>
           <a
-            href="mailto:hello@solnestai.com"
+            href="/book"
             style={{
               display: "inline-flex", alignItems: "center", gap: "8px",
               fontFamily: "var(--font-condensed)", fontWeight: 600,

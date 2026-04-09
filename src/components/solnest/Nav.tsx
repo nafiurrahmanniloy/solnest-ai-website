@@ -116,7 +116,37 @@ export default function Nav() {
               </a>
             ))}
 
-            {/* CTA pill button */}
+            {/* Book a Call CTA */}
+            <MagneticButton
+              href="/book"
+              className="group relative overflow-hidden"
+              style={{
+                padding: "11px 26px",
+                borderRadius: "9999px",
+                border: "1px solid rgba(192,82,43,0.5)",
+                background: "transparent",
+              } as React.CSSProperties}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-condensed)",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "#C0522B",
+                  whiteSpace: "nowrap",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Book a Call
+              </span>
+            </MagneticButton>
+
+            {/* Community CTA */}
             <MagneticButton
               href="https://skool.com/solnest-ai"
               target="_blank"
@@ -222,14 +252,35 @@ export default function Nav() {
                 </motion.a>
               ))}
               <motion.a
+                href="/book"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15, duration: 0.28 }}
+                onClick={() => setMobileOpen(false)}
+                className="mt-3 text-center py-3.5 rounded-full"
+                style={{
+                  fontFamily: "var(--font-condensed)",
+                  fontWeight: 600,
+                  fontSize: "12px",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  textDecoration: "none",
+                  border: "1px solid rgba(192,82,43,0.5)",
+                  color: "#C0522B",
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline", verticalAlign: "-1px", marginRight: "6px" }}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Book a Call
+              </motion.a>
+              <motion.a
                 href="https://skool.com/solnest-ai"
                 target="_blank"
                 rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.18, duration: 0.28 }}
+                transition={{ delay: 0.22, duration: 0.28 }}
                 onClick={() => setMobileOpen(false)}
-                className="mt-3 text-center py-3.5 rounded-full bg-rust text-cream"
+                className="mt-2 text-center py-3.5 rounded-full bg-rust text-cream"
                 style={{
                   fontFamily: "var(--font-condensed)",
                   fontWeight: 600,
