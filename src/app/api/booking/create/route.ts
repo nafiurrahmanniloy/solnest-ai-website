@@ -26,21 +26,37 @@ export async function POST(request: NextRequest) {
     };
     if (phone) contactBody.phone = phone;
 
-    const contactRes = await fetch(
-      "https://services.leadconnectorhq.com/contacts/upsert",
+    // First try to find existing contact by email
+    const searchRes = await fetch(
+      `https://services.leadconnectorhq.com/contacts/?locationId=${GHL_LOCATION_ID}&query=${encodeURIComponent(email)}&limit=1`,
       {
-        method: "POST",
         headers: {
           Authorization: `Bearer ${GHL_API_KEY}`,
           Version: "2021-07-28",
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify(contactBody),
       }
     );
+    const searchData = await searchRes.json();
+    let contactId = searchData.contacts?.[0]?.id;
 
-    const contactData = await contactRes.json();
-    const contactId = contactData.contact?.id;
+    // If not found, create new contact
+    if (!contactId) {
+      const contactRes = await fetch(
+        "https://services.leadconnectorhq.com/contacts/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${GHL_API_KEY}`,
+            Version: "2021-07-28",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(contactBody),
+        }
+      );
+
+      const contactData = await contactRes.json();
+      contactId = contactData.contact?.id;
+    }
 
     if (!contactId) {
       console.error("Failed to create contact:", JSON.stringify(contactData));
