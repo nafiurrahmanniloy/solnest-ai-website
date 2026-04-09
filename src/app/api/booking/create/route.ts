@@ -59,9 +59,9 @@ export async function POST(request: NextRequest) {
     }
 
     if (!contactId) {
-      console.error("Failed to create contact:", JSON.stringify(contactData));
+      console.error("Failed to create contact");
       return NextResponse.json(
-        { error: "Failed to create contact", details: contactData },
+        { error: "Failed to create contact" },
         { status: 500 }
       );
     }
