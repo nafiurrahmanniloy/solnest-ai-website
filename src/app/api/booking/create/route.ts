@@ -41,6 +41,23 @@ export async function POST(request: NextRequest) {
 
     if (searchRes.ok && searchData.contacts?.length > 0) {
       contactId = searchData.contacts[0].id;
+      // Update existing contact with latest details
+      await fetch(
+        `https://services.leadconnectorhq.com/contacts/${contactId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${GHL_API_KEY}`,
+            Version: "2021-07-28",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            phone: phone || undefined,
+          }),
+        }
+      );
     } else {
       // Create new contact
       const contactRes = await fetch(
