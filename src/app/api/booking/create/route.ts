@@ -16,7 +16,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create or find contact in GHL
     const contactBody: Record<string, string> = {
       locationId: GHL_LOCATION_ID,
       firstName,
@@ -26,7 +25,9 @@ export async function POST(request: NextRequest) {
     };
     if (phone) contactBody.phone = phone;
 
-    // First try to find existing contact by email
+    // Try to find existing contact by email
+    let contactId: string | undefined;
+
     const searchRes = await fetch(
       `https://services.leadconnectorhq.com/contacts/?locationId=${GHL_LOCATION_ID}&query=${encodeURIComponent(email)}&limit=1`,
       {
@@ -37,10 +38,11 @@ export async function POST(request: NextRequest) {
       }
     );
     const searchData = await searchRes.json();
-    let contactId = searchData.contacts?.[0]?.id;
 
-    // If not found, create new contact
-    if (!contactId) {
+    if (searchRes.ok && searchData.contacts?.length > 0) {
+      contactId = searchData.contacts[0].id;
+    } else {
+      // Create new contact
       const contactRes = await fetch(
         "https://services.leadconnectorhq.com/contacts/",
         {
@@ -55,22 +57,36 @@ export async function POST(request: NextRequest) {
       );
 
       const contactData = await contactRes.json();
+
+      if (!contactRes.ok) {
+        return NextResponse.json(
+          {
+            error: "Failed to create contact",
+            searchStatus: searchRes.status,
+            searchResult: searchData,
+            createStatus: contactRes.status,
+            createResult: contactData,
+            keyPrefix: GHL_API_KEY?.substring(0, 10),
+            locationId: GHL_LOCATION_ID,
+          },
+          { status: 500 }
+        );
+      }
+
       contactId = contactData.contact?.id;
     }
 
     if (!contactId) {
-      console.error("Failed to create contact");
       return NextResponse.json(
-        { error: "Failed to create contact" },
+        { error: "No contact ID obtained" },
         { status: 500 }
       );
     }
 
-    // Calculate end time (30 min after start)
+    // Create appointment
     const startTime = new Date(selectedSlot);
     const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
 
-    // Create appointment in GHL
     const appointmentRes = await fetch(
       "https://services.leadconnectorhq.com/calendars/events/appointments",
       {
@@ -88,7 +104,7 @@ export async function POST(request: NextRequest) {
           endTime: endTime.toISOString(),
           title: `Strategy Call — ${firstName} ${lastName}`,
           appointmentStatus: "confirmed",
-          assignedUserId: "pmvjtEanFSvXlw008HKt", // Ryan Lefebvre
+          assignedUserId: "pmvjtEanFSvXlw008HKt",
           address: "Google Meet (link will be sent via email)",
           notes: notes || "",
         }),
@@ -98,7 +114,6 @@ export async function POST(request: NextRequest) {
     const appointmentData = await appointmentRes.json();
 
     if (!appointmentRes.ok) {
-      console.error("Failed to create appointment:", JSON.stringify(appointmentData));
       return NextResponse.json(
         { error: "Failed to create appointment", details: appointmentData },
         { status: 500 }
@@ -116,7 +131,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Booking error:", error);
     return NextResponse.json(
-      { error: "Failed to create booking" },
+      { error: "Failed to create booking", message: String(error) },
       { status: 500 }
     );
   }
