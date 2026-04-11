@@ -14,8 +14,8 @@ const services = [
     description:
       "In one session, Ryan maps every hour you're wasting on tasks AI can own. You leave with a prioritized roadmap — not theory, not guesswork. Just the exact moves that will get your time back fastest.",
     creditNote: "Every dollar applies toward a Done-For-You build.",
-    href: "/book",
-    linkLabel: "Book a Call",
+    href: "mailto:hello@solnestai.com",
+    linkLabel: "Get in Touch",
     badge: "Best starting point",
   },
   {
@@ -27,8 +27,8 @@ const services = [
     description:
       "You stop doing it. Ryan's team builds it into your business — agents, automations, workflows — all running without you. You focus on growth. The machine handles the rest.",
     creditNote: null,
-    href: "/book",
-    linkLabel: "Book a Call",
+    href: "mailto:hello@solnestai.com",
+    linkLabel: "Get in Touch",
     badge: "Most popular",
   },
   {
@@ -40,8 +40,8 @@ const services = [
     description:
       "Ryan in your corner every month. Real-time strategy, implementation calls, and direct access when problems come up. Tailored to your business — because no two operations are the same.",
     creditNote: null,
-    href: "/book",
-    linkLabel: "Book a Call",
+    href: "mailto:hello@solnestai.com",
+    linkLabel: "Get in Touch",
     badge: "Limited spots",
   },
 ];
@@ -366,7 +366,6 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline", verticalAlign: "-2px", marginRight: "6px" }}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             {service.linkLabel} →
           </a>
         </div>

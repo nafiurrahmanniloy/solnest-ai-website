@@ -116,7 +116,7 @@ export default function Nav() {
               </a>
             ))}
 
-            {/* Book a Call CTA */}
+            {/* Book a Call CTA — temporarily hidden, uncomment to re-enable
             <MagneticButton
               href="/book"
               className="group relative overflow-hidden"
@@ -145,6 +145,7 @@ export default function Nav() {
                 Book a Call
               </span>
             </MagneticButton>
+            */}
 
             {/* Community CTA */}
             <MagneticButton
@@ -251,6 +252,7 @@ export default function Nav() {
                   {link.label}
                 </motion.a>
               ))}
+              {/* Book a Call — temporarily hidden, uncomment to re-enable
               <motion.a
                 href="/book"
                 initial={{ opacity: 0, y: 8 }}
@@ -272,6 +274,7 @@ export default function Nav() {
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline", verticalAlign: "-1px", marginRight: "6px" }}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 Book a Call
               </motion.a>
+              */}
               <motion.a
                 href="https://skool.com/solnest-ai"
                 target="_blank"
