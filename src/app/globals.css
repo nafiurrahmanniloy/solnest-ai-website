@@ -159,6 +159,12 @@ body {
 /* Services section white bg text */
 .text-charcoal-900 { color: #1A1918; }
 
+/* Border beam spin */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Line grow animation */
 @keyframes lineGrow {
   from { width: 0; }
