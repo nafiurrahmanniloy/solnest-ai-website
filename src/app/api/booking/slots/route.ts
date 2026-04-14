@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const GHL_API_KEY = process.env.GHL_API_KEY!;
 const GHL_CALENDAR_ID = process.env.GHL_CALENDAR_ID!;
+const RYAN_USER_ID = "pmvjtEanFSvXlw008HKt";
 const TIMEZONE = "America/Los_Angeles";
 
 export async function GET(request: NextRequest) {
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
     const startMs = new Date(startDate + "T00:00:00.000Z").getTime();
     const endMs = new Date(endDate + "T23:59:59.000Z").getTime();
 
-    const url = `https://services.leadconnectorhq.com/calendars/${GHL_CALENDAR_ID}/free-slots?startDate=${startMs}&endDate=${endMs}&timezone=${encodeURIComponent(TIMEZONE)}`;
+    const url = `https://services.leadconnectorhq.com/calendars/${GHL_CALENDAR_ID}/free-slots?startDate=${startMs}&endDate=${endMs}&timezone=${encodeURIComponent(TIMEZONE)}&userId=${RYAN_USER_ID}`;
 
     const res = await fetch(url, {
       headers: {
