@@ -347,8 +347,7 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
             </div>
           </div>
           <a
-            href="mailto:hello@solnestai.com"
-            // TODO: Switch back to href="/book" when booking is re-enabled
+            href="/book"
             style={{
               display: "inline-flex", alignItems: "center", gap: "8px",
               fontFamily: "var(--font-condensed)", fontWeight: 600,
