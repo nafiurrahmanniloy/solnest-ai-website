@@ -38,11 +38,15 @@ export async function POST(request: NextRequest) {
       }
     );
     const searchData = await searchRes.json();
+    console.log("[booking] contact search", {
+      status: searchRes.status,
+      found: searchData.contacts?.length || 0,
+    });
 
     if (searchRes.ok && searchData.contacts?.length > 0) {
       contactId = searchData.contacts[0].id;
       // Update existing contact with latest details
-      await fetch(
+      const updateRes = await fetch(
         `https://services.leadconnectorhq.com/contacts/${contactId}`,
         {
           method: "PUT",
@@ -58,6 +62,10 @@ export async function POST(request: NextRequest) {
           }),
         }
       );
+      if (!updateRes.ok) {
+        const updateErr = await updateRes.text();
+        console.warn("[booking] contact update failed (non-fatal)", updateRes.status, updateErr);
+      }
     } else {
       // Create new contact
       const contactRes = await fetch(
@@ -76,8 +84,9 @@ export async function POST(request: NextRequest) {
       const contactData = await contactRes.json();
 
       if (!contactRes.ok) {
+        console.error("[booking] contact create failed", contactRes.status, contactData);
         return NextResponse.json(
-          { error: "Failed to create contact" },
+          { error: "Failed to create contact", status: contactRes.status, details: contactData },
           { status: 500 }
         );
       }
@@ -114,8 +123,6 @@ export async function POST(request: NextRequest) {
           title: `Strategy Call — ${firstName} ${lastName}`,
           appointmentStatus: "confirmed",
           assignedUserId: "pmvjtEanFSvXlw008HKt",
-          address: "Google Meet (link will be sent via email)",
-          notes: notes || "",
         }),
       }
     );
@@ -123,16 +130,42 @@ export async function POST(request: NextRequest) {
     const appointmentData = await appointmentRes.json();
 
     if (!appointmentRes.ok) {
+      console.error("[booking] appointment create failed", appointmentRes.status, appointmentData);
       return NextResponse.json(
-        { error: "Failed to create appointment", details: appointmentData },
+        { error: "Failed to create appointment", status: appointmentRes.status, details: appointmentData },
         { status: 500 }
       );
+    }
+
+    const appointmentId = appointmentData.id || appointmentData.event?.id;
+
+    // Attach the bottleneck note to the contact (non-fatal if it fails)
+    if (notes && contactId) {
+      try {
+        await fetch(
+          `https://services.leadconnectorhq.com/contacts/${contactId}/notes`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${GHL_API_KEY}`,
+              Version: "2021-07-28",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              body: `Biggest operational bottleneck:\n\n${notes}`,
+              userId: "pmvjtEanFSvXlw008HKt",
+            }),
+          }
+        );
+      } catch (noteErr) {
+        console.warn("[booking] contact note attach failed (non-fatal)", noteErr);
+      }
     }
 
     return NextResponse.json({
       success: true,
       appointment: {
-        id: appointmentData.id || appointmentData.event?.id,
+        id: appointmentId,
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
       },
