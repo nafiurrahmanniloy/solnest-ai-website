@@ -54,6 +54,7 @@ export default function BookPage() {
   const [slots, setSlots] = useState<Slots>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -88,6 +89,7 @@ export default function BookPage() {
   const handleSubmit = async () => {
     if (!selectedSlot) return;
     setSubmitting(true);
+    setErrorMsg(null);
 
     try {
       const res = await fetch("/api/booking/create", {
@@ -103,10 +105,18 @@ export default function BookPage() {
       if (data.success) {
         setStep("confirmed");
       } else {
-        alert("Something went wrong. Please try again.");
+        const ghlMessage =
+          data?.details?.message ||
+          (Array.isArray(data?.details?.message) && data.details.message.join(", ")) ||
+          data?.details?.error ||
+          data?.error ||
+          "Something went wrong. Please try again.";
+        console.error("Booking failed:", data);
+        setErrorMsg(String(ghlMessage));
       }
-    } catch {
-      alert("Something went wrong. Please try again.");
+    } catch (err) {
+      console.error("Booking error:", err);
+      setErrorMsg("Network error. Please check your connection and try again.");
     } finally {
       setSubmitting(false);
     }
@@ -733,6 +743,23 @@ export default function BookPage() {
                     />
                   </div>
 
+                  {errorMsg && (
+                    <div
+                      style={{
+                        padding: "12px 16px",
+                        borderRadius: "8px",
+                        background: "rgba(220,70,70,0.08)",
+                        border: "1px solid rgba(220,70,70,0.3)",
+                        fontFamily: "var(--font-body)",
+                        fontSize: "13px",
+                        color: "#F0C8C0",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {errorMsg}
+                    </div>
+                  )}
+
                   <button
                     onClick={handleSubmit}
                     disabled={!form.firstName || !form.lastName || !form.email || submitting}
@@ -939,7 +966,7 @@ export default function BookPage() {
             {[
               { num: "30", label: "Minute Call" },
               { num: "$0", label: "Cost to You" },
-              { num: "1", label: "Business Changing Chat" },
+              { num: "100%", label: "Honest Advice" },
             ].map((item, i) => (
               <motion.div
                 key={i}
