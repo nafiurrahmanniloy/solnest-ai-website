@@ -2,12 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 
 const GHL_API_KEY = process.env.GHL_API_KEY!;
 const GHL_CALENDAR_ID = process.env.GHL_CALENDAR_ID!;
+const GHL_BUILD_SESSION_CALENDAR_ID = process.env.GHL_BUILD_SESSION_CALENDAR_ID;
 const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID!;
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { firstName, lastName, email, phone, notes, selectedSlot } = body;
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      notes,
+      selectedSlot,
+      calendar, // "build" for paid Build Session
+      durationMinutes,
+      stripeSessionId,
+    } = body;
 
     if (!firstName || !lastName || !email || !selectedSlot) {
       return NextResponse.json(
@@ -16,12 +27,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const isBuildSession = calendar === "build";
+    const calendarId =
+      isBuildSession && GHL_BUILD_SESSION_CALENDAR_ID
+        ? GHL_BUILD_SESSION_CALENDAR_ID
+        : GHL_CALENDAR_ID;
+    const slotMinutes = durationMinutes || (isBuildSession ? 60 : 30);
+
     const contactBody: Record<string, string> = {
       locationId: GHL_LOCATION_ID,
       firstName,
       lastName,
       email,
-      source: "Website Booking",
+      source: isBuildSession ? "Website Build Session (paid)" : "Website Booking",
     };
     if (phone) contactBody.phone = phone;
 
@@ -103,7 +121,8 @@ export async function POST(request: NextRequest) {
 
     // Create appointment
     const startTime = new Date(selectedSlot);
-    const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
+    const endTime = new Date(startTime.getTime() + slotMinutes * 60 * 1000);
+    const titlePrefix = isBuildSession ? "Build Session" : "Strategy Call";
 
     const appointmentRes = await fetch(
       "https://services.leadconnectorhq.com/calendars/events/appointments",
@@ -115,12 +134,12 @@ export async function POST(request: NextRequest) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          calendarId: GHL_CALENDAR_ID,
+          calendarId,
           locationId: GHL_LOCATION_ID,
           contactId,
           startTime: startTime.toISOString(),
           endTime: endTime.toISOString(),
-          title: `Strategy Call — ${firstName} ${lastName}`,
+          title: `${titlePrefix} — ${firstName} ${lastName}`,
           appointmentStatus: "confirmed",
           assignedUserId: "pmvjtEanFSvXlw008HKt",
         }),
@@ -138,6 +157,30 @@ export async function POST(request: NextRequest) {
     }
 
     const appointmentId = appointmentData.id || appointmentData.event?.id;
+
+    // Tag based on calendar type (non-fatal)
+    if (contactId) {
+      const tagsToAdd = isBuildSession
+        ? ["paid-build-session"]
+        : ["booked-discovery-call"];
+      if (stripeSessionId) tagsToAdd.push(`stripe-${stripeSessionId.slice(0, 14)}`);
+      try {
+        await fetch(
+          `https://services.leadconnectorhq.com/contacts/${contactId}/tags`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${GHL_API_KEY}`,
+              Version: "2021-07-28",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ tags: tagsToAdd }),
+          }
+        );
+      } catch (tagErr) {
+        console.warn("[booking] tag add failed (non-fatal)", tagErr);
+      }
+    }
 
     // Attach the bottleneck note to the contact (non-fatal if it fails)
     if (notes && contactId) {

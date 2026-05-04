@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 import Nav from "@/components/solnest/Nav";
 import Footer from "@/components/solnest/Footer";
 
@@ -47,7 +48,11 @@ function getNextWeeks(): string[] {
   return dates;
 }
 
-export default function BookPage() {
+function BookPageContent() {
+  const searchParams = useSearchParams();
+  const isBuildSession = searchParams.get("type") === "build";
+  const stripeSessionId = searchParams.get("session_id") || "";
+
   const [step, setStep] = useState<Step>("date");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
@@ -56,11 +61,11 @@ export default function BookPage() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    notes: "",
+    firstName: searchParams.get("firstName") || "",
+    lastName: searchParams.get("lastName") || "",
+    email: searchParams.get("email") || "",
+    phone: searchParams.get("phone") || "",
+    notes: searchParams.get("project") || "",
   });
 
   const dates = getNextWeeks();
@@ -70,8 +75,9 @@ export default function BookPage() {
   const fetchSlots = useCallback(async () => {
     setLoading(true);
     try {
+      const calendarParam = isBuildSession ? "&calendar=build" : "";
       const res = await fetch(
-        `/api/booking/slots?startDate=${startDate}&endDate=${endDate}`
+        `/api/booking/slots?startDate=${startDate}&endDate=${endDate}${calendarParam}`
       );
       const data = await res.json();
       setSlots(data.slots || {});
@@ -80,7 +86,7 @@ export default function BookPage() {
     } finally {
       setLoading(false);
     }
-  }, [startDate, endDate]);
+  }, [startDate, endDate, isBuildSession]);
 
   useEffect(() => {
     fetchSlots();
@@ -98,6 +104,9 @@ export default function BookPage() {
         body: JSON.stringify({
           ...form,
           selectedSlot,
+          calendar: isBuildSession ? "build" : undefined,
+          durationMinutes: isBuildSession ? 60 : 30,
+          stripeSessionId: stripeSessionId || undefined,
         }),
       });
 
@@ -1007,5 +1016,13 @@ export default function BookPage() {
 
       <Footer />
     </main>
+  );
+}
+
+export default function BookPage() {
+  return (
+    <Suspense fallback={<main style={{ background: "#0D0D0B", minHeight: "100vh" }} />}>
+      <BookPageContent />
+    </Suspense>
   );
 }
