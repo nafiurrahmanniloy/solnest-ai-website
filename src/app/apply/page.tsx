@@ -168,6 +168,24 @@ export default function ApplyPage() {
             We&apos;ll route you to the right kind of call based on what you&apos;re building.
             Takes 60 seconds.
           </p>
+          <a
+            href="/build-session"
+            style={{
+              display: "inline-block",
+              marginTop: "20px",
+              fontFamily: "var(--font-condensed)",
+              fontWeight: 500,
+              fontSize: "12px",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "rgba(192,82,43,0.7)",
+              textDecoration: "underline",
+              textDecorationColor: "rgba(192,82,43,0.3)",
+              textUnderlineOffset: "4px",
+            }}
+          >
+            Already know you want a Build Session? Skip the form →
+          </a>
         </motion.div>
       </section>
 
