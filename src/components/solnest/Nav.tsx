@@ -118,7 +118,7 @@ export default function Nav() {
 
             {/* Book a Call CTA */}
             <MagneticButton
-              href="/book"
+              href="/apply"
               className="group relative overflow-hidden"
               style={{
                 padding: "11px 26px",
@@ -252,7 +252,7 @@ export default function Nav() {
                 </motion.a>
               ))}
               <motion.a
-                href="/book"
+                href="/apply"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15, duration: 0.28 }}
