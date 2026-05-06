@@ -3,6 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 const GHL_API_KEY = process.env.GHL_API_KEY!;
 const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID!;
 
+const CUSTOM_FIELD_IDS = {
+  project: "H1IlPBPAsEZinVaiYmFK",
+  whatTried: "fAJsWvBhwSqTWDlQ8BCg",
+  budget: "RtcVHrV3vZo0Pxdx17fz",
+  timeline: "hFh8kY5XyojVbDsmakhb",
+  route: "vRhYFhhwHSvyRzu404BN",
+  submittedAt: "rRuYgzXLv1PZf7GZfZD7",
+} as const;
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -42,6 +51,15 @@ export async function POST(request: NextRequest) {
       `Routed to: ${route === "discovery" ? "Free Discovery Call" : "Paid Build Session"}`,
     ].join("\n");
 
+    const customFields = [
+      { id: CUSTOM_FIELD_IDS.project, value: project || "" },
+      { id: CUSTOM_FIELD_IDS.whatTried, value: tried || "" },
+      { id: CUSTOM_FIELD_IDS.budget, value: budget },
+      { id: CUSTOM_FIELD_IDS.timeline, value: timeline },
+      { id: CUSTOM_FIELD_IDS.route, value: route },
+      { id: CUSTOM_FIELD_IDS.submittedAt, value: new Date().toISOString() },
+    ];
+
     let contactId: string | undefined;
 
     // Search for existing contact by email
@@ -60,7 +78,7 @@ export async function POST(request: NextRequest) {
 
     if (searchRes.ok && searchData.contacts?.length > 0) {
       contactId = searchData.contacts[0].id;
-      // Update with latest details
+      // Update with latest details + custom fields
       await fetch(`https://services.leadconnectorhq.com/contacts/${contactId}`, {
         method: "PUT",
         headers: {
@@ -72,16 +90,18 @@ export async function POST(request: NextRequest) {
           firstName,
           lastName,
           phone: phone || undefined,
+          customFields,
         }),
       });
     } else {
       // Create new
-      const createBody: Record<string, string> = {
+      const createBody: Record<string, unknown> = {
         locationId: GHL_LOCATION_ID,
         firstName,
         lastName,
         email,
         source: "Website Apply Form",
+        customFields,
       };
       if (phone) createBody.phone = phone;
 
