@@ -199,7 +199,20 @@ function BuildSessionContent() {
               marginBottom: "20px",
             }}
           >
-            <strong style={{ color: "#C9A84C" }}>Skool community member?</strong> You get a free 15-min Build Brief inside Skool — no payment needed. This $229 hour is for when 15 minutes isn&apos;t enough.
+            <strong style={{ color: "#C9A84C" }}>Solnest AI community members</strong> get a free 15-min Build Brief before committing to this. Not a member yet?{" "}
+            <a
+              href="https://www.skool.com/solnest-ai/about"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: "#C9A84C",
+                textDecoration: "underline",
+                textUnderlineOffset: "2px",
+              }}
+            >
+              Join here
+            </a>
+            .
           </div>
 
           {errorMsg && (

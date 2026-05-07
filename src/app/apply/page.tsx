@@ -130,8 +130,21 @@ export default function ApplyPage() {
               margin: "12px auto 0",
             }}
           >
-            Skool community member? You get a free 15-min Build Brief inside
-            Skool — no payment needed.
+            Solnest AI community members get a free 15-min Build Brief before
+            committing to this. Not a member yet?{" "}
+            <a
+              href="https://www.skool.com/solnest-ai/about"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: "#C9A84C",
+                textDecoration: "underline",
+                textUnderlineOffset: "2px",
+              }}
+            >
+              Join here
+            </a>
+            .
           </p>
         </motion.div>
       </section>
