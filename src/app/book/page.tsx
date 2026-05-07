@@ -50,7 +50,9 @@ function getNextWeeks(): string[] {
 
 function BookPageContent() {
   const searchParams = useSearchParams();
-  const isBuildSession = searchParams.get("type") === "build";
+  // Build Session is the only active flow (Discovery archived 2026-05-08).
+  // Default to true; legacy callers using `?type=discovery` are also routed here.
+  const isBuildSession = searchParams.get("type") !== "discovery";
   const stripeSessionId = searchParams.get("session_id") || "";
 
   const [step, setStep] = useState<Step>("date");

@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PRICE_BUILD_SESSION = process.env.STRIPE_PRICE_BUILD_SESSION;
-const STRIPE_PRICE_BUILD_SESSION_SKOOL = process.env.STRIPE_PRICE_BUILD_SESSION_SKOOL;
 
 export async function POST(request: NextRequest) {
   if (!STRIPE_SECRET_KEY || !STRIPE_PRICE_BUILD_SESSION) {
@@ -17,16 +16,11 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { firstName, lastName, email, phone, skoolMember } = body;
+    const { firstName, lastName, email, phone } = body;
 
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
-
-    const priceId =
-      skoolMember && STRIPE_PRICE_BUILD_SESSION_SKOOL
-        ? STRIPE_PRICE_BUILD_SESSION_SKOOL
-        : STRIPE_PRICE_BUILD_SESSION;
 
     const origin = request.headers.get("origin") || "https://solnestai.com";
 
@@ -41,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     const formData = new URLSearchParams();
     formData.append("mode", "payment");
-    formData.append("line_items[0][price]", priceId);
+    formData.append("line_items[0][price]", STRIPE_PRICE_BUILD_SESSION);
     formData.append("line_items[0][quantity]", "1");
     formData.append("customer_email", email);
     formData.append(
@@ -52,7 +46,6 @@ export async function POST(request: NextRequest) {
     formData.append("metadata[firstName]", firstName || "");
     formData.append("metadata[lastName]", lastName || "");
     formData.append("metadata[phone]", phone || "");
-    formData.append("metadata[skoolMember]", skoolMember ? "true" : "false");
 
     const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
       method: "POST",
