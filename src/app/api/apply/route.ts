@@ -4,59 +4,33 @@ const GHL_API_KEY = process.env.GHL_API_KEY!;
 const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID!;
 
 const CUSTOM_FIELD_IDS = {
-  project: "H1IlPBPAsEZinVaiYmFK",
-  whatTried: "fAJsWvBhwSqTWDlQ8BCg",
-  budget: "RtcVHrV3vZo0Pxdx17fz",
-  timeline: "hFh8kY5XyojVbDsmakhb",
-  route: "vRhYFhhwHSvyRzu404BN",
+  reason: "H1IlPBPAsEZinVaiYmFK",
   submittedAt: "rRuYgzXLv1PZf7GZfZD7",
 } as const;
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      project,
-      tried,
-      budget,
-      timeline,
-      route,
-    } = body;
+    const { firstName, lastName, email, phone, reason } = body;
 
-    if (!firstName || !lastName || !email || !budget || !timeline || !route) {
+    if (!firstName || !lastName || !email || !reason) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    const tags = [
-      "source-apply-form",
-      `route-${route}`,
-      `budget-${budget.replace(/[^a-z0-9]/gi, "").toLowerCase()}`,
-      `timeline-${timeline}`,
-    ];
+    const tags = ["source-apply-form"];
 
     const intakeNote = [
       `Intake Form Submission`,
       ``,
-      `Project: ${project || "(not provided)"}`,
-      `Tried: ${tried || "(not provided)"}`,
-      `Budget: ${budget}`,
-      `Timeline: ${timeline}`,
-      `Routed to: ${route === "discovery" ? "Free Discovery Call" : "Paid Build Session"}`,
+      `What they want help with:`,
+      reason,
     ].join("\n");
 
     const customFields = [
-      { id: CUSTOM_FIELD_IDS.project, value: project || "" },
-      { id: CUSTOM_FIELD_IDS.whatTried, value: tried || "" },
-      { id: CUSTOM_FIELD_IDS.budget, value: budget },
-      { id: CUSTOM_FIELD_IDS.timeline, value: timeline },
-      { id: CUSTOM_FIELD_IDS.route, value: route },
+      { id: CUSTOM_FIELD_IDS.reason, value: reason },
       { id: CUSTOM_FIELD_IDS.submittedAt, value: new Date().toISOString() },
     ];
 
@@ -78,7 +52,6 @@ export async function POST(request: NextRequest) {
 
     if (searchRes.ok && searchData.contacts?.length > 0) {
       contactId = searchData.contacts[0].id;
-      // Update with latest details + custom fields
       await fetch(`https://services.leadconnectorhq.com/contacts/${contactId}`, {
         method: "PUT",
         headers: {
@@ -94,7 +67,6 @@ export async function POST(request: NextRequest) {
         }),
       });
     } else {
-      // Create new
       const createBody: Record<string, unknown> = {
         locationId: GHL_LOCATION_ID,
         firstName,
@@ -136,7 +108,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Add tags
     await fetch(
       `https://services.leadconnectorhq.com/contacts/${contactId}/tags`,
       {
@@ -150,7 +121,6 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    // Add intake note
     await fetch(
       `https://services.leadconnectorhq.com/contacts/${contactId}/notes`,
       {
@@ -164,7 +134,7 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    return NextResponse.json({ success: true, contactId, route });
+    return NextResponse.json({ success: true, contactId });
   } catch (error) {
     console.error("[apply] error:", error);
     return NextResponse.json(
