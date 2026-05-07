@@ -10,7 +10,9 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
-  const calendar = searchParams.get("calendar"); // "build" for paid Build Session
+  // Build Session is the only active flow (Discovery archived 2026-05-08).
+  // `calendar` param kept for backwards-compat but defaults to Build Session.
+  const calendar = searchParams.get("calendar") || "build";
 
   if (!startDate || !endDate) {
     return NextResponse.json(

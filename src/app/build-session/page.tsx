@@ -13,7 +13,6 @@ function BuildSessionContent() {
   const prefillEmail = params.get("email") || "";
   const prefillPhone = params.get("phone") || "";
 
-  const [skoolMember, setSkoolMember] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -29,7 +28,6 @@ function BuildSessionContent() {
           lastName: prefillLastName,
           email: prefillEmail,
           phone: prefillPhone,
-          skoolMember,
         }),
       });
       const data = await res.json();
@@ -45,7 +43,7 @@ function BuildSessionContent() {
     }
   };
 
-  const price = skoolMember ? "$250" : "$350";
+  const price = "$229";
 
   return (
     <main style={{ background: "#0D0D0B", minHeight: "100vh", color: "#F0EBE1" }}>
@@ -187,49 +185,22 @@ function BuildSessionContent() {
             ))}
           </div>
 
-          {/* Skool member toggle */}
-          <button
-            onClick={() => setSkoolMember(!skoolMember)}
+          {/* Skool member note */}
+          <div
             style={{
-              width: "100%",
-              padding: "14px 16px",
-              background: skoolMember ? "rgba(201,168,76,0.1)" : "rgba(240,235,225,0.02)",
-              border: skoolMember
-                ? "1px solid #C9A84C"
-                : "1px solid rgba(192,82,43,0.15)",
-              borderRadius: "10px",
-              color: "#F0EBE1",
+              padding: "12px 14px",
+              background: "rgba(201,168,76,0.06)",
+              border: "1px solid rgba(201,168,76,0.2)",
+              borderRadius: "8px",
+              color: "rgba(240,235,225,0.75)",
               fontFamily: "var(--font-body)",
-              fontSize: "14px",
-              cursor: "pointer",
-              textAlign: "left",
+              fontSize: "13px",
+              lineHeight: 1.5,
               marginBottom: "20px",
-              transition: "all 0.2s ease",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
             }}
           >
-            <div
-              style={{
-                width: "18px",
-                height: "18px",
-                borderRadius: "4px",
-                border: skoolMember ? "1px solid #C9A84C" : "1px solid rgba(212,204,184,0.3)",
-                background: skoolMember ? "#C9A84C" : "transparent",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#0D0D0B",
-                fontSize: "12px",
-                fontWeight: 700,
-                flexShrink: 0,
-              }}
-            >
-              {skoolMember && "✓"}
-            </div>
-            <span>I&apos;m a Skool community member ($100 off)</span>
-          </button>
+            <strong style={{ color: "#C9A84C" }}>Skool community member?</strong> You get a free 15-min Build Brief inside Skool — no payment needed. This $229 hour is for when 15 minutes isn&apos;t enough.
+          </div>
 
           {errorMsg && (
             <div

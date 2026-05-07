@@ -27,12 +27,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const isBuildSession = calendar === "build";
+    // Build Session is the only active flow now (Discovery archived 2026-05-08).
+    // `calendar` param kept for backwards-compat but we always route to Build Session.
+    const isBuildSession = calendar !== "discovery"; // default true
     const calendarId =
-      isBuildSession && GHL_BUILD_SESSION_CALENDAR_ID
-        ? GHL_BUILD_SESSION_CALENDAR_ID
-        : GHL_CALENDAR_ID;
-    const slotMinutes = durationMinutes || (isBuildSession ? 60 : 30);
+      GHL_BUILD_SESSION_CALENDAR_ID || GHL_CALENDAR_ID;
+    const slotMinutes = durationMinutes || 60;
 
     const contactBody: Record<string, string> = {
       locationId: GHL_LOCATION_ID,
@@ -160,9 +160,7 @@ export async function POST(request: NextRequest) {
 
     // Tag based on calendar type (non-fatal)
     if (contactId) {
-      const tagsToAdd = isBuildSession
-        ? ["paid-build-session"]
-        : ["booked-discovery-call"];
+      const tagsToAdd = ["paid-build-session"];
       if (stripeSessionId) tagsToAdd.push(`stripe-${stripeSessionId.slice(0, 14)}`);
       try {
         await fetch(
