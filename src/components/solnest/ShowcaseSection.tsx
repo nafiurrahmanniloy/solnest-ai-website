@@ -148,13 +148,35 @@ type CaseStudyKey = keyof typeof caseStudies;
 
 function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void }) {
   const cs = caseStudies[id];
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const titleId = `case-modal-title-${id}`;
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === "Escape") onClose();
+    if (e.key === "Escape") {
+      onClose();
+      return;
+    }
+    if (e.key === "Tab" && dialogRef.current) {
+      const focusables = dialogRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
   }, [onClose]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
+    closeBtnRef.current?.focus();
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
@@ -178,6 +200,10 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
       }}
     >
       <motion.div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
         initial={{ y: 40, opacity: 0, scale: 0.97 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 40, opacity: 0, scale: 0.97 }}
@@ -208,20 +234,24 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
                 <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: cs.color, boxShadow: `0 0 8px rgba(${cs.colorRgb},0.6)` }} />
                 <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: cs.color }}>{cs.badge}</span>
               </div>
-              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(28px, 3.5vw, 42px)", color: "#F0EBE1", lineHeight: 1.1, letterSpacing: "-0.02em" }}>{cs.title}</h2>
+              <h2 id={titleId} style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(28px, 3.5vw, 42px)", color: "#F0EBE1", lineHeight: 1.1, letterSpacing: "-0.02em" }}>{cs.title}</h2>
             </div>
             <button
+              ref={closeBtnRef}
               onClick={onClose}
+              aria-label="Close case study"
               style={{
                 background: "rgba(240,235,225,0.04)", border: "1px solid rgba(240,235,225,0.1)",
-                width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", flexShrink: 0, color: "rgba(212,204,184,0.5)", fontSize: "18px",
+                width: "44px", height: "44px", display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer", flexShrink: 0, color: "rgba(212,204,184,0.5)", fontSize: "20px",
                 fontFamily: "var(--font-body)", borderRadius: "2px", transition: "background 0.2s, color 0.2s",
               }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.08)"; e.currentTarget.style.color = "rgba(212,204,184,0.8)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.04)"; e.currentTarget.style.color = "rgba(212,204,184,0.5)"; }}
+              onFocus={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.08)"; e.currentTarget.style.color = "rgba(212,204,184,0.8)"; }}
+              onBlur={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.04)"; e.currentTarget.style.color = "rgba(212,204,184,0.5)"; }}
             >
-              ×
+              <span aria-hidden="true">×</span>
             </button>
           </div>
 
@@ -257,7 +287,7 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
               }}>{r.stat}</div>
               <div style={{
                 fontFamily: "var(--font-condensed)", fontWeight: 600,
-                fontSize: "9px", letterSpacing: "0.18em", textTransform: "uppercase",
+                fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase",
                 color: `rgba(${cs.colorRgb},0.55)`, marginTop: "6px",
               }}>{r.label}</div>
             </motion.div>
@@ -279,7 +309,13 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               {cs.before.map((item, i) => (
                 <div key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-                  <span style={{ color: "rgba(200,80,60,0.45)", fontSize: "14px", lineHeight: "1.6", flexShrink: 0 }}>&#x2717;</span>
+                  <svg
+                    width="14" height="14" viewBox="0 0 14 14" fill="none"
+                    aria-hidden="true"
+                    style={{ flexShrink: 0, marginTop: "5px" }}
+                  >
+                    <path d="M3 3L11 11M11 3L3 11" stroke="rgba(200,80,60,0.6)" strokeWidth="1.4" strokeLinecap="round" />
+                  </svg>
                   <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.6, color: "rgba(200,180,165,0.5)" }}>{item}</span>
                 </div>
               ))}
@@ -295,7 +331,13 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               {cs.after.map((item, i) => (
                 <div key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-                  <span style={{ color: cs.color, fontSize: "14px", lineHeight: "1.6", flexShrink: 0 }}>&#x2713;</span>
+                  <svg
+                    width="14" height="14" viewBox="0 0 14 14" fill="none"
+                    aria-hidden="true"
+                    style={{ flexShrink: 0, marginTop: "5px" }}
+                  >
+                    <path d="M2.5 7.5L5.8 10.5L11.5 4" stroke={cs.color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                   <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.6, color: "rgba(212,204,184,0.7)" }}>{item}</span>
                 </div>
               ))}
@@ -363,6 +405,8 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
             }}
             onMouseEnter={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.12)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.45)`; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.06)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.3)`; }}
+            onFocus={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.12)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.45)`; }}
+            onBlur={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.06)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.3)`; }}
           >
             Build This For Me →
           </a>
@@ -381,9 +425,20 @@ function AgentCard({ id, onOpen }: { id: CaseStudyKey; onOpen: (id: CaseStudyKey
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`Open case study: ${cs.title}`}
       onClick={() => onOpen(id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen(id);
+        }
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
       style={{
         cursor: "pointer",
         background: hovered ? "#131311" : "#0F0F0D",
@@ -391,11 +446,23 @@ function AgentCard({ id, onOpen }: { id: CaseStudyKey; onOpen: (id: CaseStudyKey
         borderBottom: `1px solid rgba(${cs.colorRgb},0.1)`,
         overflow: "hidden",
         width: "100%", height: "100%",
-        transition: "background 0.2s ease, box-shadow 0.2s ease",
+        transition: "background 0.2s ease, box-shadow 0.2s ease, outline 0.15s ease",
         boxShadow: hovered ? `inset 0 0 40px rgba(${cs.colorRgb},0.06)` : "none",
         position: "relative",
         display: "flex", flexDirection: "column",
         minHeight: "310px",
+        outline: "none",
+      }}
+      onFocusCapture={(e) => {
+        if (e.currentTarget === e.target) {
+          e.currentTarget.style.outline = `2px solid ${cs.color}`;
+          e.currentTarget.style.outlineOffset = "-2px";
+        }
+      }}
+      onBlurCapture={(e) => {
+        if (e.currentTarget === e.target) {
+          e.currentTarget.style.outline = "none";
+        }
       }}
     >
       {/* Header */}
@@ -447,18 +514,46 @@ export function ShowcaseSection() {
   const [activeCase, setActiveCase] = useState<CaseStudyKey | null>(null);
 
   const scrollYRef = useRef(0);
+  const triggerRef = useRef<HTMLElement | null>(null);
+
+  const openCase = (id: CaseStudyKey) => {
+    triggerRef.current = document.activeElement as HTMLElement | null;
+    setActiveCase(id);
+  };
+
+  const closeCase = () => {
+    setActiveCase(null);
+    // Restore focus on next tick after modal unmounts
+    requestAnimationFrame(() => triggerRef.current?.focus());
+  };
 
   useEffect(() => {
-    if (activeCase) {
-      scrollYRef.current = window.scrollY;
-      // Prevent background scroll by fixing body in place
-      document.body.style.cssText = `overflow:hidden;position:fixed;top:-${scrollYRef.current}px;left:0;right:0;width:100%`;
-    } else {
-      // Restore scroll position
-      const y = scrollYRef.current;
-      document.body.style.cssText = "";
-      window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior });
-    }
+    if (!activeCase) return;
+    const body = document.body;
+    const prev = {
+      overflow: body.style.overflow,
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+    };
+    scrollYRef.current = window.scrollY;
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollYRef.current}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    return () => {
+      body.style.overflow = prev.overflow;
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.width = prev.width;
+      window.scrollTo({ top: scrollYRef.current, behavior: "instant" as ScrollBehavior });
+    };
   }, [activeCase]);
 
   return (
@@ -519,7 +614,7 @@ export function ShowcaseSection() {
                 <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "15px", letterSpacing: "0.18em", textTransform: "uppercase", position: "relative", zIndex: 2 }}>See It In Action</span>
               </MagneticButton>
 
-              <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "14px", fontStyle: "italic", color: "rgba(212,204,184,0.3)", marginTop: "14px" }}>
+              <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "14px", fontStyle: "italic", color: "rgba(212,204,184,0.55)", marginTop: "14px" }}>
                 Click any card to see the full case study →
               </p>
             </motion.div>
@@ -540,7 +635,7 @@ export function ShowcaseSection() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.2 + i * 0.1, ease: [0.215, 0.61, 0.355, 1.0] }}
                 >
-                  <AgentCard id={id} onOpen={setActiveCase} />
+                  <AgentCard id={id} onOpen={openCase} />
                 </motion.div>
               ))}
             </motion.div>
@@ -552,7 +647,7 @@ export function ShowcaseSection() {
 
       <AnimatePresence>
         {activeCase && (
-          <CaseStudyModal id={activeCase} onClose={() => setActiveCase(null)} />
+          <CaseStudyModal id={activeCase} onClose={closeCase} />
         )}
       </AnimatePresence>
     </>

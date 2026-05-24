@@ -51,7 +51,7 @@ function WithAIPanel() {
 					<div className="animate-pulse" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#C0522B', boxShadow: '0 0 8px rgba(192,82,43,0.6)' }} />
 					<span style={{
 						fontFamily: 'var(--font-condensed)', fontWeight: 600,
-						fontSize: '9px', letterSpacing: '0.24em',
+						fontSize: '11px', letterSpacing: '0.24em',
 						textTransform: 'uppercase', color: '#C0522B',
 					}}>
 						With Solnest AI
@@ -59,7 +59,7 @@ function WithAIPanel() {
 				</motion.div>
 
 				{/* Headline */}
-				<motion.h2
+				<motion.h3
 					initial={{ opacity: 0, y: 16 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true, margin: '-40px' }}
@@ -73,7 +73,7 @@ function WithAIPanel() {
 				>
 					You slept 8 hours.{' '}
 					<span style={{ fontStyle: 'italic', color: '#E86A3A' }}>Your AI didn&apos;t.</span>
-				</motion.h2>
+				</motion.h3>
 
 				<motion.p
 					initial={{ opacity: 0 }}
@@ -82,7 +82,7 @@ function WithAIPanel() {
 					transition={{ duration: 0.5, delay: 0.1 }}
 					style={{
 						fontFamily: 'var(--font-body)', fontWeight: 300,
-						fontSize: 'clamp(10.5px, 0.72vw, 13px)', lineHeight: 1.7,
+						fontSize: 'clamp(12px, 0.85vw, 13px)', lineHeight: 1.7,
 						color: 'rgba(212,204,184,0.65)', marginBottom: '14px',
 					}}
 				>
@@ -121,7 +121,7 @@ function WithAIPanel() {
 					>
 						<span style={{
 							fontFamily: 'var(--font-condensed)', fontWeight: 600,
-							fontSize: '9px', letterSpacing: '0.28em', textTransform: 'uppercase',
+							fontSize: '11px', letterSpacing: '0.28em', textTransform: 'uppercase',
 							color: 'rgba(192,82,43,0.65)', marginBottom: '6px', display: 'block',
 						}}>
 							Time Saved
@@ -144,7 +144,7 @@ function WithAIPanel() {
 						</motion.span>
 						<span style={{
 							fontFamily: 'var(--font-body)', fontWeight: 300,
-							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
+							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(212,204,184,0.6)', marginTop: '5px', display: 'block',
 						}}>
 							Per week reclaimed — guest messages, pricing updates, and scheduling run themselves.
@@ -165,7 +165,7 @@ function WithAIPanel() {
 					>
 						<span style={{
 							fontFamily: 'var(--font-condensed)', fontWeight: 600,
-							fontSize: '9px', letterSpacing: '0.28em', textTransform: 'uppercase',
+							fontSize: '11px', letterSpacing: '0.28em', textTransform: 'uppercase',
 							color: 'rgba(201,168,76,0.65)', marginBottom: '6px', display: 'block',
 						}}>
 							Revenue Impact
@@ -188,7 +188,7 @@ function WithAIPanel() {
 						</motion.span>
 						<span style={{
 							fontFamily: 'var(--font-body)', fontWeight: 300,
-							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
+							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(212,204,184,0.6)', marginTop: '5px', display: 'block',
 						}}>
 							Extra per month — dynamic pricing, instant lead capture, zero missed bookings.
@@ -260,7 +260,7 @@ function WithoutAIPanel() {
 					<div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(180,70,60,0.45)' }} />
 					<span style={{
 						fontFamily: 'var(--font-condensed)', fontWeight: 600,
-						fontSize: '9px', letterSpacing: '0.24em',
+						fontSize: '11px', letterSpacing: '0.24em',
 						textTransform: 'uppercase', color: 'rgba(200,120,100,0.7)',
 					}}>
 						Without AI
@@ -268,7 +268,7 @@ function WithoutAIPanel() {
 				</div>
 
 				{/* Headline */}
-				<h2
+				<h3
 					style={{
 						fontFamily: 'var(--font-display)', fontWeight: 300,
 						fontSize: 'clamp(18px, 1.9vw, 34px)',
@@ -277,12 +277,12 @@ function WithoutAIPanel() {
 					}}
 				>
 					Your business runs{' '}
-					<span style={{ fontStyle: 'italic', color: 'rgba(220,90,70,0.6)' }}>only when you do.</span>
-				</h2>
+					<span style={{ fontStyle: 'italic', color: 'rgba(232,140,120,0.9)' }}>only when you do.</span>
+				</h3>
 
 				<p style={{
 					fontFamily: 'var(--font-body)', fontWeight: 300,
-					fontSize: 'clamp(10.5px, 0.72vw, 13px)', lineHeight: 1.7,
+					fontSize: 'clamp(12px, 0.85vw, 13px)', lineHeight: 1.7,
 					color: 'rgba(180,170,155,0.55)', marginBottom: '14px',
 				}}>
 					Missed calls at 2am. Leads going cold. Reviews unanswered for days.
@@ -313,7 +313,7 @@ function WithoutAIPanel() {
 					>
 						<span style={{
 							fontFamily: 'var(--font-condensed)', fontWeight: 600,
-							fontSize: '9px', letterSpacing: '0.28em', textTransform: 'uppercase',
+							fontSize: '11px', letterSpacing: '0.28em', textTransform: 'uppercase',
 							color: 'rgba(200,120,100,0.55)', marginBottom: '6px', display: 'block',
 						}}>
 							Time Lost
@@ -335,7 +335,7 @@ function WithoutAIPanel() {
 						</motion.span>
 						<span style={{
 							fontFamily: 'var(--font-body)', fontWeight: 300,
-							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
+							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(180,170,155,0.52)', marginTop: '5px', display: 'block',
 						}}>
 							Per week burned — copy-pasting messages, manually adjusting prices, chasing guests.
@@ -356,7 +356,7 @@ function WithoutAIPanel() {
 					>
 						<span style={{
 							fontFamily: 'var(--font-condensed)', fontWeight: 600,
-							fontSize: '9px', letterSpacing: '0.28em', textTransform: 'uppercase',
+							fontSize: '11px', letterSpacing: '0.28em', textTransform: 'uppercase',
 							color: 'rgba(200,120,100,0.55)', marginBottom: '6px', display: 'block',
 						}}>
 							Revenue Leaked
@@ -381,7 +381,7 @@ function WithoutAIPanel() {
 						</motion.span>
 						<span style={{
 							fontFamily: 'var(--font-body)', fontWeight: 300,
-							fontSize: 'clamp(10.5px, 0.68vw, 12.5px)', lineHeight: 1.6,
+							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(180,170,155,0.52)', marginTop: '5px', display: 'block',
 						}}>
 							Leaked every month — underpriced nights, lost leads, guests who booked your competitor instead.
@@ -397,7 +397,7 @@ function WithoutAIPanel() {
 					transition={{ duration: 0.6, delay: 0.4 }}
 					style={{
 						fontFamily: 'var(--font-body)', fontWeight: 400,
-						fontSize: 'clamp(10.5px, 0.72vw, 13px)', fontStyle: 'italic',
+						fontSize: 'clamp(12px, 0.85vw, 13px)', fontStyle: 'italic',
 						color: '#E8C9B8',
 						lineHeight: 1.7,
 						marginTop: '18px',
@@ -451,7 +451,7 @@ function MobileComparisonCard({ type }: { type: 'with' | 'without' }) {
 			}}>
 				{isWith
 					? <>You slept 8 hours. <span style={{ fontStyle: 'italic', color: '#E86A3A' }}>Your AI didn&apos;t.</span></>
-					: <>Your business runs <span style={{ fontStyle: 'italic', color: 'rgba(220,90,70,0.6)' }}>only when you do.</span></>
+					: <>Your business runs <span style={{ fontStyle: 'italic', color: 'rgba(232,140,120,0.9)' }}>only when you do.</span></>
 				}
 			</h3>
 
@@ -459,7 +459,7 @@ function MobileComparisonCard({ type }: { type: 'with' | 'without' }) {
 				<div>
 					<span style={{
 						fontFamily: 'var(--font-condensed)', fontWeight: 600,
-						fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase',
+						fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase',
 						color: isWith ? 'rgba(192,82,43,0.65)' : 'rgba(200,120,100,0.55)',
 						display: 'block', marginBottom: '4px',
 					}}>
@@ -477,7 +477,7 @@ function MobileComparisonCard({ type }: { type: 'with' | 'without' }) {
 				<div>
 					<span style={{
 						fontFamily: 'var(--font-condensed)', fontWeight: 600,
-						fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase',
+						fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase',
 						color: isWith ? 'rgba(201,168,76,0.65)' : 'rgba(200,120,100,0.55)',
 						display: 'block', marginBottom: '4px',
 					}}>
