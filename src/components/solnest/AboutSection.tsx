@@ -52,6 +52,7 @@ function AnimatedStat({ value, suffix, label, accent }: { value: number; suffix:
         lineHeight: 1,
         color: "#F0EBE1",
         letterSpacing: "-0.03em",
+        fontVariantNumeric: "tabular-nums",
       }}>
         {count}
         <span style={{ color: accent, fontSize: "0.55em", fontWeight: 300, verticalAlign: "middle" }}>{suffix}</span>
@@ -271,7 +272,7 @@ export function AboutSection() {
               <p style={{
                 fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "13px",
                 letterSpacing: "0.18em", textTransform: "uppercase",
-                color: "rgba(60,58,53,0.5)", marginTop: "10px",
+                color: "rgba(44,42,37,0.7)", marginTop: "10px",
               }}>
                 — Ryan Lefebvre
               </p>

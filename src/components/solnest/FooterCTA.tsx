@@ -38,7 +38,9 @@ export function FooterCTA() {
       style={{ background: "#000" }}
     >
       {/* Animated WebGL shader background */}
-      <ShaderBackground />
+      <div aria-hidden="true">
+        <ShaderBackground />
+      </div>
 
       {/* Dark overlay for contrast */}
       <div
