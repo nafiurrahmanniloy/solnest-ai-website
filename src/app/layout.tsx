@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Cormorant_Garamond,
   Barlow,
@@ -6,6 +6,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/ui/smooth-scroll";
+import { MotionProvider } from "@/components/ui/motion-provider";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
@@ -41,6 +42,11 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -51,13 +57,12 @@ export default function RootLayout({
       lang="en"
       className={`${cormorantGaramond.variable} ${barlow.variable} ${barlowCondensed.variable}`}
     >
-      <head>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
       <body>
-        <SmoothScroll>
-          {children}
-        </SmoothScroll>
+        <MotionProvider>
+          <SmoothScroll>
+            {children}
+          </SmoothScroll>
+        </MotionProvider>
       </body>
     </html>
   );

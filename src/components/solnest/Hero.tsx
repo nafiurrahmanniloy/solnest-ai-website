@@ -3,10 +3,26 @@
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
-import { SplineScene } from "@/components/ui/spline-scene";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { ShutterText } from "@/components/ui/hero-shutter-text";
 import { BlurText } from "@/components/ui/blur-text-animation";
+
+const SplineScene = dynamic(
+  () => import("@/components/ui/spline-scene").then((m) => ({ default: m.SplineScene })),
+  { ssr: false }
+);
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+  return isDesktop;
+}
 
 const TunnelBackground = dynamic(() => import("@/components/ui/tunnel-hero"), {
   ssr: false,
@@ -47,13 +63,19 @@ function ScrambleText({ text }: { text: string }) {
 }
 
 export default function Hero() {
+  const isDesktop = useIsDesktop();
   return (
     <section
       className="relative overflow-hidden"
-      style={{ background: "#0D0D0B", minHeight: "100vh", display: "flex", alignItems: "center" }}
+      style={{ background: "#0D0D0B", minHeight: "100dvh", display: "flex", alignItems: "center" }}
     >
-      {/* Tunnel — behind everything */}
-      <TunnelBackground opacity={0.6} />
+      {/* Tunnel — behind everything. Must have explicit dimensions: the
+          canvas inside is absolutely positioned, so without inset-0 the
+          container collapses to zero height and the ResizeObserver shrinks
+          the background to nothing on the first reflow. */}
+      <div aria-hidden="true" className="absolute inset-0 z-0">
+        <TunnelBackground opacity={0.6} />
+      </div>
 
       {/* Ambient glow — left side */}
       <div
@@ -273,6 +295,14 @@ export default function Hero() {
                 const el = e.currentTarget as HTMLAnchorElement;
                 el.style.color = "rgba(212,204,184,0.75)"; el.style.borderColor = "rgba(212,204,184,0.28)";
               }}
+              onFocus={(e) => {
+                const el = e.currentTarget as HTMLAnchorElement;
+                el.style.color = "#F0EBE1"; el.style.borderColor = "rgba(212,204,184,0.55)";
+              }}
+              onBlur={(e) => {
+                const el = e.currentTarget as HTMLAnchorElement;
+                el.style.color = "rgba(212,204,184,0.75)"; el.style.borderColor = "rgba(212,204,184,0.28)";
+              }}
             >
               See how it works →
             </a>
@@ -303,28 +333,77 @@ export default function Hero() {
 
         </div>
 
-        {/* ── RIGHT: Spline robot ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 1.4 }}
-          aria-hidden="true"
-          className="hidden lg:block"
-          style={{
-            position: "relative",
-            height: "clamp(440px, 58vw, 780px)",
-            marginRight: "-8vw",
-            WebkitMaskImage:
-              "radial-gradient(ellipse 85% 80% at 60% 50%, black 30%, transparent 72%)",
-            maskImage:
-              "radial-gradient(ellipse 85% 80% at 60% 50%, black 30%, transparent 72%)",
-          }}
-        >
-          <SplineScene
-            src="/robot.splinecode"
-            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-          />
-        </motion.div>
+        {/* ── RIGHT: Spline robot — desktop only, lazy-mounted ── */}
+        {isDesktop && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 1.4 }}
+            aria-hidden="true"
+            className="hidden lg:block"
+            style={{
+              position: "relative",
+              // Extra headroom so the robot's idle float never clips off the top
+              height: "clamp(480px, 62vw, 860px)",
+              marginRight: "-8vw",
+            }}
+          >
+            {/* Masked layer — soft-edged window onto the 3D scene. The mask
+                lives here (not on the outer wrapper) so the watermark cover
+                below is NOT faded out by it. */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                WebkitMaskImage:
+                  "radial-gradient(ellipse 92% 95% at 58% 50%, black 50%, transparent 85%)",
+                maskImage:
+                  "radial-gradient(ellipse 92% 95% at 58% 50%, black 50%, transparent 85%)",
+              }}
+            >
+              <SplineScene
+                src="/robot.splinecode"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  // Shrink the canvas so the baked float covers far fewer
+                  // on-screen pixels and always stays inside the frame.
+                  // (The float amplitude itself is baked into the .splinecode
+                  // scene and can only be reduced in the Spline editor.)
+                  transform: "scale(0.86) translateY(2%)",
+                  transformOrigin: "center center",
+                  // Disable cursor interactivity so the baked "Look At" event
+                  // never fires — this stops the robot from following the mouse
+                  // AND from swinging out of position while Lenis smooth-scrolls
+                  // the canvas under a stationary cursor. (Decorative only.)
+                  pointerEvents: "none",
+                }}
+              />
+            </div>
+
+            {/* Cover the "Built with Spline" watermark, which the runtime
+                paints into the canvas pixels (bottom-right) on free-plan
+                exports — it is not a DOM node, so it can only be masked here
+                or removed via a paid Spline re-export. Feathered so it blends
+                into the dark hero background. */}
+            <div
+              style={{
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+                width: "42%",
+                height: "34%",
+                background:
+                  "radial-gradient(ellipse at bottom right, #0D0D0B 60%, transparent 85%)",
+                pointerEvents: "none",
+                zIndex: 4,
+              }}
+            />
+          </motion.div>
+        )}
       </div>
 
       {/* Scroll indicator */}

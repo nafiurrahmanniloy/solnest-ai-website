@@ -76,7 +76,7 @@ function AnimatedPrice({ target, suffix = "", style }: { target: number; suffix?
     return () => clearInterval(timer);
   }, [inView, target, suffix]);
 
-  return <span ref={ref} style={style}>{display}</span>;
+  return <span ref={ref} style={{ fontVariantNumeric: "tabular-nums", ...style }}>{display}</span>;
 }
 
 const containerVariants = {
@@ -107,6 +107,8 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
       onMouseMove={onMouseMove}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
       style={{
         position: "relative",
         overflow: "hidden",
