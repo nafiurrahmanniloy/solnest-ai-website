@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { SocialHandles } from "@/components/solnest/SocialHandles";
 
@@ -33,9 +34,11 @@ export default function Footer() {
             viewport={{ once: true }}
             transition={{ duration: 0.65, ease: [0.215, 0.61, 0.355, 1.0] }}
           >
-            <img
+            <Image
               src="/solnest-logo.png"
               alt="Solnest AI"
+              width={169}
+              height={52}
               style={{
                 height: "52px",
                 width: "auto",
@@ -101,6 +104,12 @@ export default function Footer() {
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.60)";
                 }}
+                onFocus={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
+                }}
+                onBlur={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.60)";
+                }}
               >
                 {link.label}
               </a>
@@ -143,9 +152,9 @@ export default function Footer() {
             fontFamily: "var(--font-body)",
             fontWeight: 300,
             fontSize: "15px",
-            color: "rgba(212,204,184,0.30)",
+            color: "rgba(212,204,184,0.55)",
           }}>
-            © 2026 Solnest AI. All rights reserved.
+            © {new Date().getFullYear()} Solnest AI. All rights reserved.
           </p>
           <a
             href="mailto:hello@solnestai.com"
@@ -153,15 +162,21 @@ export default function Footer() {
               fontFamily: "var(--font-body)",
               fontWeight: 300,
               fontSize: "15px",
-              color: "rgba(212,204,184,0.30)",
+              color: "rgba(212,204,184,0.55)",
               textDecoration: "none",
               transition: "color 0.2s ease",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.55)";
+              (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.30)";
+              (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.55)";
+            }}
+            onFocus={(e) => {
+              (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
+            }}
+            onBlur={(e) => {
+              (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.55)";
             }}
           >
             hello@solnestai.com

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 
@@ -13,6 +14,20 @@ export default function Nav() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKey);
+    };
+  }, [mobileOpen]);
 
   const navLinks = [
     { label: "Work With Ryan", href: "#services" },
@@ -60,10 +75,13 @@ export default function Nav() {
           }}
         >
           {/* Logo */}
-          <a href="/" className="flex items-center flex-shrink-0">
-            <img
+          <a href="/" className="flex items-center flex-shrink-0" aria-label="Solnest AI — home">
+            <Image
               src="/solnest-logo.png"
               alt="Solnest AI"
+              width={150}
+              height={46}
+              priority
               style={{
                 height: scrolled ? "36px" : "46px",
                 width: "auto",
@@ -96,6 +114,12 @@ export default function Nav() {
                   (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
                 }}
                 onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.75)";
+                }}
+                onFocus={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
+                }}
+                onBlur={(e) => {
                   (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.75)";
                 }}
               >
@@ -187,9 +211,12 @@ export default function Nav() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden flex flex-col gap-[5px] p-2 -mr-1"
+            className="md:hidden flex flex-col items-center justify-center gap-[5px] p-3 -mr-1"
+            style={{ minWidth: 44, minHeight: 44 }}
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav-menu"
           >
             <motion.span
               animate={mobileOpen ? { rotate: 45, y: 6.5 } : { rotate: 0, y: 0 }}
@@ -214,6 +241,10 @@ export default function Nav() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            id="mobile-nav-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site navigation"
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
