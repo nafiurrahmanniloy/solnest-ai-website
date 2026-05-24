@@ -170,8 +170,12 @@ export default function TunnelBackground({ opacity = 0.55 }: { opacity?: number 
       requestAnimationFrame(() => {
         rafResizeRef.current = false;
         if (!ctxRef.current || !container) return;
-        const w = container.clientWidth;
-        const h = container.clientHeight;
+        // Fall back to the window size: the canvas's parent can report a
+        // zero client size (absolutely-positioned children give it no
+        // height), and setSize(w, 0) would make the background vanish.
+        const w = container.clientWidth || window.innerWidth;
+        const h = container.clientHeight || window.innerHeight;
+        if (w === 0 || h === 0) return;
         ctxRef.current.renderer.setPixelRatio(1);
         ctxRef.current.renderer.setSize(w, h);
         (ctxRef.current.material.uniforms.iResolution.value as THREE.Vector3).set(w, h, 1);
