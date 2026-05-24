@@ -19,10 +19,17 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-/* Desktop-only zoom — disabled on mobile to prevent overflow */
-@media (min-width: 768px) {
+/* Respect user's motion preference — disable animations and smooth scroll */
+@media (prefers-reduced-motion: reduce) {
   html {
-    zoom: 1.1;
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -155,6 +162,14 @@ body {
 }
 .animate-marquee { animation: marquee 28s linear infinite; }
 .animate-marquee-reverse { animation: marqueeReverse 28s linear infinite; }
+
+/* WCAG 2.2.2: marquee must be pausable. Pause on hover or keyboard focus within the row. */
+.marquee-row:hover .animate-marquee,
+.marquee-row:hover .animate-marquee-reverse,
+.marquee-row:focus-within .animate-marquee,
+.marquee-row:focus-within .animate-marquee-reverse {
+  animation-play-state: paused;
+}
 
 /* Services section white bg text */
 .text-charcoal-900 { color: #1A1918; }

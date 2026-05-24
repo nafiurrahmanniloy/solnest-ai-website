@@ -250,8 +250,6 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
 // ─── Section ──────────────────────────────────────────────────────────────────
 
 export function CommunitySection() {
-  const reduceMotion = useReducedMotion();
-
   return (
     <section
       className="relative overflow-hidden"
@@ -464,8 +462,6 @@ export function CommunitySection() {
 // ─── Pricing Strip (separate component) ─────────────────────────────────────
 
 export function CommunityPricing() {
-  const reduceMotion = useReducedMotion();
-
   return (
     <section
       className="relative overflow-hidden"
@@ -474,7 +470,7 @@ export function CommunityPricing() {
     >
       <div className="relative z-10 max-w-[1360px] mx-auto px-5 md:px-8 py-20 md:py-28">
         <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 32 }}
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.75, ease: [0.215, 0.61, 0.355, 1.0] }}

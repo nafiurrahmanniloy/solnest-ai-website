@@ -72,6 +72,9 @@ export function MagneticButton({
     </motion.span>
   );
 
+  const focusRing =
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0D0D0B]";
+
   if (href) {
     return (
       <motion.div
@@ -87,7 +90,7 @@ export function MagneticButton({
           target={target}
           rel={rel}
           onClick={onClick}
-          className={cn("relative group overflow-hidden inline-flex", className)}
+          className={cn("relative group overflow-hidden inline-flex", focusRing, className)}
           style={style}
         >
           {innerContent}
@@ -108,7 +111,7 @@ export function MagneticButton({
       <button
         type={type}
         onClick={onClick}
-        className={cn("relative group overflow-hidden inline-flex", className)}
+        className={cn("relative group overflow-hidden inline-flex", focusRing, className)}
         style={style}
       >
         {innerContent}

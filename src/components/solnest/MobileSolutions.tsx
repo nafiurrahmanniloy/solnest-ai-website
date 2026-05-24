@@ -101,21 +101,38 @@ export function MobileSolutions() {
 
       {/* Dot navigation */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-1.5">
+        <div className="flex" role="tablist" aria-label="Case studies">
           {projects.map((p, i) => (
             <button
               key={p.id}
+              role="tab"
+              aria-selected={i === current}
+              aria-label={`Show case study ${i + 1}: ${p.title}`}
               onClick={() => { setCurrent(i); setExpanded(false); }}
               style={{
-                width: i === current ? "20px" : "6px",
-                height: "6px",
-                borderRadius: "3px",
-                background: i === current ? proj.color : "rgba(240,235,225,0.12)",
+                minWidth: 28,
+                minHeight: 44,
+                padding: "19px 4px",
+                background: "transparent",
                 border: "none",
                 cursor: "pointer",
-                transition: "all 0.3s ease",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            />
+            >
+              <span
+                aria-hidden="true"
+                style={{
+                  display: "block",
+                  width: i === current ? "20px" : "6px",
+                  height: "6px",
+                  borderRadius: "3px",
+                  background: i === current ? proj.color : "rgba(240,235,225,0.12)",
+                  transition: "all 0.3s ease",
+                }}
+              />
+            </button>
           ))}
         </div>
         <span style={{
@@ -148,7 +165,7 @@ export function MobileSolutions() {
               <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: proj.color, boxShadow: `0 0 8px rgba(${proj.colorRgb},0.7)` }} />
               <span style={{
                 fontFamily: "var(--font-condensed)", fontWeight: 600,
-                fontSize: "9px", letterSpacing: "0.18em",
+                fontSize: "11px", letterSpacing: "0.18em",
                 textTransform: "uppercase", color: proj.color,
               }}>
                 {proj.badge}
@@ -174,7 +191,7 @@ export function MobileSolutions() {
             {proj.results.map((r) => (
               <div key={r.label} style={{ background: "#0F0F0D", padding: "14px", textAlign: "center" }}>
                 <div style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "22px", color: "#F0EBE1", lineHeight: 1, letterSpacing: "-0.02em" }}>{r.stat}</div>
-                <div style={{ fontFamily: "var(--font-condensed)", fontWeight: 500, fontSize: "8px", letterSpacing: "0.14em", textTransform: "uppercase", color: `rgba(${proj.colorRgb},0.6)`, marginTop: "4px" }}>{r.label}</div>
+                <div style={{ fontFamily: "var(--font-condensed)", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase", color: `rgba(${proj.colorRgb},0.6)`, marginTop: "4px" }}>{r.label}</div>
               </div>
             ))}
           </div>
@@ -190,15 +207,15 @@ export function MobileSolutions() {
                 style={{ overflow: "hidden" }}
               >
                 <div style={{ padding: "16px 18px", borderTop: `1px solid rgba(${proj.colorRgb},0.1)` }}>
-                  <p style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "9px", letterSpacing: "0.2em", textTransform: "uppercase", color: `rgba(${proj.colorRgb},0.6)`, marginBottom: "8px" }}>What Was Built</p>
+                  <p style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: `rgba(${proj.colorRgb},0.6)`, marginBottom: "8px" }}>What Was Built</p>
                   <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.7, color: "rgba(212,204,184,0.7)", marginBottom: "14px" }}>{proj.what}</p>
 
-                  <p style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "9px", letterSpacing: "0.2em", textTransform: "uppercase", color: `rgba(${proj.colorRgb},0.6)`, marginBottom: "8px" }}>Tech Stack</p>
+                  <p style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: `rgba(${proj.colorRgb},0.6)`, marginBottom: "8px" }}>Tech Stack</p>
                   <div className="flex flex-wrap gap-1.5">
                     {proj.stack.map((t) => (
                       <span key={t} style={{
                         fontFamily: "var(--font-condensed)", fontWeight: 500,
-                        fontSize: "9px", letterSpacing: "0.12em", textTransform: "uppercase",
+                        fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase",
                         color: `rgba(${proj.colorRgb},0.7)`,
                         border: `1px solid rgba(${proj.colorRgb},0.2)`,
                         background: `rgba(${proj.colorRgb},0.05)`,
@@ -233,7 +250,11 @@ export function MobileSolutions() {
               transition: "background 0.2s ease",
             }}
           >
-            {expanded ? "Close ✕" : "View Case Study →"}
+            {expanded ? (
+              <>Close <span aria-hidden="true">×</span></>
+            ) : (
+              <>View Case Study <span aria-hidden="true">→</span></>
+            )}
           </button>
         </motion.div>
       </AnimatePresence>
@@ -243,8 +264,11 @@ export function MobileSolutions() {
         <button
           onClick={() => { setCurrent(Math.max(0, current - 1)); setExpanded(false); }}
           disabled={current === 0}
+          aria-disabled={current === 0}
+          aria-label="Previous case study"
           style={{
             flex: 1,
+            minHeight: 44,
             padding: "12px",
             background: "transparent",
             border: "1px solid rgba(240,235,225,0.08)",
@@ -253,16 +277,19 @@ export function MobileSolutions() {
             fontWeight: 500,
             fontSize: "12px",
             color: current === 0 ? "rgba(212,204,184,0.15)" : "rgba(212,204,184,0.5)",
-            cursor: current === 0 ? "default" : "pointer",
+            cursor: current === 0 ? "not-allowed" : "pointer",
           }}
         >
-          ← Prev
+          <span aria-hidden="true">←</span> Prev
         </button>
         <button
           onClick={() => { setCurrent(Math.min(projects.length - 1, current + 1)); setExpanded(false); }}
           disabled={current === projects.length - 1}
+          aria-disabled={current === projects.length - 1}
+          aria-label="Next case study"
           style={{
             flex: 1.3,
+            minHeight: 44,
             padding: "12px",
             background: current === projects.length - 1 ? "rgba(192,82,43,0.25)" : "#C0522B",
             border: "none",
@@ -272,11 +299,11 @@ export function MobileSolutions() {
             fontSize: "12px",
             letterSpacing: "0.1em",
             color: "#F0EBE1",
-            cursor: current === projects.length - 1 ? "default" : "pointer",
+            cursor: current === projects.length - 1 ? "not-allowed" : "pointer",
             boxShadow: current < projects.length - 1 ? "0 0 20px rgba(192,82,43,0.25)" : "none",
           }}
         >
-          Next →
+          Next <span aria-hidden="true">→</span>
         </button>
       </div>
     </div>
