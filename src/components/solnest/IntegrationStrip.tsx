@@ -75,7 +75,7 @@ function MarqueeRow({ direction = 'left', speed = '50s' }: { direction?: 'left' 
 
   return (
     <div
-      className="overflow-hidden"
+      className="marquee-row overflow-hidden"
       style={{ width: '100%', position: 'relative' }}
     >
       {/* Fade edges */}
@@ -173,7 +173,7 @@ export function IntegrationStrip() {
           </span>
         </div>
 
-        <h3
+        <h2
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 300,
@@ -185,7 +185,7 @@ export function IntegrationStrip() {
         >
           Plugs into what you{' '}
           <span style={{ fontStyle: 'italic', color: '#C0522B' }}>already use.</span>
-        </h3>
+        </h2>
 
         <p
           style={{
