@@ -156,6 +156,39 @@ export default function Footer() {
           }}>
             © {new Date().getFullYear()} Solnest AI. All rights reserved.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            {[
+              { label: "Privacy Policy", href: "/privacy-policy" },
+              { label: "Terms of Service", href: "/terms-of-service" },
+            ].map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontWeight: 300,
+                  fontSize: "15px",
+                  color: "rgba(212,204,184,0.55)",
+                  textDecoration: "none",
+                  transition: "color 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.55)";
+                }}
+                onFocus={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
+                }}
+                onBlur={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.55)";
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
           <a
             href="mailto:hello@solnestai.com"
             style={{
