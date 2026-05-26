@@ -63,8 +63,8 @@ const classrooms = [
 const communityStats = [
   { value: "40+", label: "Active Members" },
   { value: "Weekly", label: "Live AI Builds" },
-  { value: "$67/mo", label: "Founding Rate" },
-  { value: "∞", label: "Rate Locked Forever" },
+  { value: "$97/mo", label: "Membership" },
+  { value: "Cancel", label: "Anytime" },
 ];
 
 const features = [
@@ -353,7 +353,7 @@ export function CommunitySection() {
                 }}
               >
                 Get live builds, exact systems, and a community of operators already
-                winning with AI. The founding rate disappears the moment this window closes.
+                winning with AI. Join today and start building inside the same room they do.
               </motion.p>
             </div>
 
@@ -535,11 +535,11 @@ export function CommunityPricing() {
                   fontSize: "13px", letterSpacing: "0.24em", textTransform: "uppercase",
                   color: "rgba(192,82,43,0.7)", marginBottom: "6px",
                 }}>
-                  Founding rate
+                  Membership
                 </p>
                 <div className="flex items-start lg:justify-end">
                   <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "22px", color: "rgba(240,235,225,0.65)", marginTop: "10px" }}>$</span>
-                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(48px, 10vw, 77px)", color: "#F0EBE1", lineHeight: 1, letterSpacing: "-0.02em" }}>67</span>
+                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(48px, 10vw, 77px)", color: "#F0EBE1", lineHeight: 1, letterSpacing: "-0.02em" }}>97</span>
                   <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "16px", color: "rgba(240,235,225,0.45)", alignSelf: "flex-end", paddingBottom: "10px", marginLeft: "5px" }}>/mo</span>
                 </div>
               </div>
@@ -548,7 +548,7 @@ export function CommunityPricing() {
                 href="https://skool.com/solnest-ai"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Join the Solnest AI community — Claim your founding member spot"
+                aria-label="Join the Solnest AI community — $97 per month"
                 className="group bg-rust text-cream overflow-hidden relative"
                 style={{
                   padding: "18px 40px",

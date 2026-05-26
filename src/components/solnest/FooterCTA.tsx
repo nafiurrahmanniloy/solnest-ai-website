@@ -140,7 +140,7 @@ export function FooterCTA() {
             }}
           >
             <BlurText
-              text="$67/mo. Locked forever. When this founding window closes, the price goes up — permanently. The only question is whether you act before or after that happens."
+              text="$97/mo. Cancel anytime. The community, the live builds, the agent library, the SOPs — all of it, one membership. The only question is whether you start today or three months from now."
               loopDelay={1500}
               style={{ color: "rgba(212,204,184,0.75)" }}
             />
@@ -186,7 +186,7 @@ export function FooterCTA() {
                   zIndex: 2,
                 }}
               >
-                Lock In $67/mo Before It&apos;s Gone
+                Join Solnest AI — $97/mo
               </span>
             </MagneticButton>
           </motion.div>
