@@ -141,8 +141,11 @@ const OrbitingSkill = memo(({ config, angle }: OrbitingSkillProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const { orbitRadius, size, iconType, label } = config;
 
-  const x = Math.cos(angle) * orbitRadius;
-  const y = Math.sin(angle) * orbitRadius;
+  // Round to 3 decimals: Math.cos/sin aren't bit-identical across JS engines,
+  // so the full-precision value differs between Node (SSR) and the browser
+  // (client) and triggers a React hydration mismatch on the initial render.
+  const x = Math.round(Math.cos(angle) * orbitRadius * 1e3) / 1e3;
+  const y = Math.round(Math.sin(angle) * orbitRadius * 1e3) / 1e3;
 
   return (
     <div
