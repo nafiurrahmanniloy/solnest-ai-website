@@ -21,6 +21,32 @@ interface BlurTextProps {
 }
 
 /**
+ * Deterministic pseudo-random in [0, 1) from an integer seed (mulberry32).
+ *
+ * Two rules keep this hydration-safe — every value below ends up in a word's
+ * inline `style`, and any SSR-vs-client difference triggers a React hydration
+ * mismatch (#418/#423/#425) that tears down the SSR hero and re-renders it on
+ * the client, freezing the Framer Motion entry animations at opacity:0 (the
+ * whole hero headline goes invisible):
+ *   1. Never use Math.random() — useMemo re-runs on the client during
+ *      hydration, so it would produce different markup than the server sent.
+ *   2. Use only integer ops here (Math.imul / bitwise). Math.sin/cos/pow are
+ *      NOT guaranteed bit-identical across JS engines, so Node (SSR) and the
+ *      browser (client) can disagree in the last digit — enough to mismatch.
+ * Anything derived from a transcendental (sin/cos/pow) below is rounded via
+ * round4() for the same reason.
+ */
+function seededRandom(seed: number): number {
+  let t = (seed + 0x6d2b79f5) | 0;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+}
+
+/** Round to 4 decimals so cross-engine float differences never reach the DOM. */
+const round4 = (n: number) => Math.round(n * 1e4) / 1e4;
+
+/**
  * BlurText — drop-in inline text with cinematic blur-in animation.
  * Renders as a <span> so it sits naturally inside any parent element.
  */
@@ -32,12 +58,14 @@ export function BlurText({ text, once = false, loopDelay = 5000, className = "",
   const words: WordData[] = useMemo(() => {
     return text.split(" ").map((word, i, arr) => {
       const progress = i / arr.length;
+      const jitter = seededRandom(i + 1);
+      const blurRand = seededRandom(i + 100);
       return {
         text: word,
-        duration: 1.8 + Math.cos(i * 0.3) * 0.25,
-        delay: i * 0.055 + Math.pow(progress, 0.75) * 0.4 + (Math.random() - 0.5) * 0.04,
-        blur: 10 + Math.floor(Math.random() * 7),
-        scale: 0.92 + Math.sin(i * 0.2) * 0.05,
+        duration: round4(1.8 + Math.cos(i * 0.3) * 0.25),
+        delay: round4(i * 0.055 + Math.pow(progress, 0.75) * 0.4 + (jitter - 0.5) * 0.04),
+        blur: 10 + Math.floor(blurRand * 7),
+        scale: round4(0.92 + Math.sin(i * 0.2) * 0.05),
       };
     });
   }, [text]);
