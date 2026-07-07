@@ -12,7 +12,7 @@ const caseStudies = {
     title: "Guest Messaging Agent",
     badge: "STR Automation",
     headline: "0.3-second response time. Zero staff required.",
-    what: "A fully autonomous AI agent that handles 100% of guest communication for short-term rental properties — from pre-booking questions to check-out follow-ups. Deployed directly into the host's existing phone number via Twilio.",
+    what: "A fully autonomous AI agent that handles 100% of guest communication for short-term rental properties - from pre-booking questions to check-out follow-ups. Deployed directly into the host's existing phone number via Twilio.",
     why: "Ryan was managing multiple properties and spending 3+ hours a day answering the same 8 questions. The agent now handles all of it, 24/7, in the host's voice.",
     results: [
       { stat: "100%", label: "Messages handled by AI" },
@@ -33,8 +33,8 @@ const caseStudies = {
       "All properties running fully hands-free",
     ],
     process: [
-      { step: "01", title: "Mapped every guest touchpoint", desc: "Pre-booking, check-in, mid-stay, check-out — all the messages Ryan was sending manually." },
-      { step: "02", title: "Trained AI on Ryan's voice", desc: "Fed 2,000+ past messages so the agent sounds exactly like Ryan — warm, helpful, specific." },
+      { step: "01", title: "Mapped every guest touchpoint", desc: "Pre-booking, check-in, mid-stay, check-out - all the messages Ryan was sending manually." },
+      { step: "02", title: "Trained AI on Ryan's voice", desc: "Fed 2,000+ past messages so the agent sounds exactly like Ryan - warm, helpful, specific." },
       { step: "03", title: "Deployed via Twilio SMS", desc: "Connected to Ryan's existing phone number. Guests have no idea they're talking to AI." },
     ],
     stack: ["Claude AI", "Twilio SMS", "Make.com", "Airtable"],
@@ -45,7 +45,7 @@ const caseStudies = {
     title: "Patient Concierge Agent",
     badge: "MedSpa Automation",
     headline: "87% booking rate from inbound leads. Fully hands-free.",
-    what: "An AI concierge that handles appointment scheduling, treatment consultations, pre-care instructions, and post-treatment follow-ups for a luxury MedSpa — across SMS, email, and web chat simultaneously.",
+    what: "An AI concierge that handles appointment scheduling, treatment consultations, pre-care instructions, and post-treatment follow-ups for a luxury MedSpa - across SMS, email, and web chat simultaneously.",
     why: "The front desk was losing 40% of leads to voicemail during peak hours. The concierge agent now captures every inquiry within seconds and books them directly into the calendar.",
     results: [
       { stat: "87%", label: "Lead-to-booking rate" },
@@ -66,9 +66,9 @@ const caseStudies = {
       "Front desk focuses on in-person experience only",
     ],
     process: [
-      { step: "01", title: "Audited the lead funnel", desc: "Tracked where inquiries came from and where they dropped off — voicemail was the #1 killer." },
+      { step: "01", title: "Audited the lead funnel", desc: "Tracked where inquiries came from and where they dropped off - voicemail was the #1 killer." },
       { step: "02", title: "Built multi-channel concierge", desc: "SMS, email, and web chat all handled by one AI agent with full treatment knowledge." },
-      { step: "03", title: "Connected to Cal.com", desc: "Appointments booked directly into the clinic's calendar — no human handoff needed." },
+      { step: "03", title: "Connected to Cal.com", desc: "Appointments booked directly into the clinic's calendar - no human handoff needed." },
     ],
     stack: ["Claude AI", "Twilio", "Cal.com", "n8n", "Airtable"],
     color: "#B07BA5",
@@ -78,7 +78,7 @@ const caseStudies = {
     title: "Voice Ordering Agent",
     badge: "Restaurant AI",
     headline: "Handles 120+ calls per day. Never puts anyone on hold.",
-    what: "A voice AI agent that takes phone orders for a high-volume restaurant — understanding menu customizations, dietary restrictions, upselling combos, and processing payments. Speaks naturally with under 400ms latency.",
+    what: "A voice AI agent that takes phone orders for a high-volume restaurant - understanding menu customizations, dietary restrictions, upselling combos, and processing payments. Speaks naturally with under 400ms latency.",
     why: "The restaurant was losing $3,200/week in abandoned phone orders during the dinner rush. Staff couldn't answer fast enough. The voice agent now handles the entire queue.",
     results: [
       { stat: "120+", label: "Daily calls handled" },
@@ -94,12 +94,12 @@ const caseStudies = {
     ],
     after: [
       "120+ calls handled daily with zero hold time",
-      "94% order accuracy — better than human staff",
+      "94% order accuracy - better than human staff",
       "$3,200/week in revenue recovered immediately",
       "Kitchen staff stays in the kitchen",
     ],
     process: [
-      { step: "01", title: "Mapped the full menu + edge cases", desc: "Every item, modifier, combo, allergy note, and upsell — programmed into the voice agent." },
+      { step: "01", title: "Mapped the full menu + edge cases", desc: "Every item, modifier, combo, allergy note, and upsell - programmed into the voice agent." },
       { step: "02", title: "Built natural voice flow via Vapi", desc: "Under 400ms response latency. Customers don't realize they're ordering from AI." },
       { step: "03", title: "Integrated with Square POS", desc: "Orders go straight into the kitchen queue. Payment processed on the call." },
     ],
@@ -111,7 +111,7 @@ const caseStudies = {
     title: "Patient Voice Agent",
     badge: "Dental Clinic AI",
     headline: "Zero missed patient calls. 24/7 scheduling that sounds human.",
-    what: "A conversational voice AI that answers every call to a dental clinic — scheduling appointments, handling insurance pre-qualification questions, sending appointment reminders, and managing cancellations and rebookings automatically.",
+    what: "A conversational voice AI that answers every call to a dental clinic - scheduling appointments, handling insurance pre-qualification questions, sending appointment reminders, and managing cancellations and rebookings automatically.",
     why: "The clinic's two-person front desk was overwhelmed, resulting in 35% of calls going to voicemail. Most of those patients never called back. The voice agent eliminated that entirely.",
     results: [
       { stat: "0%", label: "Missed calls" },
@@ -126,7 +126,7 @@ const caseStudies = {
       "28 hours/week spent on phone scheduling alone",
     ],
     after: [
-      "0% missed calls — every patient gets answered",
+      "0% missed calls - every patient gets answered",
       "62% reduction in no-shows via smart reminders",
       "28 hours/week freed up for patient care",
       "4.9★ patient satisfaction rating maintained",
@@ -134,7 +134,7 @@ const caseStudies = {
     process: [
       { step: "01", title: "Analyzed call patterns", desc: "Mapped peak call times, common questions, and where the front desk bottlenecked." },
       { step: "02", title: "Built voice agent with Vapi", desc: "Natural conversation flow for scheduling, insurance questions, and reminders." },
-      { step: "03", title: "Connected to Dentrix", desc: "Direct integration with the clinic's practice management software — real-time availability." },
+      { step: "03", title: "Connected to Dentrix", desc: "Direct integration with the clinic's practice management software - real-time availability." },
     ],
     stack: ["Vapi", "Claude AI", "Dentrix API", "n8n", "Twilio"],
     color: "#5BA4A4",
@@ -345,7 +345,7 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
           </div>
         </div>
 
-        {/* How it was built — process steps */}
+        {/* How it was built - process steps */}
         <div style={{ padding: "28px 40px", borderBottom: `1px solid rgba(${cs.colorRgb},0.12)` }}>
           <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.6)`, display: "block", marginBottom: "20px" }}>How It Was Built</span>
           <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
@@ -591,7 +591,7 @@ export function ShowcaseSection() {
               <div style={{ height: "1px", background: "linear-gradient(to right, rgba(192,82,43,0.4), transparent)", marginBottom: "22px", maxWidth: "460px" }} />
 
               <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "clamp(17px, 1.2vw, 20px)", lineHeight: 1.85, color: "rgba(212,204,184,0.65)", maxWidth: "560px", marginBottom: "36px" }}>
-                From short-term rentals to dental clinics — our AI agents handle calls, book appointments, manage pricing, and run entire operations. You wake up to results — not a to-do list.
+                From short-term rentals to dental clinics - our AI agents handle calls, book appointments, manage pricing, and run entire operations. You wake up to results - not a to-do list.
               </p>
 
               <div style={{ display: "flex", gap: "28px", marginBottom: "40px", flexWrap: "wrap" }}>

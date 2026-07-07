@@ -26,7 +26,7 @@ export default function WovenLightBg() {
     const mouse = new THREE.Vector2(0, 0);
     const clock = new THREE.Clock();
 
-    // Solnest brand palette — rust, gold, warm cream
+    // Solnest brand palette - rust, gold, warm cream
     const brandColors = [
       { h: 16, s: 0.75, l: 0.46 },  // #C0522B rust
       { h: 44, s: 0.55, l: 0.54 },   // #C9A84C gold

@@ -5,8 +5,10 @@ import { motion } from "framer-motion";
 import { SocialHandles } from "@/components/solnest/SocialHandles";
 
 const footerLinks = [
+  { label: "Services", href: "/services", external: false },
+  { label: "Case Studies", href: "/work", external: false },
+  { label: "About", href: "/about", external: false },
   { label: "Community", href: "https://skool.com/solnest-ai", external: true },
-  { label: "Work With Ryan", href: "#services", external: false },
   { label: "Contact", href: "mailto:hello@solnestai.com", external: false },
 ];
 
@@ -27,7 +29,7 @@ export default function Footer() {
         {/* ── Top row: Logo + Nav + Socials ── */}
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-12 md:gap-16 items-start mb-16 md:mb-20">
 
-          {/* Left — Logo + tagline */}
+          {/* Left - Logo + tagline */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -59,12 +61,12 @@ export default function Footer() {
               Watch what happens when AI meets your business.
               <br />
               <span style={{ color: "rgba(212,204,184,0.35)", fontSize: "17px" }}>
-                Built by Ryan — for operators who move fast.
+                Built by Ryan - for operators who move fast.
               </span>
             </p>
           </motion.div>
 
-          {/* Center — Navigation links */}
+          {/* Center - Navigation links */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -116,7 +118,7 @@ export default function Footer() {
             ))}
           </motion.div>
 
-          {/* Right — Socials */}
+          {/* Right - Socials */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}

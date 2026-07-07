@@ -192,7 +192,7 @@ function BookPageContent() {
               marginBottom: "16px",
             }}
           >
-            Strategy Call with Ryan
+            Build Session with Ryan
           </div>
           <h1
             style={{
@@ -206,8 +206,8 @@ function BookPageContent() {
               padding: "0 24px",
             }}
           >
-            Let&apos;s Talk About{" "}
-            <span style={{ fontStyle: "italic", color: "#C0522B" }}>Your Business</span>
+            Pick your{" "}
+            <span style={{ fontStyle: "italic", color: "#C0522B" }}>Build Session time.</span>
           </h1>
           <p
             style={{
@@ -221,8 +221,8 @@ function BookPageContent() {
               padding: "0 24px",
             }}
           >
-            30 minutes with Ryan. No fluff, no pitch deck — just a real conversation
-            about where AI fits in your operation.
+            60 minutes, one on one with Ryan. Choose a time that works and we
+            will send your Google Meet details.
           </p>
         </motion.div>
       </section>
@@ -371,6 +371,20 @@ function BookPageContent() {
                       }}
                     />
                   </div>
+                ) : Object.keys(slots).length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "48px 16px" }}>
+                    <p style={{ fontFamily: "var(--font-body)", fontSize: "15px", color: "rgba(212,204,184,0.7)", lineHeight: 1.7, maxWidth: "440px", margin: "0 auto 18px" }}>
+                      Live availability isn&apos;t loading right now. Email{" "}
+                      <a href="mailto:hello@solnestai.com" style={{ color: "#C0522B", textDecoration: "underline", textUnderlineOffset: "2px" }}>hello@solnestai.com</a>{" "}
+                      and we&apos;ll get you booked, or try again in a moment.
+                    </p>
+                    <button
+                      onClick={fetchSlots}
+                      style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#C0522B", background: "transparent", border: "1px solid rgba(192,82,43,0.4)", borderRadius: "9999px", padding: "10px 24px", cursor: "pointer" }}
+                    >
+                      Retry
+                    </button>
+                  </div>
                 ) : (
                   <div
                     style={{
@@ -487,7 +501,7 @@ function BookPageContent() {
                     marginBottom: "28px",
                   }}
                 >
-                  Choose a 30-minute slot (Pacific Time)
+                  Choose a 60-minute slot (Pacific Time)
                 </p>
 
                 <div
@@ -595,7 +609,7 @@ function BookPageContent() {
                   }}
                 >
                   {selectedDate && formatDate(selectedDate)} at{" "}
-                  {selectedSlot && formatTime(selectedSlot)} PT — 30 min on Google Meet
+                  {selectedSlot && formatTime(selectedSlot)} PT - 60 min on Google Meet
                 </p>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -894,7 +908,7 @@ function BookPageContent() {
                   }}
                 >
                   {selectedDate && formatDate(selectedDate)} at{" "}
-                  {selectedSlot && formatTime(selectedSlot)} PT — check your email for the
+                  {selectedSlot && formatTime(selectedSlot)} PT - check your email for the
                   Google Meet link and calendar invite.
                 </p>
 
@@ -918,7 +932,7 @@ function BookPageContent() {
                       marginBottom: "8px",
                     }}
                   >
-                    Strategy Call with Ryan
+                    Build Session with Ryan
                   </div>
                   <div
                     style={{
@@ -938,7 +952,7 @@ function BookPageContent() {
                       marginTop: "4px",
                     }}
                   >
-                    30 min — Google Meet
+                    60 min - Google Meet
                   </div>
                 </div>
 
@@ -975,8 +989,8 @@ function BookPageContent() {
             }}
           >
             {[
-              { num: "30", label: "Minute Call" },
-              { num: "$0", label: "Cost to You" },
+              { num: "60", label: "Minute Session" },
+              { num: "1:1", label: "With Ryan" },
               { num: "100%", label: "Honest Advice" },
             ].map((item, i) => (
               <motion.div

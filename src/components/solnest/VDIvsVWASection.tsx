@@ -103,7 +103,7 @@ function WithAIPanel() {
 					}}
 				/>
 
-				{/* TIME + MONEY — stacked vertically, full height */}
+				{/* TIME + MONEY, stacked vertically, full height */}
 				<div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0', minHeight: 0 }}>
 
 					{/* TIME block */}
@@ -147,7 +147,7 @@ function WithAIPanel() {
 							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(212,204,184,0.6)', marginTop: '5px', display: 'block',
 						}}>
-							Per week reclaimed — guest messages, pricing updates, and scheduling run themselves.
+							Per week reclaimed, guest messages, pricing updates, and scheduling run themselves.
 						</span>
 					</motion.div>
 
@@ -191,7 +191,7 @@ function WithAIPanel() {
 							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(212,204,184,0.6)', marginTop: '5px', display: 'block',
 						}}>
-							Extra per month — dynamic pricing, instant lead capture, zero missed bookings.
+							Extra per month, dynamic pricing, instant lead capture, zero missed bookings.
 						</span>
 					</motion.div>
 				</div>
@@ -202,9 +202,7 @@ function WithAIPanel() {
 					whileInView={{ opacity: 1 }}
 					viewport={{ once: true }}
 					transition={{ duration: 0.5, delay: 0.45 }}
-					href="https://skool.com/solnest-ai"
-					target="_blank"
-					rel="noopener noreferrer"
+					href="#how"
 					className="group"
 					style={{
 						display: 'inline-flex', alignItems: 'center', gap: '8px',
@@ -295,7 +293,7 @@ function WithoutAIPanel() {
 					marginBottom: '18px',
 				}} />
 
-				{/* TIME + MONEY — stacked vertically */}
+				{/* TIME + MONEY, stacked vertically */}
 				<div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0', minHeight: 0 }}>
 
 					{/* TIME block */}
@@ -338,7 +336,7 @@ function WithoutAIPanel() {
 							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(180,170,155,0.52)', marginTop: '5px', display: 'block',
 						}}>
-							Per week burned — copy-pasting messages, manually adjusting prices, chasing guests.
+							Per week burned, copy-pasting messages, manually adjusting prices, chasing guests.
 						</span>
 					</motion.div>
 
@@ -384,7 +382,7 @@ function WithoutAIPanel() {
 							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
 							color: 'rgba(180,170,155,0.52)', marginTop: '5px', display: 'block',
 						}}>
-							Leaked every month — underpriced nights, lost leads, guests who booked your competitor instead.
+							Leaked every month, underpriced nights, lost leads, guests who booked your competitor instead.
 						</span>
 					</motion.div>
 				</div>
@@ -498,6 +496,112 @@ function MobileComparisonCard({ type }: { type: 'with' | 'without' }) {
 	)
 }
 
+// ─── "What we automate" strip ──────────────────────────────────────────────
+
+const AUTOMATION_ITEMS = [
+	{
+		title: 'Lead capture & response',
+		description: 'Every inquiry scored and answered in minutes.',
+	},
+	{
+		title: 'Guest & customer messaging',
+		description: '24/7 replies in your voice, across channels.',
+	},
+	{
+		title: 'Pricing & data analysis',
+		description: 'AI that turns raw numbers into decisions.',
+	},
+	{
+		title: 'Back-office automation',
+		description: 'Scheduling, follow-ups, and reporting on autopilot.',
+	},
+]
+
+function WhatWeAutomateStrip() {
+	return (
+		<div className="px-5 md:px-6 py-12 md:py-16" style={{ background: '#0D0D0B' }}>
+			<div className="mx-auto" style={{ maxWidth: '1100px' }}>
+				{/* Eyebrow */}
+				<motion.div
+					initial={{ opacity: 0, y: 10 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, margin: '-40px' }}
+					transition={{ duration: 0.5, ease: [0.215, 0.61, 0.355, 1.0] }}
+					className="flex items-center gap-2 mb-6 md:mb-8 justify-center md:justify-start"
+				>
+					<div style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#C9A84C' }} />
+					<span style={{
+						fontFamily: 'var(--font-condensed)', fontWeight: 600,
+						fontSize: '11px', letterSpacing: '0.24em',
+						textTransform: 'uppercase', color: '#C9A84C',
+					}}>
+						What We Automate
+					</span>
+				</motion.div>
+
+				{/* Chips row */}
+				<div className="flex flex-wrap gap-3 md:gap-4">
+					{AUTOMATION_ITEMS.map((item, i) => (
+						<motion.div
+							key={item.title}
+							initial={{ opacity: 0, y: 16 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: '-40px' }}
+							transition={{ duration: 0.5, delay: 0.06 * i, ease: [0.215, 0.61, 0.355, 1.0] }}
+							className="flex-1"
+							style={{
+								minWidth: '220px',
+								background: 'rgba(192,82,43,0.05)',
+								border: '1px solid rgba(192,82,43,0.18)',
+								borderRadius: '2px',
+								padding: '16px 18px',
+							}}
+						>
+							<h4 style={{
+								fontFamily: 'var(--font-condensed)', fontWeight: 600,
+								fontSize: '11.5px', letterSpacing: '0.06em',
+								textTransform: 'uppercase', color: '#F0EBE1',
+								marginBottom: '6px',
+							}}>
+								{item.title}
+							</h4>
+							<p style={{
+								fontFamily: 'var(--font-body)', fontWeight: 300,
+								fontSize: '12.5px', lineHeight: 1.6,
+								color: 'rgba(212,204,184,0.55)',
+							}}>
+								{item.description}
+							</p>
+						</motion.div>
+					))}
+				</div>
+
+				{/* Inline link */}
+				<motion.div
+					initial={{ opacity: 0 }}
+					whileInView={{ opacity: 1 }}
+					viewport={{ once: true, margin: '-40px' }}
+					transition={{ duration: 0.5, delay: 0.3 }}
+					className="mt-6 md:mt-8 text-center md:text-left"
+				>
+					<a
+						href="#services"
+						className="group inline-flex items-center gap-2"
+						style={{
+							fontFamily: 'var(--font-condensed)', fontWeight: 600,
+							fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase',
+							color: '#C0522B', textDecoration: 'none',
+							borderBottom: '1px solid rgba(192,82,43,0.35)', paddingBottom: '3px',
+						}}
+					>
+						See what we build →
+					</a>
+				</motion.div>
+			</div>
+		</div>
+	)
+}
+
 // ─── Section ────────────────────────────────────────────────────────────────
 
 export function VDIvsVWASection() {
@@ -580,7 +684,7 @@ export function VDIvsVWASection() {
 									color: 'rgba(212,204,184,0.52)', maxWidth: '580px',
 								}}
 							>
-								While you&apos;re sleeping, your competitor&apos;s AI is answering leads, adjusting prices, and booking guests. The gap between &quot;doing it manually&quot; and &quot;running AI&quot; isn&apos;t closing — it&apos;s accelerating.
+								While you&apos;re sleeping, your competitor&apos;s AI is answering leads, adjusting prices, and booking guests. The gap between &quot;doing it manually&quot; and &quot;running AI&quot; isn&apos;t closing, it&apos;s accelerating.
 							</p>
 
 							<div style={{
@@ -615,6 +719,9 @@ export function VDIvsVWASection() {
 					</div>
 				</ContainerScroll>
 			</div>
+
+			{/* ── What we automate strip (shared, mobile + desktop) ── */}
+			<WhatWeAutomateStrip />
 		</section>
 	)
 }

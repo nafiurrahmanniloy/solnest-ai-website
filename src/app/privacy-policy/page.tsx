@@ -4,9 +4,9 @@ import Footer from "@/components/solnest/Footer";
 import LegalPageShell from "@/components/solnest/LegalPageShell";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Solnest AI",
+  title: "Privacy Policy - Solnest AI",
   description:
-    "How Solnest AI collects, uses, and protects personal information of website visitors, Build Session clients, and community members — including information processed by Stripe for subscription billing.",
+    "How Solnest AI collects, uses, and protects personal information of website visitors, Build Session clients, and community members - including information processed by Stripe for subscription billing.",
   robots: { index: true, follow: true },
 };
 
@@ -42,7 +42,7 @@ const sections = [
         <ul>
           <li>
             <strong>Contact details</strong> you give us through forms on
-            the site — your name, email address, and phone number (phone
+            the site - your name, email address, and phone number (phone
             is optional). For Build Sessions you also provide a short
             description of what you want help with.
           </li>
@@ -63,7 +63,7 @@ const sections = [
             subscription status.
           </li>
           <li>
-            <strong>Community activity</strong> — if you join the
+            <strong>Community activity</strong> - if you join the
             membership, the community platform (
             <a
               href="https://www.skool.com/legal/privacy"
@@ -77,7 +77,7 @@ const sections = [
           </li>
           <li>
             <strong>Basic technical data</strong> automatically logged
-            when you visit the site — IP address, browser type, pages
+            when you visit the site - IP address, browser type, pages
             viewed. We use this only to keep the site running and to
             understand which pages are useful.
           </li>
@@ -91,11 +91,11 @@ const sections = [
     body: (
       <ul>
         <li>
-          To deliver what you asked for — a Build Session, a Build
+          To deliver what you asked for - a Build Session, a Build
           Brief, a community membership, a downloadable resource.
         </li>
         <li>To process subscription payments and renewals through Stripe.</li>
-        <li>To send transactional emails — receipts, calendar links, account changes.</li>
+        <li>To send transactional emails - receipts, calendar links, account changes.</li>
         <li>
           To occasionally send product news or updates about Solnest AI.
           You can unsubscribe from these at any time using the link at
@@ -119,14 +119,14 @@ const sections = [
         </p>
         <ul>
           <li>
-            <strong>Performance of a contract</strong> — to deliver the
+            <strong>Performance of a contract</strong> - to deliver the
             membership, Build Session, or other service you purchased.
           </li>
           <li>
-            <strong>Consent</strong> — for optional marketing emails.
+            <strong>Consent</strong> - for optional marketing emails.
           </li>
           <li>
-            <strong>Legitimate interest</strong> — to keep the site
+            <strong>Legitimate interest</strong> - to keep the site
             secure and to understand basic site usage.
           </li>
         </ul>
@@ -143,15 +143,15 @@ const sections = [
           with the service providers we need to run the business:
         </p>
         <ul>
-          <li><strong>Stripe</strong> — subscription billing and one-off payments.</li>
-          <li><strong>Skool</strong> — the platform that hosts the membership community.</li>
+          <li><strong>Stripe</strong> - subscription billing and one-off payments.</li>
+          <li><strong>Skool</strong> - the platform that hosts the membership community.</li>
           <li>
-            <strong>Email and scheduling tools</strong> — to send
+            <strong>Email and scheduling tools</strong> - to send
             receipts, calendar links, and product updates tied to your
             account.
           </li>
           <li>
-            <strong>Hosting and analytics infrastructure</strong> — to
+            <strong>Hosting and analytics infrastructure</strong> - to
             keep the site online and measure basic page performance.
           </li>
         </ul>
@@ -282,7 +282,7 @@ export default function PrivacyPolicyPage() {
           <>
             Solnest AI is based in British Columbia, Canada. This page
             explains what we collect when you visit the site, book a
-            Build Session, or join the membership community — and how
+            Build Session, or join the membership community - and how
             that information is handled by us and by{" "}
             <strong style={{ color: "#F0EBE1" }}>
               Stripe, our subscription billing processor

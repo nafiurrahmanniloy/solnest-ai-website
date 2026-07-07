@@ -1,72 +1,63 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-const STRIPE_PRICE_BUILD_SESSION = process.env.STRIPE_PRICE_BUILD_SESSION;
+/**
+ * Build Session payment - routed through GoHighLevel, NOT direct Stripe.
+ *
+ * Solnest holds no Stripe API key. Ryan creates ONE hosted payment page in
+ * GoHighLevel (a Payment Link or an Order Form on a funnel/store, connected to
+ * GHL's own Stripe integration) for the $229 Build Session, and pastes its
+ * public URL into GHL_BUILD_SESSION_PAYMENT_URL. Payment is collected on GHL's
+ * page via GHL's Stripe; afterwards GHL redirects the customer to
+ *   {origin}/book?type=build
+ * (set that as the order form's "post-purchase redirect" inside GHL), where the
+ * existing calendar flow books the paid Build Session slot.
+ *
+ * This route simply hands the client that GHL URL (with contact details passed
+ * as prefill query params when the GHL page supports them), so the existing
+ * front-end (`window.location.href = data.url`) works unchanged.
+ */
+const GHL_BUILD_SESSION_PAYMENT_URL = process.env.GHL_BUILD_SESSION_PAYMENT_URL;
 
 export async function POST(request: NextRequest) {
-  if (!STRIPE_SECRET_KEY || !STRIPE_PRICE_BUILD_SESSION) {
+  if (!GHL_BUILD_SESSION_PAYMENT_URL) {
     return NextResponse.json(
       {
         error:
-          "Payment system not configured yet. Please email hello@solnestai.com to book directly.",
+          "Payment link not configured yet. Please email hello@solnestai.com to book directly.",
       },
       { status: 503 }
     );
   }
 
   try {
-    const body = await request.json();
-    const { firstName, lastName, email, phone } = body;
+    const body = await request.json().catch(() => ({}));
+    const { firstName, lastName, email, phone } = body as {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      phone?: string;
+    };
 
-    if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
-    }
-
-    const origin = request.headers.get("origin") || "https://solnestai.com";
-
-    const successParams = new URLSearchParams({
-      type: "build",
-      session_id: "{CHECKOUT_SESSION_ID}",
-      firstName: firstName || "",
-      lastName: lastName || "",
-      email: email || "",
-      phone: phone || "",
-    });
-
-    const formData = new URLSearchParams();
-    formData.append("mode", "payment");
-    formData.append("line_items[0][price]", STRIPE_PRICE_BUILD_SESSION);
-    formData.append("line_items[0][quantity]", "1");
-    formData.append("customer_email", email);
-    formData.append(
-      "success_url",
-      `${origin}/book?${successParams.toString()}`
-    );
-    formData.append("cancel_url", `${origin}/build-session`);
-    formData.append("metadata[firstName]", firstName || "");
-    formData.append("metadata[lastName]", lastName || "");
-    formData.append("metadata[phone]", phone || "");
-
-    const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: formData.toString(),
-    });
-
-    const data = await stripeRes.json();
-
-    if (!stripeRes.ok) {
-      console.error("[build-session] Stripe error", stripeRes.status, data);
+    // Append contact details as prefill params. GHL order forms / payment links
+    // pick up common keys (first_name, last_name, email, phone). Harmless if the
+    // specific GHL page ignores them.
+    let url: URL;
+    try {
+      url = new URL(GHL_BUILD_SESSION_PAYMENT_URL);
+    } catch {
+      console.error("[build-session] GHL_BUILD_SESSION_PAYMENT_URL is not a valid URL");
       return NextResponse.json(
-        { error: data.error?.message || "Could not create checkout" },
+        { error: "Payment link misconfigured. Please email hello@solnestai.com." },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ url: data.url });
+    if (firstName) url.searchParams.set("first_name", firstName);
+    if (lastName) url.searchParams.set("last_name", lastName);
+    if (email) url.searchParams.set("email", email);
+    if (phone) url.searchParams.set("phone", phone);
+
+    return NextResponse.json({ url: url.toString() });
   } catch (error) {
     console.error("[build-session] checkout error:", error);
     return NextResponse.json(

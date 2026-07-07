@@ -99,7 +99,7 @@ function BuildSessionContent() {
               margin: "0 auto",
             }}
           >
-            Bring one specific problem. Leave with it solved — or with a clear plan to
+            Bring one specific problem. Leave with it solved - or with a clear plan to
             solve it. No theory, no slide decks. Just Ryan, in your business, for an
             hour.
           </p>
@@ -162,7 +162,7 @@ function BuildSessionContent() {
             </div>
             {[
               "60 min 1:1 with Ryan on Google Meet",
-              "One specific problem — solved or roadmapped",
+              "One specific problem - solved or roadmapped",
               "Implementation guidance, not theory",
               "Recording + summary sent after the call",
               "Credit applies if you upgrade to a DFY build",
@@ -265,7 +265,7 @@ function BuildSessionContent() {
               marginTop: "12px",
             }}
           >
-            Secure payment via Stripe. After checkout you&apos;ll pick your time.
+            Secure checkout. After payment you&apos;ll pick your time.
           </div>
         </motion.div>
       </section>

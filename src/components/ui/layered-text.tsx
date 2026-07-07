@@ -31,6 +31,11 @@ export function LayeredText({
 }: LayeredTextProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const timelineRef = useRef<gsap.core.Timeline>()
+  const listRef = useRef<HTMLUListElement>(null)
+  const quickToX = useRef<gsap.QuickToFunc>()
+  const quickToY = useRef<gsap.QuickToFunc>()
+  const quickToGlow = useRef<gsap.QuickToFunc>()
+  const reducedMotionRef = useRef(false)
 
   const calculateTranslateX = (index: number) => {
     const baseOffset = 35
@@ -79,13 +84,94 @@ export function LayeredText({
     }
   }, [lines, lineHeight, lineHeightMd])
 
+  // Pure enhancement: subtle mouse-driven tilt + rust glow on hover.
+  // Runs independently of the cascade timeline above (different targets:
+  // the <ul> wrapper for tilt, the container for glow), so it can never
+  // interfere with the infinite word-cycling animation.
+  useEffect(() => {
+    const container = containerRef.current
+    const list = listRef.current
+    if (!container || !list) return
+
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)")
+    reducedMotionRef.current = mql.matches
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      reducedMotionRef.current = e.matches
+      if (e.matches) {
+        gsap.to(list, { rotateX: 0, rotateY: 0, duration: 0.3, overwrite: true })
+        gsap.to(container, { "--layered-glow": 0, duration: 0.3, overwrite: true } as gsap.TweenVars)
+      }
+    }
+    mql.addEventListener("change", handleMotionChange)
+
+    gsap.set(list, { transformPerspective: 800, transformStyle: "preserve3d" })
+
+    quickToX.current = gsap.quickTo(list, "rotateX", { duration: 0.5, ease: "power3.out" })
+    quickToY.current = gsap.quickTo(list, "rotateY", { duration: 0.5, ease: "power3.out" })
+    quickToGlow.current = gsap.quickTo(container, "--layered-glow", { duration: 0.4, ease: "power2.out" })
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (reducedMotionRef.current) return
+      const rect = container.getBoundingClientRect()
+      const relX = (e.clientX - rect.left) / rect.width - 0.5
+      const relY = (e.clientY - rect.top) / rect.height - 0.5
+      const maxTilt = 4
+      quickToY.current?.(relX * maxTilt * 2)
+      quickToX.current?.(-relY * maxTilt)
+    }
+
+    const handleMouseEnter = () => {
+      if (reducedMotionRef.current) return
+      quickToGlow.current?.(1)
+    }
+
+    const handleMouseLeave = () => {
+      quickToX.current?.(0)
+      quickToY.current?.(0)
+      quickToGlow.current?.(0)
+    }
+
+    container.addEventListener("mousemove", handleMouseMove)
+    container.addEventListener("mouseenter", handleMouseEnter)
+    container.addEventListener("mouseleave", handleMouseLeave)
+
+    return () => {
+      mql.removeEventListener("change", handleMotionChange)
+      container.removeEventListener("mousemove", handleMouseMove)
+      container.removeEventListener("mouseenter", handleMouseEnter)
+      container.removeEventListener("mouseleave", handleMouseLeave)
+    }
+  }, [])
+
   return (
     <div
       ref={containerRef}
-      className={`mx-auto py-24 font-sans font-black tracking-[-2px] uppercase antialiased cursor-pointer ${className}`}
-      style={{ fontSize, "--md-font-size": fontSizeMd } as React.CSSProperties}
+      className={`relative mx-auto py-24 font-sans font-black tracking-[-2px] uppercase antialiased cursor-pointer ${className}`}
+      style={
+        {
+          fontSize,
+          "--md-font-size": fontSizeMd,
+          "--layered-glow": 0,
+        } as React.CSSProperties
+      }
     >
-      <ul className="list-none p-0 m-0 flex flex-col items-center">
+      {/* Rust glow layer, faded in on hover via GSAP-driven --layered-glow (opacity only, GPU-cheap) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          opacity: "var(--layered-glow)",
+          filter: "blur(28px)",
+          background:
+            "radial-gradient(ellipse at center, rgba(192,82,43,0.35) 0%, rgba(192,82,43,0) 70%)",
+          willChange: "opacity",
+        }}
+      />
+      <ul
+        ref={listRef}
+        className="relative list-none p-0 m-0 flex flex-col items-center"
+        style={{ willChange: "transform" }}
+      >
         {lines.map((line, index) => {
           const translateX = calculateTranslateX(index)
           return (

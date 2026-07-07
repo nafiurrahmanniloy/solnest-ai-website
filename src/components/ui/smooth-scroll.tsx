@@ -11,7 +11,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Respect prefers-reduced-motion — skip Lenis entirely so the browser uses native scrolling
+    // Respect prefers-reduced-motion - skip Lenis entirely so the browser uses native scrolling
     const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mql.matches) return;
 

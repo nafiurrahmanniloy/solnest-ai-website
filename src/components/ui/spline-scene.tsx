@@ -16,7 +16,7 @@ interface SplineSceneProps {
  * The robot is decorative, so we swallow it and keep the ambient placeholder glow.
  *
  * Note: this does NOT silence the runtime's internal "Missing property" console
- * warning — that's a broken interaction baked into robot.splinecode and only goes
+ * warning - that's a broken interaction baked into robot.splinecode and only goes
  * away by re-exporting the scene from the Spline editor. This boundary only stops a
  * *hard* load failure from taking the hero down with it.
  */
@@ -45,7 +45,7 @@ export function SplineScene({
 
   return (
     <div className={className} style={{ ...style, position: "relative" }}>
-      {/* Ambient placeholder glow — fades when 3D loads, and stays if it fails */}
+      {/* Ambient placeholder glow - fades when 3D loads, and stays if it fails */}
       <div
         style={{
           position: "absolute",
@@ -58,7 +58,7 @@ export function SplineScene({
         }}
       />
 
-      {/* 3D scene — loads immediately; never allowed to crash the hero */}
+      {/* 3D scene - loads immediately; never allowed to crash the hero */}
       <SplineErrorBoundary>
         <Suspense fallback={null}>
           <Spline

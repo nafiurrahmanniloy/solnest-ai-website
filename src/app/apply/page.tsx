@@ -254,7 +254,7 @@ export default function ApplyPage() {
               marginTop: "12px",
             }}
           >
-            $229 · 60 min · Secure payment via Stripe
+            $229 · 60 min · Secure checkout
           </div>
         </motion.div>
       </section>

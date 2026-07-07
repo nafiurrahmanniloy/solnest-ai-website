@@ -13,29 +13,29 @@ const cormorantGaramond = Cormorant_Garamond({
   weight: ["300", "400", "500", "600"],
   style: ["normal", "italic"],
   variable: "--font-display",
-  display: "block",
+  display: "swap",
 });
 
 const barlow = Barlow({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   variable: "--font-body",
-  display: "block",
+  display: "swap",
 });
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-condensed",
-  display: "block",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Solnest AI — Watch What Happens When AI Meets Your Business",
+  title: "Solnest AI - Watch What Happens When AI Meets Your Business",
   description:
     "AI systems for operators who are serious about their time. Join the Solnest AI community and watch what happens when AI meets your business.",
   openGraph: {
-    title: "Solnest AI — Watch What Happens When AI Meets Your Business",
+    title: "Solnest AI - Watch What Happens When AI Meets Your Business",
     description:
       "AI systems for operators who are serious about their time.",
     type: "website",

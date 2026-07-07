@@ -4,9 +4,9 @@ import Footer from "@/components/solnest/Footer";
 import LegalPageShell from "@/components/solnest/LegalPageShell";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — Solnest AI",
+  title: "Terms of Service - Solnest AI",
   description:
-    "The terms that govern your use of solnestai.com, paid Build Sessions, and the Solnest AI membership community — including subscription billing through Stripe.",
+    "The terms that govern your use of solnestai.com, paid Build Sessions, and the Solnest AI membership community - including subscription billing through Stripe.",
   robots: { index: true, follow: true },
 };
 
@@ -30,19 +30,19 @@ const sections = [
     title: "What we offer",
     body: (
       <ul>
-        <li><strong>The website</strong> — free to read.</li>
+        <li><strong>The website</strong> - free to read.</li>
         <li>
-          <strong>Build Sessions</strong> — paid one-to-one working
+          <strong>Build Sessions</strong> - paid one-to-one working
           sessions booked through the site.
         </li>
         <li>
-          <strong>The membership community</strong> — a $97 USD per
+          <strong>The membership community</strong> - a $97 USD per
           month subscription that includes the live builds, the agent
           library, SOPs, prompts, and access to the Solnest AI community
           (hosted on Skool).
         </li>
         <li>
-          <strong>Custom build engagements</strong> — longer paid
+          <strong>Custom build engagements</strong> - longer paid
           project work scoped on a case-by-case basis with Ryan.
         </li>
       </ul>
@@ -102,19 +102,19 @@ const sections = [
         <p>Refund terms depend on what you bought:</p>
         <ul>
           <li>
-            <strong>Membership ($97/mo)</strong> — you can cancel at
+            <strong>Membership ($97/mo)</strong> - you can cancel at
             any time. Your access continues until the end of the
             current billing period and you are not billed again. The
             current period is non-refundable.
           </li>
           <li>
-            <strong>Build Sessions</strong> — refundable in full if you
+            <strong>Build Sessions</strong> - refundable in full if you
             cancel at least 48 hours before the scheduled session.
             Cancellations inside the 48-hour window or no-shows are not
             refundable, but we will try to reschedule once.
           </li>
           <li>
-            <strong>Custom build engagements</strong> — come with a{" "}
+            <strong>Custom build engagements</strong> - come with a{" "}
             <strong>3-month money-back guarantee</strong>. If, within
             three months of the engagement starting, the work has not
             delivered useful value to your business, email us and we
@@ -188,7 +188,7 @@ const sections = [
         We share systems, tools, and ideas that have worked for us and
         other operators. We do not promise specific revenue,
         time-savings, or business outcomes. What you build with the
-        material — and the result you get — depends on you, your
+        material - and the result you get - depends on you, your
         business, and your effort.
       </p>
     ),

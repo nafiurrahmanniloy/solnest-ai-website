@@ -14,7 +14,7 @@ type LegalSection = {
  *
  *   • Editorial hero: eyebrow, title, summary, gradient divider, last-updated stamp
  *   • Two-column body (desktop): sticky numbered TOC + numbered sections
- *   • Single column on mobile (TOC hidden — sections are short enough to scan)
+ *   • Single column on mobile (TOC hidden - sections are short enough to scan)
  *   • Custom rust bullet treatment + gold underlined links inside section bodies
  *   • Branded contact card at the foot of the page
  *
@@ -191,7 +191,7 @@ export default function LegalPageShell({
         <ContactCard />
       </section>
 
-      {/* Scoped styles — kept inside the shell so they ship/teardown with it. */}
+      {/* Scoped styles - kept inside the shell so they ship/teardown with it. */}
       <style>{`
         .legal-grid {
           display: grid;
@@ -303,7 +303,7 @@ function ContactCard() {
             letterSpacing: "-0.005em",
           }}
         >
-          Talk to a human —{" "}
+          Talk to a human -{" "}
           <span style={{ fontStyle: "italic", color: "#C0522B" }}>
             we read every email.
           </span>

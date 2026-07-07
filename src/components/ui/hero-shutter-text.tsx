@@ -1,8 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import React from "react";
-import { motion } from "framer-motion";
 
 interface ShutterTextProps {
   text: string;
@@ -15,8 +13,14 @@ interface ShutterTextProps {
 }
 
 /**
- * ShutterText — per-character reveal with three brand-colored slices
+ * ShutterText - per-character reveal with three brand-colored slices
  * that shutter across each letter before snapping to the final colour.
+ *
+ * Implemented with pure CSS animations (no framer-motion): the headline has
+ * ~45 characters and framer-motion was mounting 4 JS-driven motion components
+ * per character (~180 total), whose mount + per-frame style updates ran on the
+ * main thread and stuttered the intro. CSS keyframes on transform/opacity run
+ * on the compositor, so the reveal is effectively free and starts smoothly.
  *
  * Slice palette (Solnest brand):
  *   top    → rust   #C0522B  (slides left → right)
@@ -33,14 +37,17 @@ export function ShutterText({
   const chars = text.split("");
 
   return (
-    <span
-      className={cn("inline-flex flex-wrap items-center", className)}
-      style={style}
-      aria-label={text}
-    >
+    <span className={className} style={style}>
+      {/* Clean, machine-readable copy for SEO + screen readers. The animated
+          glyphs below stack 4 spans per character (main + 3 colour slices), so
+          their combined textContent is garbled ("WWWWaaaa..."); this sr-only
+          layer carries the real sentence and the decorative layer is aria-hidden. */}
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true" className="inline-flex flex-wrap items-center">
       {chars.map((char, i) => {
         const charDelay = delay + i * stagger;
         const isSpace = char === " ";
+        const glyph = isSpace ? " " : char;
 
         return (
           <span
@@ -52,71 +59,76 @@ export function ShutterText({
               // Extra bottom padding so descenders (y, g, p) aren't clipped
               paddingBottom: "0.14em",
               marginBottom: "-0.14em",
-              // Tighten horizontal gaps between chars
               letterSpacing: "inherit",
             }}
             aria-hidden="true"
           >
-            {/* ── Main character — blur-in reveal ── */}
-            <motion.span
-              initial={{ opacity: 0, filter: "blur(6px)" }}
-              animate={{ opacity: 1, filter: "blur(0px)" }}
-              transition={{ delay: charDelay + 0.18, duration: 0.65 }}
-              style={{ display: "block" }}
+            {/* ── Main character - transform + opacity reveal ── */}
+            <span
+              className="shutter-char"
+              style={{
+                display: "block",
+                animationDelay: `${charDelay + 0.18}s`,
+                willChange: "transform, opacity",
+              }}
             >
-              {isSpace ? "\u00A0" : char}
-            </motion.span>
+              {glyph}
+            </span>
 
-            {/* ── Top slice (0–35%) — rust, left → right ── */}
-            <motion.span
-              initial={{ x: "-100%", opacity: 0 }}
-              animate={{ x: "100%", opacity: [0, 1, 0] }}
-              transition={{ duration: 0.6, delay: charDelay, ease: "easeInOut" }}
+            {/* ── Top slice (0–35%) - rust, left → right ── */}
+            <span
+              className="shutter-slice"
               style={{
                 position: "absolute", inset: 0,
                 clipPath: "polygon(0 0, 100% 0, 100% 35%, 0 35%)",
                 color: "#C0522B",
                 pointerEvents: "none", zIndex: 10,
+                animationName: "shutterSliceR",
+                animationDelay: `${charDelay}s`,
+                willChange: "transform, opacity",
               }}
               aria-hidden="true"
             >
-              {isSpace ? "\u00A0" : char}
-            </motion.span>
+              {glyph}
+            </span>
 
-            {/* ── Middle slice (35–65%) — cream, right → left ── */}
-            <motion.span
-              initial={{ x: "100%", opacity: 0 }}
-              animate={{ x: "-100%", opacity: [0, 1, 0] }}
-              transition={{ duration: 0.6, delay: charDelay + 0.08, ease: "easeInOut" }}
+            {/* ── Middle slice (35–65%) - cream, right → left ── */}
+            <span
+              className="shutter-slice"
               style={{
                 position: "absolute", inset: 0,
                 clipPath: "polygon(0 35%, 100% 35%, 100% 65%, 0 65%)",
                 color: "#F0EBE1",
                 pointerEvents: "none", zIndex: 10,
+                animationName: "shutterSliceL",
+                animationDelay: `${charDelay + 0.08}s`,
+                willChange: "transform, opacity",
               }}
               aria-hidden="true"
             >
-              {isSpace ? "\u00A0" : char}
-            </motion.span>
+              {glyph}
+            </span>
 
-            {/* ── Bottom slice (65–100%) — gold, left → right ── */}
-            <motion.span
-              initial={{ x: "-100%", opacity: 0 }}
-              animate={{ x: "100%", opacity: [0, 1, 0] }}
-              transition={{ duration: 0.6, delay: charDelay + 0.16, ease: "easeInOut" }}
+            {/* ── Bottom slice (65–100%) - gold, left → right ── */}
+            <span
+              className="shutter-slice"
               style={{
                 position: "absolute", inset: 0,
                 clipPath: "polygon(0 65%, 100% 65%, 100% 100%, 0 100%)",
                 color: "#C9A84C",
                 pointerEvents: "none", zIndex: 10,
+                animationName: "shutterSliceR",
+                animationDelay: `${charDelay + 0.16}s`,
+                willChange: "transform, opacity",
               }}
               aria-hidden="true"
             >
-              {isSpace ? "\u00A0" : char}
-            </motion.span>
+              {glyph}
+            </span>
           </span>
         );
       })}
+      </span>
     </span>
   );
 }

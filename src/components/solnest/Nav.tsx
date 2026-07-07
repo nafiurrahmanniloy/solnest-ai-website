@@ -30,7 +30,10 @@ export default function Nav() {
   }, [mobileOpen]);
 
   const navLinks = [
-    { label: "Work With Ryan", href: "#services" },
+    { label: "How It Works", href: "/#how" },
+    { label: "Services", href: "/services" },
+    { label: "Case Studies", href: "/work" },
+    { label: "About", href: "/about" },
   ];
 
   return (
@@ -48,9 +51,9 @@ export default function Nav() {
       >
         <motion.nav
           animate={{
-            maxWidth: scrolled ? "860px" : "1200px",
-            paddingLeft: scrolled ? "24px" : "32px",
-            paddingRight: scrolled ? "24px" : "32px",
+            maxWidth: scrolled ? "1120px" : "1200px",
+            paddingLeft: scrolled ? "26px" : "32px",
+            paddingRight: scrolled ? "26px" : "32px",
           }}
           transition={{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1.0] }}
           className="pointer-events-auto w-full mx-4 md:mx-6"
@@ -75,7 +78,7 @@ export default function Nav() {
           }}
         >
           {/* Logo */}
-          <a href="/" className="flex items-center flex-shrink-0" aria-label="Solnest AI — home">
+          <a href="/" className="flex items-center flex-shrink-0" aria-label="Solnest AI - home">
             <Image
               src="/solnest-logo.png"
               alt="Solnest AI"
@@ -91,8 +94,8 @@ export default function Nav() {
             />
           </a>
 
-          {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-7">
+          {/* Desktop links (full nav only at xl+; tablet/small-laptop/mobile use the hamburger) */}
+          <div className="hidden xl:flex items-center gap-5">
             {navLinks.map((link) => (
               <a
                 key={link.label}
@@ -108,6 +111,7 @@ export default function Nav() {
                   textTransform: "uppercase",
                   color: "rgba(212,204,184,0.75)",
                   textDecoration: "none",
+                  whiteSpace: "nowrap",
                   transition: "color 0.2s ease",
                 }}
                 onMouseEnter={(e) => {
@@ -142,10 +146,10 @@ export default function Nav() {
 
             {/* Book a Call CTA */}
             <MagneticButton
-              href="/apply"
+              href="/build-session"
               className="group relative overflow-hidden"
               style={{
-                padding: "11px 26px",
+                padding: "10px 22px",
                 borderRadius: "9999px",
                 border: "1px solid rgba(192,82,43,0.5)",
                 background: "transparent",
@@ -177,7 +181,7 @@ export default function Nav() {
               rel="noopener noreferrer"
               className="group relative bg-rust text-cream overflow-hidden"
               style={{
-                padding: "11px 26px",
+                padding: "10px 22px",
                 borderRadius: "9999px",
                 boxShadow: "0 0 20px rgba(192,82,43,0.25)",
               } as React.CSSProperties}
@@ -211,7 +215,7 @@ export default function Nav() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden flex flex-col items-center justify-center gap-[5px] p-3 -mr-1"
+            className="xl:hidden flex flex-col items-center justify-center gap-[5px] p-3 -mr-1"
             style={{ minWidth: 44, minHeight: 44 }}
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -237,7 +241,7 @@ export default function Nav() {
         </motion.nav>
       </motion.div>
 
-      {/* ── Mobile dropdown — full screen overlay ── */}
+      {/* ── Mobile dropdown - full screen overlay ── */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -249,7 +253,7 @@ export default function Nav() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3, ease: [0.215, 0.61, 0.355, 1.0] }}
-            className="fixed inset-x-4 top-[86px] z-40 md:hidden rounded-2xl overflow-hidden"
+            className="fixed inset-x-4 top-[86px] z-40 xl:hidden rounded-2xl overflow-hidden"
             style={{
               background: "rgba(13,13,11,0.97)",
               border: "1px solid rgba(192,82,43,0.2)",
@@ -283,7 +287,7 @@ export default function Nav() {
                 </motion.a>
               ))}
               <motion.a
-                href="/apply"
+                href="/build-session"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15, duration: 0.28 }}

@@ -7,9 +7,9 @@ import Image from "next/image";
 const tags = [
   "Commercial Pilot",
   "STR Operator",
+  "AI Coach @ STR Secrets",
   "AI Builder",
   "Yo-Yo Enthusiast",
-  "British Columbia, CA",
 ];
 
 const stats = [
@@ -20,9 +20,10 @@ const stats = [
 ];
 
 const roles = [
-  { role: "STR Operator", detail: "Multiple properties running fully automated — zero manual steps." },
+  { role: "STR Operator", detail: "Multiple properties running fully automated, zero manual steps." },
+  { role: "AI Coach", detail: "The recognized AI authority inside STR Secrets." },
   { role: "AI Builder", detail: "40+ agents deployed across real businesses." },
-  { role: "Community Lead", detail: "A growing community of operators learning and building together." },
+  { role: "Community Lead", detail: "A growing community of STR operators learning and building together." },
 ];
 
 function AnimatedStat({ value, suffix, label, accent }: { value: number; suffix: string; label: string; accent: string }) {
@@ -95,7 +96,7 @@ export function AboutSection() {
         className="grid grid-cols-1 lg:grid-cols-2"
         style={{ background: "linear-gradient(to right, #0D0D0B 50%, #F5F0E8 50%)" }}
       >
-        {/* LEFT — full photo with tags overlay */}
+        {/* LEFT - full photo with tags overlay */}
         <div
           className="relative overflow-hidden"
           style={{ background: "#0D0D0B", minHeight: "clamp(420px, 58vw, 700px)" }}
@@ -109,7 +110,7 @@ export function AboutSection() {
           >
             <Image
               src="/ryan.jpg"
-              alt="Ryan Lefebvre — Founder of Solnest AI"
+              alt="Ryan Lefebvre, Founder of Solnest AI"
               fill
               style={{ objectFit: "cover", objectPosition: "50% 18%" }}
               priority
@@ -134,7 +135,7 @@ export function AboutSection() {
             />
           </motion.div>
 
-          {/* Name + tags — photo bottom */}
+          {/* Name + tags - photo bottom */}
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -173,7 +174,7 @@ export function AboutSection() {
           </motion.div>
         </div>
 
-        {/* RIGHT — bio on cream */}
+        {/* RIGHT - bio on cream */}
         <div
           className="flex flex-col justify-center px-10 lg:px-16 py-14 lg:py-20"
           style={{ background: "#F5F0E8" }}
@@ -209,7 +210,7 @@ export function AboutSection() {
               <span style={{ color: "#C0522B", fontStyle: "italic" }}>AI architect.</span>
             </motion.h2>
 
-            {/* ── What he does — cream-native role list ── */}
+            {/* ── What he does - cream-native role list ── */}
             <motion.div variants={itemVariants} style={{ marginBottom: "24px" }}>
               {roles.map((r, i) => (
                 <div
@@ -246,7 +247,7 @@ export function AboutSection() {
               fontSize: "clamp(18px, 1.26vw, 20px)", lineHeight: 1.8,
               color: "#2C2A25", marginBottom: "14px",
             }}>
-              Ryan built a full AI automation stack for his own STR operations — then realized every business owner he met had the same problem: too much manual work, not enough time.
+              Ryan built a full AI automation stack for his own STR operations, then realized every business owner he met had the same problem: too much manual work, not enough time.
             </motion.p>
 
             <motion.p variants={itemVariants} style={{
@@ -274,14 +275,14 @@ export function AboutSection() {
                 letterSpacing: "0.18em", textTransform: "uppercase",
                 color: "rgba(44,42,37,0.7)", marginTop: "10px",
               }}>
-                — Ryan Lefebvre
+                - Ryan Lefebvre
               </p>
             </motion.div>
           </motion.div>
         </div>
       </div>
 
-      {/* ── Bottom: Stats bar — redesigned ── */}
+      {/* ── Bottom: Stats bar - redesigned ── */}
       <div style={{ background: "#0D0D0B", position: "relative" }}>
         {/* Top accent line */}
         <div aria-hidden="true" style={{

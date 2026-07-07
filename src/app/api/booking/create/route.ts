@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
           contactId,
           startTime: startTime.toISOString(),
           endTime: endTime.toISOString(),
-          title: `${titlePrefix} — ${firstName} ${lastName}`,
+          title: `${titlePrefix} - ${firstName} ${lastName}`,
           appointmentStatus: "confirmed",
           assignedUserId: "pmvjtEanFSvXlw008HKt",
         }),

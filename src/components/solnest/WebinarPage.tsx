@@ -201,10 +201,10 @@ export function WebinarPage() {
   };
 
   const whatYouLearn = [
-    "The single biggest time-killer in your business — and how to eliminate it with AI in under a week",
+    "The single biggest time-killer in your business - and how to eliminate it with AI in under a week",
     "A live build: Ryan creates a working automation from scratch, in real time, no slides",
-    "Why most business owners waste money on the wrong AI tools — and the exact stack that actually works",
-    "Bring your business to the Q&A — Ryan will find your #1 bottleneck and map the fix live",
+    "Why most business owners waste money on the wrong AI tools - and the exact stack that actually works",
+    "Bring your business to the Q&A - Ryan will find your #1 bottleneck and map the fix live",
   ];
 
   return (
@@ -222,7 +222,7 @@ export function WebinarPage() {
       >
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-20 items-stretch">
 
-          {/* ── LEFT COLUMN — Info ── */}
+          {/* ── LEFT COLUMN - Info ── */}
           <div className="flex flex-col">
             {/* Live badge */}
             <motion.div
@@ -342,7 +342,7 @@ export function WebinarPage() {
               You&apos;re spending <span style={{ color: "#F0EBE1", fontWeight: 500 }}>10+ hours a week</span> on
               tasks AI could handle in minutes. In this free live demo, Ryan Lefebvre
               will show you <span style={{ color: "#F0EBE1", fontWeight: 500 }}>exactly</span> how
-              {" "}&mdash; by building a real automation for a real business, on screen, start to finish.
+              {" "}- by building a real automation for a real business, on screen, start to finish.
             </motion.p>
 
             {/* Event details */}
@@ -414,7 +414,7 @@ export function WebinarPage() {
               ))}
             </motion.div>
 
-            {/* What you'll learn — desktop only */}
+            {/* What you'll learn - desktop only */}
             <motion.div
               variants={stagger}
               initial="hidden"
@@ -472,7 +472,7 @@ export function WebinarPage() {
             </motion.div>
           </div>
 
-          {/* ── RIGHT COLUMN — Registration card ── */}
+          {/* ── RIGHT COLUMN - Registration card ── */}
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -759,10 +759,10 @@ export function WebinarPage() {
                 color: "rgba(212,204,184,0.4)",
               }}
             >
-              Limited spots &mdash; we keep it small so Ryan can answer every question
+              Limited spots - we keep it small so Ryan can answer every question
             </motion.p>
 
-            {/* ── Your Host — Ryan card ── */}
+            {/* ── Your Host - Ryan card ── */}
             <motion.div
               variants={fadeUp}
               custom={1.0}
@@ -836,7 +836,7 @@ export function WebinarPage() {
                       margin: 0,
                     }}
                   >
-                    STR operator turned AI builder. Cut his own workload in half — now he does it for other businesses, live on camera.
+                    STR operator turned AI builder. Cut his own workload in half - now he does it for other businesses, live on camera.
                   </p>
                 </div>
               </div>
@@ -865,7 +865,7 @@ export function WebinarPage() {
           </motion.div>
         </div>
 
-        {/* ── What you'll learn — mobile ── */}
+        {/* ── What you'll learn - mobile ── */}
         <motion.div
           variants={stagger}
           initial="hidden"

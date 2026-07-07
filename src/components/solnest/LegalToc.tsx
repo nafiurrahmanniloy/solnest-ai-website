@@ -10,7 +10,7 @@ type TocSection = { id: string; title: string };
  * Sticky table-of-contents for /privacy-policy and /terms-of-service.
  *
  * Uses a scroll listener (not IntersectionObserver) so it stays
- * accurate even when no section is inside the active band — e.g.
+ * accurate even when no section is inside the active band - e.g.
  * when scrolled past the last section or before the first. The
  * active section is whichever one's top has most recently crossed
  * the 20%-from-top trigger line.
@@ -93,7 +93,7 @@ export default function LegalToc({ sections }: { sections: TocSection[] }) {
               <a
                 href={`#${s.id}`}
                 onClick={() => {
-                  // Instant feedback — don't wait for the scroll
+                  // Instant feedback - don't wait for the scroll
                   // listener to catch up to the click.
                   setActiveId(s.id);
                 }}

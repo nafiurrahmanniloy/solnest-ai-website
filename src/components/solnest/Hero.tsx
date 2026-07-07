@@ -24,6 +24,26 @@ function useIsDesktop() {
   return isDesktop;
 }
 
+/**
+ * Hold the heavy Spline robot back until the browser is idle (or ~1.4s as a
+ * fallback) so its ~1MB runtime download, parse, and second WebGL context don't
+ * block the main thread or fight the GPU while the headline intro is playing.
+ * The robot already fades in, so mounting it a beat later is invisible to users
+ * but removes the biggest source of intro jank.
+ */
+function useDeferredMount(delayMs = 2800) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    // A fixed timeout (NOT requestIdleCallback): rIC fires opportunistically
+    // during idle gaps that occur *while the intro is still playing*, so the
+    // robot's ~2.2s scene-parse freeze would land mid-reveal. A hard delay
+    // guarantees the headline intro finishes before the robot ever mounts.
+    const timer = setTimeout(() => setReady(true), delayMs);
+    return () => clearTimeout(timer);
+  }, [delayMs]);
+  return ready;
+}
+
 const TunnelBackground = dynamic(() => import("@/components/ui/tunnel-hero"), {
   ssr: false,
   loading: () => <div style={{ position: "absolute", inset: 0, background: "#0D0D0B" }} />,
@@ -64,12 +84,13 @@ function ScrambleText({ text }: { text: string }) {
 
 export default function Hero() {
   const isDesktop = useIsDesktop();
+  const robotReady = useDeferredMount();
   return (
     <section
       className="relative overflow-hidden"
       style={{ background: "#0D0D0B", minHeight: "100dvh", display: "flex", alignItems: "center" }}
     >
-      {/* Tunnel — behind everything. Must have explicit dimensions: the
+      {/* Tunnel - behind everything. Must have explicit dimensions: the
           canvas inside is absolutely positioned, so without inset-0 the
           container collapses to zero height and the ResizeObserver shrinks
           the background to nothing on the first reflow. */}
@@ -77,7 +98,7 @@ export default function Hero() {
         <TunnelBackground opacity={0.6} />
       </div>
 
-      {/* Ambient glow — left side */}
+      {/* Ambient glow - left side */}
       <div
         className="pointer-events-none absolute top-[-10vw] left-[-5vw] z-[1] animate-breathe"
         style={{
@@ -116,11 +137,11 @@ export default function Hero() {
           {/* ── HEADLINE ──
               All 4 lines use the SAME font-size clamp so they fill
               the column evenly. "AI" gets its own line and rust italic
-              treatment but same scale — no awkward size jumps.
+              treatment but same scale - no awkward size jumps.
           */}
           <h1 style={{ margin: 0, padding: 0 }}>
 
-            {/* Line 1: shutter reveal — cream */}
+            {/* Line 1: shutter reveal - cream */}
             <ShutterText
               text="Watch what happens"
               delay={0.15}
@@ -135,7 +156,7 @@ export default function Hero() {
               }}
             />
 
-            {/* Line 2: unified shutter — "when " dim, "AI" rust italic, " meets" cream */}
+            {/* Line 2: unified shutter - "when " dim, "AI" rust italic, " meets" cream */}
             <span
               style={{
                 display: "block",
@@ -163,7 +184,7 @@ export default function Hero() {
               />
             </span>
 
-            {/* Line 3: shutter reveal — cream */}
+            {/* Line 3: shutter reveal - cream */}
             <ShutterText
               text="your business."
               delay={0.82}
@@ -194,7 +215,7 @@ export default function Hero() {
             }}
           />
 
-          {/* Value prop — blur text animation */}
+          {/* Value prop - blur text animation */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -209,7 +230,7 @@ export default function Hero() {
             }}
           >
             <BlurText
-              text="Stop doing manually what AI can do in seconds. Solnest AI builds the exact systems that cut your workload in half — and puts them directly into your business."
+              text="We help operators put AI to work: running the busywork so the business runs without you. Short-term rental or any other business, there's a door for you."
               once
               style={{ color: "rgba(212,204,184,0.85)" }}
             />
@@ -250,13 +271,12 @@ export default function Hero() {
             transition={{ delay: 1.0, duration: 0.6 }}
             className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-7"
           >
+            {/* Primary door → scroll to the STR community deep-dive */}
             <MagneticButton
-              href="https://skool.com/solnest-ai"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#community"
               className="group relative bg-rust text-cream overflow-hidden"
               style={{
-                padding: "19px 44px",
+                padding: "19px 40px",
                 boxShadow: "0 0 40px rgba(192,82,43,0.3), 0 0 80px rgba(192,82,43,0.1)",
               } as React.CSSProperties}
             >
@@ -274,38 +294,30 @@ export default function Hero() {
                 letterSpacing: "0.18em", textTransform: "uppercase",
                 position: "relative", zIndex: 2,
               }}>
-                Join for $97/mo
+                Explore the Community
               </span>
             </MagneticButton>
 
-            <a
+            {/* Secondary door → scroll to Done-For-You services */}
+            <MagneticButton
               href="#services"
+              className="group relative overflow-hidden"
               style={{
-                fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "18px",
-                color: "rgba(212,204,184,0.75)",
-                borderBottom: "1px solid rgba(212,204,184,0.28)",
-                paddingBottom: "2px", textDecoration: "none",
-                transition: "color 0.2s ease, border-color 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement;
-                el.style.color = "#F0EBE1"; el.style.borderColor = "rgba(212,204,184,0.55)";
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement;
-                el.style.color = "rgba(212,204,184,0.75)"; el.style.borderColor = "rgba(212,204,184,0.28)";
-              }}
-              onFocus={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement;
-                el.style.color = "#F0EBE1"; el.style.borderColor = "rgba(212,204,184,0.55)";
-              }}
-              onBlur={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement;
-                el.style.color = "rgba(212,204,184,0.75)"; el.style.borderColor = "rgba(212,204,184,0.28)";
-              }}
+                padding: "19px 40px",
+                border: "1px solid rgba(240,235,225,0.28)",
+                background: "rgba(240,235,225,0.02)",
+              } as React.CSSProperties}
             >
-              See how it works →
-            </a>
+              <span style={{
+                fontFamily: "var(--font-condensed)",
+                fontWeight: 600, fontSize: "15px",
+                letterSpacing: "0.18em", textTransform: "uppercase",
+                color: "#F0EBE1",
+                position: "relative", zIndex: 2,
+              }}>
+                Get AI Built For You
+              </span>
+            </MagneticButton>
           </motion.div>
 
           {/* Trust badges */}
@@ -333,8 +345,9 @@ export default function Hero() {
 
         </div>
 
-        {/* ── RIGHT: Spline robot — desktop only, lazy-mounted ── */}
-        {isDesktop && (
+        {/* ── RIGHT: Spline robot - desktop only, mounted after the intro
+            settles so its heavy runtime doesn't stall the headline reveal ── */}
+        {isDesktop && robotReady && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -348,7 +361,7 @@ export default function Hero() {
               marginRight: "-8vw",
             }}
           >
-            {/* Masked layer — soft-edged window onto the 3D scene. The mask
+            {/* Masked layer - soft-edged window onto the 3D scene. The mask
                 lives here (not on the outer wrapper) so the watermark cover
                 below is NOT faded out by it. */}
             <div
@@ -356,9 +369,9 @@ export default function Hero() {
                 position: "absolute",
                 inset: 0,
                 WebkitMaskImage:
-                  "radial-gradient(ellipse 92% 95% at 58% 50%, black 50%, transparent 85%)",
+                  "radial-gradient(ellipse 80% 84% at 57% 45%, black 40%, transparent 72%)",
                 maskImage:
-                  "radial-gradient(ellipse 92% 95% at 58% 50%, black 50%, transparent 85%)",
+                  "radial-gradient(ellipse 80% 84% at 57% 45%, black 40%, transparent 72%)",
               }}
             >
               <SplineScene
@@ -376,7 +389,7 @@ export default function Hero() {
                   transform: "scale(0.86) translateY(2%)",
                   transformOrigin: "center center",
                   // Disable cursor interactivity so the baked "Look At" event
-                  // never fires — this stops the robot from following the mouse
+                  // never fires - this stops the robot from following the mouse
                   // AND from swinging out of position while Lenis smooth-scrolls
                   // the canvas under a stationary cursor. (Decorative only.)
                   pointerEvents: "none",
@@ -386,7 +399,7 @@ export default function Hero() {
 
             {/* Cover the "Built with Spline" watermark, which the runtime
                 paints into the canvas pixels (bottom-right) on free-plan
-                exports — it is not a DOM node, so it can only be masked here
+                exports - it is not a DOM node, so it can only be masked here
                 or removed via a paid Spline re-export. Feathered so it blends
                 into the dark hero background. */}
             <div

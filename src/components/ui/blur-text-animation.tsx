@@ -23,16 +23,16 @@ interface BlurTextProps {
 /**
  * Deterministic pseudo-random in [0, 1) from an integer seed (mulberry32).
  *
- * Two rules keep this hydration-safe — every value below ends up in a word's
+ * Two rules keep this hydration-safe - every value below ends up in a word's
  * inline `style`, and any SSR-vs-client difference triggers a React hydration
  * mismatch (#418/#423/#425) that tears down the SSR hero and re-renders it on
  * the client, freezing the Framer Motion entry animations at opacity:0 (the
  * whole hero headline goes invisible):
- *   1. Never use Math.random() — useMemo re-runs on the client during
+ *   1. Never use Math.random() - useMemo re-runs on the client during
  *      hydration, so it would produce different markup than the server sent.
  *   2. Use only integer ops here (Math.imul / bitwise). Math.sin/cos/pow are
  *      NOT guaranteed bit-identical across JS engines, so Node (SSR) and the
- *      browser (client) can disagree in the last digit — enough to mismatch.
+ *      browser (client) can disagree in the last digit - enough to mismatch.
  * Anything derived from a transcendental (sin/cos/pow) below is rounded via
  * round4() for the same reason.
  */
@@ -47,7 +47,7 @@ function seededRandom(seed: number): number {
 const round4 = (n: number) => Math.round(n * 1e4) / 1e4;
 
 /**
- * BlurText — drop-in inline text with cinematic blur-in animation.
+ * BlurText - drop-in inline text with cinematic blur-in animation.
  * Renders as a <span> so it sits naturally inside any parent element.
  */
 export function BlurText({ text, once = false, loopDelay = 5000, className = "", style }: BlurTextProps) {
@@ -105,14 +105,16 @@ export function BlurText({ text, once = false, loopDelay = 5000, className = "",
           style={{
             marginRight: "0.32em",
             opacity: isVisible ? 1 : 0,
-            filter: isVisible ? "blur(0px)" : `blur(${w.blur}px)`,
+            // Animating `filter: blur()` per word re-rasterizes every frame and
+            // was a major contributor to the choppy intro. Reveal with
+            // translateY + opacity only - both are GPU-composited and free.
             transform: isVisible
-              ? "translateY(0) scale(1)"
-              : `translateY(16px) scale(${w.scale ?? 1})`,
-            transition: `opacity ${w.duration}s, filter ${w.duration}s, transform ${w.duration}s`,
+              ? "translateY(0)"
+              : "translateY(16px)",
+            transition: `opacity ${w.duration}s, transform ${w.duration}s`,
             transitionDelay: `${w.delay}s`,
             transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-            willChange: "filter, transform, opacity",
+            willChange: "transform, opacity",
           }}
         >
           {w.text}

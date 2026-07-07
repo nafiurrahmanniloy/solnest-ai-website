@@ -17,6 +17,10 @@ const integrations = [
   { name: 'Vapi', highlight: false },
   { name: 'Cal.com', highlight: false },
   { name: 'Stripe', highlight: false },
+  { name: 'QuickBooks', highlight: false },
+  { name: 'Supabase', highlight: false },
+  { name: 'Vercel', highlight: false },
+  { name: 'GitHub', highlight: false },
 ]
 
 function LogoCard({ name, highlight }: { name: string; highlight: boolean }) {

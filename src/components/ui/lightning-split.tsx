@@ -29,7 +29,7 @@ interface LightningSplitProps {
 	rightComponent?: ReactNode
 }
 
-// WebGL Shader Canvas — glow effect on the divider line
+// WebGL Shader Canvas - glow effect on the divider line
 function ShaderCanvas({ className = '' }: { className?: string }) {
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	const rafRef = useRef<number>(0)
@@ -202,7 +202,7 @@ export function LightningSplit({ leftComponent, rightComponent }: LightningSplit
 		const polyPointsStr = pts.join(' ')
 		const clipPolygonStr = `polygon(0% 0%, ${clipPts.join(', ')}, 0% 100%)`
 
-		// Direct DOM updates — no React re-render
+		// Direct DOM updates - no React re-render
 		if (leftClipRef.current) {
 			leftClipRef.current.style.clipPath = clipPolygonStr
 			;(leftClipRef.current.style as CSSProperties & { WebkitClipPath?: string }).WebkitClipPath = clipPolygonStr
@@ -253,12 +253,12 @@ export function LightningSplit({ leftComponent, rightComponent }: LightningSplit
 
 	return (
 		<div ref={rootRef} className="relative h-full w-full overflow-hidden select-none">
-			{/* Right panel — WITHOUT AI — always visible base layer */}
+			{/* Right panel - WITHOUT AI - always visible base layer */}
 			<div className="absolute inset-0 overflow-hidden">
 				<div className="h-full w-full">{rightComponent}</div>
 			</div>
 
-			{/* Left panel — WITH AI — clipped by the animated lightning edge */}
+			{/* Left panel - WITH AI - clipped by the animated lightning edge */}
 			<div ref={leftClipRef} className="absolute inset-0 overflow-hidden">
 				<div className="h-full w-full">{leftComponent}</div>
 			</div>

@@ -90,7 +90,7 @@ export function FooterCTA() {
                 color: "#C0522B",
               }}
             >
-              This offer expires — no exceptions
+              Two ways in. Pick your door.
             </span>
             <div style={{ width: "38px", height: "1px", backgroundColor: "#C0522B" }} />
           </motion.div>
@@ -127,7 +127,7 @@ export function FooterCTA() {
             </span>
           </motion.h2>
 
-          {/* Body — blur text loops to keep it alive on long page views */}
+          {/* Body - blur text loops to keep it alive on long page views */}
           <motion.p
             variants={itemVariants}
             style={{
@@ -140,23 +140,26 @@ export function FooterCTA() {
             }}
           >
             <BlurText
-              text="$97/mo. Cancel anytime. The community, the live builds, the agent library, the SOPs — all of it, one membership. The only question is whether you start today or three months from now."
+              text="Run a short-term rental? Join the community for $97/mo: live builds, the agent library, the SOPs, all of it. Run any other business? Book a call and Ryan's team builds your AI for you. The only question is whether you start today or three months from now."
               loopDelay={1500}
               style={{ color: "rgba(212,204,184,0.75)" }}
             />
           </motion.p>
 
-          {/* Full-width CTA button */}
-          <motion.div variants={itemVariants} className="flex justify-center mb-8">
+          {/* Dual CTA - the two doors */}
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row justify-center items-stretch gap-4 mb-8 mx-auto"
+            style={{ maxWidth: "860px" }}
+          >
+            {/* Door 1 - STR community */}
             <MagneticButton
               href="https://skool.com/solnest-ai"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative bg-rust text-cream overflow-hidden"
+              className="group relative bg-rust text-cream overflow-hidden flex-1"
               style={{
-                width: "100%",
-                maxWidth: "860px",
-                padding: "28px 60px",
+                padding: "26px 40px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -164,7 +167,6 @@ export function FooterCTA() {
                   "0 0 40px rgba(192,82,43,0.25), 0 0 80px rgba(192,82,43,0.1)",
               } as React.CSSProperties}
             >
-              {/* Shimmer sweep */}
               <span
                 className="absolute inset-0 -translate-x-full group-hover:translate-x-full"
                 style={{
@@ -179,14 +181,45 @@ export function FooterCTA() {
                 style={{
                   fontFamily: "var(--font-condensed)",
                   fontWeight: 600,
-                  fontSize: "18px",
-                  letterSpacing: "0.18em",
+                  fontSize: "17px",
+                  letterSpacing: "0.16em",
                   textTransform: "uppercase",
                   position: "relative",
                   zIndex: 2,
+                  textAlign: "center",
                 }}
               >
-                Join Solnest AI — $97/mo
+                Join the Community <span style={{ opacity: 0.7 }}>$97/mo</span>
+              </span>
+            </MagneticButton>
+
+            {/* Door 2 - Done-For-You */}
+            <MagneticButton
+              href="/build-session"
+              className="group relative overflow-hidden flex-1"
+              style={{
+                padding: "26px 40px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid rgba(240,235,225,0.3)",
+                background: "rgba(240,235,225,0.03)",
+              } as React.CSSProperties}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-condensed)",
+                  fontWeight: 600,
+                  fontSize: "17px",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  color: "#F0EBE1",
+                  position: "relative",
+                  zIndex: 2,
+                  textAlign: "center",
+                }}
+              >
+                Book a Call
               </span>
             </MagneticButton>
           </motion.div>

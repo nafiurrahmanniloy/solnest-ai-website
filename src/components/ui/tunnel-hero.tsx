@@ -12,7 +12,7 @@ uniform float iTime;
 uniform vec3 iResolution;
 
 #define TAU 6.2831853071795865
-#define TUNNEL_LAYERS 96
+#define TUNNEL_LAYERS 56
 #define RING_POINTS 128
 #define POINT_SIZE 1.8
 #define POINT_COLOR_A vec3(1.0)
@@ -81,14 +81,27 @@ type ThreeContext = {
   geometry: THREE.PlaneGeometry;
 };
 
+/**
+ * Render the tunnel at a fraction of native resolution and let CSS upscale the
+ * canvas back to 100%. The shader cost is per-pixel of the drawing buffer, so
+ * rendering at 0.66x cuts the fragment work to ~44% - the dominant GPU cost of
+ * the hero intro - and the softening is invisible behind the dark, 0.6-opacity
+ * overlay. Antialiasing is off for the same reason (the upscale blurs edges).
+ */
+const RENDER_SCALE = 0.5;
+
 function createThreeForCanvas(
   canvas: HTMLCanvasElement,
   width: number,
   height: number
 ): ThreeContext {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
   renderer.setPixelRatio(1);
-  renderer.setSize(width, height);
+  // updateStyle=false: shrink only the drawing buffer; the canvas CSS stays at
+  // 100% (set inline below) so the small buffer is stretched to fill the hero.
+  const bw = Math.max(1, Math.round(width * RENDER_SCALE));
+  const bh = Math.max(1, Math.round(height * RENDER_SCALE));
+  renderer.setSize(bw, bh, false);
 
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -96,7 +109,7 @@ function createThreeForCanvas(
   const material = new THREE.ShaderMaterial({
     uniforms: {
       iTime: { value: 0 },
-      iResolution: { value: new THREE.Vector3(width, height, 1) },
+      iResolution: { value: new THREE.Vector3(bw, bh, 1) },
     },
     vertexShader,
     fragmentShader,
@@ -147,6 +160,9 @@ export default function TunnelBackground({ opacity = 0.55 }: { opacity?: number 
     }
     const delta = timeSec - (lastTimeRef.current || timeSec);
     lastTimeRef.current = timeSec;
+    // Render every frame for smooth motion. The shader is cheap now (half-res,
+    // 56 layers), so 60fps is sustainable; capping the render rate made the
+    // drift visibly choppy.
     ctxRef.current.material.uniforms.iTime.value += delta * 0.5;
     ctxRef.current.renderer.render(ctxRef.current.scene, ctxRef.current.camera);
   }, []);
@@ -176,9 +192,11 @@ export default function TunnelBackground({ opacity = 0.55 }: { opacity?: number 
         const w = container.clientWidth || window.innerWidth;
         const h = container.clientHeight || window.innerHeight;
         if (w === 0 || h === 0) return;
+        const bw = Math.max(1, Math.round(w * RENDER_SCALE));
+        const bh = Math.max(1, Math.round(h * RENDER_SCALE));
         ctxRef.current.renderer.setPixelRatio(1);
-        ctxRef.current.renderer.setSize(w, h);
-        (ctxRef.current.material.uniforms.iResolution.value as THREE.Vector3).set(w, h, 1);
+        ctxRef.current.renderer.setSize(bw, bh, false);
+        (ctxRef.current.material.uniforms.iResolution.value as THREE.Vector3).set(bw, bh, 1);
       });
     });
     resizeObserver.observe(container);

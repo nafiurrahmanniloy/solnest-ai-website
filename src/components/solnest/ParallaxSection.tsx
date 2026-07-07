@@ -37,7 +37,7 @@ const images = [
 export function ParallaxSection() {
   return (
     <div style={{ background: "#0D0D0B" }}>
-      {/* Intro label — visible before scroll starts */}
+      {/* Intro label - visible before scroll starts */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

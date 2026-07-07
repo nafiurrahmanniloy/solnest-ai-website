@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, memo } from 'react';
 
 // --- Type Definitions ---
-type IconType = 'claude' | 'twilio' | 'makecom' | 'n8n' | 'airtable' | 'vapi' | 'zapier' | 'openai' | 'slack';
+type IconType = 'claude' | 'twilio' | 'makecom' | 'n8n' | 'airtable' | 'vapi' | 'zapier' | 'openai' | 'slack' | 'stripe' | 'github' | 'vercel' | 'resend';
 
 type GlowColor = 'rust' | 'gold';
 
@@ -111,6 +111,39 @@ const iconComponents: Record<IconType, { component: () => React.JSX.Element; col
       </svg>
     ),
     color: '#E01E5A'
+  },
+  stripe: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+        <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.475 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.71 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.587-7.305z" fill="#635BFF"/>
+      </svg>
+    ),
+    color: '#635BFF'
+  },
+  github: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.333-1.755-1.333-1.755-1.089-.744.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.775.42-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" fill="#ffffff"/>
+      </svg>
+    ),
+    color: '#ffffff'
+  },
+  vercel: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M12 1L24 22H0L12 1z" fill="#ffffff"/>
+      </svg>
+    ),
+    color: '#ffffff'
+  },
+  resend: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+        <rect x="2" y="4" width="20" height="16" rx="2.5" stroke="#C9A84C" strokeWidth="1.5"/>
+        <path d="M3 6.5l9 6.5 9-6.5" stroke="#C9A84C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+    color: '#C9A84C'
   }
 };
 
@@ -134,6 +167,11 @@ const skillsConfig: SkillConfig[] = [
   { id: 'vapi', orbitRadius: 155, size: 38, speed: -0.5, iconType: 'vapi', phaseShift: (4 * Math.PI) / 5, glowColor: 'gold', label: 'Vapi' },
   { id: 'zapier', orbitRadius: 155, size: 36, speed: -0.5, iconType: 'zapier', phaseShift: (6 * Math.PI) / 5, glowColor: 'gold', label: 'Zapier' },
   { id: 'slack', orbitRadius: 155, size: 36, speed: -0.5, iconType: 'slack', phaseShift: (8 * Math.PI) / 5, glowColor: 'gold', label: 'Slack' },
+  // Outermost Orbit (4 icons) - real infra/tooling stack
+  { id: 'stripe', orbitRadius: 215, size: 40, speed: 0.32, iconType: 'stripe', phaseShift: 0, glowColor: 'gold', label: 'Stripe' },
+  { id: 'github', orbitRadius: 215, size: 38, speed: 0.32, iconType: 'github', phaseShift: Math.PI / 2, glowColor: 'gold', label: 'GitHub' },
+  { id: 'vercel', orbitRadius: 215, size: 38, speed: 0.32, iconType: 'vercel', phaseShift: Math.PI, glowColor: 'gold', label: 'Vercel' },
+  { id: 'resend', orbitRadius: 215, size: 38, speed: 0.32, iconType: 'resend', phaseShift: (3 * Math.PI) / 2, glowColor: 'gold', label: 'Resend' },
 ];
 
 // --- Memoized Orbiting Skill Component ---
@@ -214,21 +252,28 @@ const GlowingOrbitPath = memo(({ radius, glowColor = 'rust', animationDelay = 0 
   };
 
   const colors = glowColors[glowColor] || glowColors.rust;
+  // Outermost ring (r=215) breathes slower and a touch deeper for a distinct gold glow
+  const isOutermost = radius >= 200;
+  const breatheDuration = isOutermost ? 7 : 5;
 
   return (
     <div
-      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none orbit-breathe"
       style={{
         width: `${radius * 2}px`,
         height: `${radius * 2}px`,
         animationDelay: `${animationDelay}s`,
+        animationDuration: `${breatheDuration}s`,
+        willChange: 'transform, opacity',
       }}
     >
       <div
         className="absolute inset-0 rounded-full"
         style={{
           background: `radial-gradient(circle, transparent 30%, ${colors.secondary} 70%, ${colors.primary} 100%)`,
-          boxShadow: `0 0 40px ${colors.primary}, inset 0 0 40px ${colors.secondary}`,
+          boxShadow: isOutermost
+            ? `0 0 55px ${colors.primary}, inset 0 0 55px ${colors.secondary}`
+            : `0 0 40px ${colors.primary}, inset 0 0 40px ${colors.secondary}`,
           animation: 'pulse 4s ease-in-out infinite',
           animationDelay: `${animationDelay}s`,
         }}
@@ -288,26 +333,63 @@ export default function OrbitingSkills() {
 
   const orbitConfigs: Array<{ radius: number; glowColor: GlowColor; delay: number }> = [
     { radius: 90, glowColor: 'rust', delay: 0 },
-    { radius: 155, glowColor: 'gold', delay: 1.5 }
+    { radius: 155, glowColor: 'gold', delay: 1.5 },
+    { radius: 215, glowColor: 'gold', delay: 0.75 }
   ];
 
   return (
     <div
       ref={containerRef}
       className="relative flex items-center justify-center"
-      style={{ width: '380px', height: '380px' }}
+      style={{ width: '460px', height: '460px' }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
+      <style>{`
+        @keyframes orbit-breathe {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 0.85;
+          }
+          50% {
+            transform: scale(1.025);
+            opacity: 1;
+          }
+        }
+        @keyframes core-pulse {
+          0%, 100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.06);
+          }
+        }
+        .orbit-breathe {
+          animation-name: orbit-breathe;
+          animation-timing-function: ease-in-out;
+          animation-iteration-count: infinite;
+        }
+        .core-pulse {
+          animation: core-pulse 3.2s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .orbit-breathe,
+          .core-pulse {
+            animation: none !important;
+          }
+        }
+      `}</style>
+
       {/* Central icon */}
       <div
-        className="relative z-10 flex items-center justify-center rounded-full"
+        className="relative z-10 flex items-center justify-center rounded-full core-pulse"
         style={{
           width: '64px',
           height: '64px',
           background: 'linear-gradient(135deg, rgba(192,82,43,0.2), rgba(13,13,11,0.95))',
           border: '1px solid rgba(192,82,43,0.35)',
           boxShadow: '0 0 40px rgba(192,82,43,0.15)',
+          willChange: 'transform',
         }}
       >
         <div className="absolute inset-0 rounded-full animate-pulse" style={{ background: 'rgba(192,82,43,0.12)', filter: 'blur(12px)' }} />

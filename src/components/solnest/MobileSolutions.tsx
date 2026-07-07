@@ -9,7 +9,7 @@ const projects = [
     title: "Guest Messaging Agent",
     badge: "STR Automation",
     headline: "0.3-second response time. Zero staff required.",
-    what: "A fully autonomous AI agent that handles 100% of guest communication for short-term rental properties — from pre-booking questions to check-out follow-ups.",
+    what: "A fully autonomous AI agent that handles 100% of guest communication for short-term rental properties - from pre-booking questions to check-out follow-ups.",
     results: [
       { stat: "100%", label: "Messages handled" },
       { stat: "0.3s", label: "Response time" },
@@ -41,7 +41,7 @@ const projects = [
     title: "Voice Ordering Agent",
     badge: "Restaurant AI",
     headline: "Handles 120+ calls per day. Never puts anyone on hold.",
-    what: "A voice AI that takes phone orders — understanding customizations, upselling combos, and processing payments with under 400ms latency.",
+    what: "A voice AI that takes phone orders - understanding customizations, upselling combos, and processing payments with under 400ms latency.",
     results: [
       { stat: "120+", label: "Daily calls" },
       { stat: "94%", label: "Accuracy" },
