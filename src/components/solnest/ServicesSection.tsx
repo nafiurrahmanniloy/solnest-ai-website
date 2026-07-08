@@ -14,7 +14,7 @@ const services = [
     description:
       "In one session, Ryan maps every hour you're wasting on tasks AI can own. You leave with a prioritized roadmap: not theory, not guesswork. Just the exact moves that will get your time back fastest.",
     creditNote: "Every dollar applies toward a Done-For-You build.",
-    href: "/build-session",
+    href: "/book",
     linkLabel: "Book a Call",
     badge: "Best starting point",
   },
@@ -27,7 +27,7 @@ const services = [
     description:
       "You stop doing it. Ryan's team builds it into your business: agents, automations, workflows, all running without you. You focus on growth. The machine handles the rest.",
     creditNote: null,
-    href: "/build-session",
+    href: "/book",
     linkLabel: "Book a Call",
     badge: "Most popular",
   },
@@ -40,7 +40,7 @@ const services = [
     description:
       "Ryan in your corner every month. Real-time strategy, implementation calls, and direct access when problems come up. Tailored to your business, because no two operations are the same.",
     creditNote: null,
-    href: "/build-session",
+    href: "/book",
     linkLabel: "Book a Call",
     badge: "Limited spots",
   },
@@ -66,16 +66,26 @@ const industries = [
   },
   {
     num: "04",
+    name: "Medical Offices",
+    description: "Patient calls, scheduling, and reminders handled by AI.",
+  },
+  {
+    num: "05",
+    name: "Construction",
+    description: "Bid follow-ups, scheduling, and job-site updates automated.",
+  },
+  {
+    num: "06",
     name: "Coaches & Consultants",
     description: "Client acquisition and inquiry handling on autopilot.",
   },
   {
-    num: "05",
+    num: "07",
     name: "E-commerce",
     description: "Support, order questions, and win-back flows handled by AI.",
   },
   {
-    num: "06",
+    num: "08",
     name: "Local Service Businesses",
     description: "Missed-call capture, quotes, and scheduling on autopilot.",
   },
@@ -287,6 +297,138 @@ const caseStudies = {
     stack: ["Claude", "Python", "Node.js", "PriceLabs", "Apify", "n8n"],
     color: "#6E8BC0",
     colorRgb: "110,139,192",
+  },
+  medspa: {
+    title: "Patient Concierge Agent",
+    badge: "MedSpa Automation",
+    headline: "87% booking rate from inbound leads. Fully hands-free.",
+    what: "An AI concierge that handles appointment scheduling, treatment consultations, pre-care instructions, and post-treatment follow-ups for a luxury MedSpa - across SMS, email, and web chat simultaneously.",
+    why: "The front desk was losing 40% of leads to voicemail during peak hours. The concierge agent now captures every inquiry within seconds and books them directly into the calendar.",
+    results: [
+      { stat: "87%", label: "Lead-to-booking rate" },
+      { stat: "2.4x", label: "More bookings/mo" },
+      { stat: "0", label: "Missed inquiries" },
+      { stat: "$18K", label: "Monthly revenue added" },
+    ],
+    before: [
+      "40% of leads going to voicemail during peak hours",
+      "2-person front desk overwhelmed by phone + walk-ins",
+      "Follow-ups falling through the cracks",
+      "$18K+ in potential revenue lost monthly",
+    ],
+    after: [
+      "Every inquiry captured in under 3 seconds",
+      "87% of leads converted to booked appointments",
+      "Automated pre-care and post-treatment follow-ups",
+      "Front desk focuses on in-person experience only",
+    ],
+    process: [
+      { step: "01", title: "Audited the lead funnel", desc: "Tracked where inquiries came from and where they dropped off - voicemail was the #1 killer." },
+      { step: "02", title: "Built multi-channel concierge", desc: "SMS, email, and web chat all handled by one AI agent with full treatment knowledge." },
+      { step: "03", title: "Connected to Cal.com", desc: "Appointments booked directly into the clinic's calendar - no human handoff needed." },
+    ],
+    stack: ["Claude AI", "Twilio", "Cal.com", "n8n", "Airtable"],
+    color: "#B07BA5",
+    colorRgb: "176,123,165",
+  },
+  restaurant: {
+    title: "Voice Ordering Agent",
+    badge: "Restaurant AI",
+    headline: "Handles 120+ calls per day. Never puts anyone on hold.",
+    what: "A voice AI agent that takes phone orders for a high-volume restaurant - understanding menu customizations, dietary restrictions, upselling combos, and processing payments. Speaks naturally with under 400ms latency.",
+    why: "The restaurant was losing $3,200/week in abandoned phone orders during the dinner rush. Staff couldn't answer fast enough. The voice agent now handles the entire queue.",
+    results: [
+      { stat: "120+", label: "Daily calls handled" },
+      { stat: "94%", label: "Order accuracy" },
+      { stat: "$3.2K", label: "Weekly revenue recovered" },
+      { stat: "0.4s", label: "Voice latency" },
+    ],
+    before: [
+      "$3,200/week lost to abandoned phone orders",
+      "Customers on hold 4+ minutes during dinner rush",
+      "Staff pulled from kitchen to answer phones",
+      "Order errors from rushed, distracted staff",
+    ],
+    after: [
+      "120+ calls handled daily with zero hold time",
+      "94% order accuracy - better than human staff",
+      "$3,200/week in revenue recovered immediately",
+      "Kitchen staff stays in the kitchen",
+    ],
+    process: [
+      { step: "01", title: "Mapped the full menu + edge cases", desc: "Every item, modifier, combo, allergy note, and upsell - programmed into the voice agent." },
+      { step: "02", title: "Built natural voice flow via Vapi", desc: "Under 400ms response latency. Customers don't realize they're ordering from AI." },
+      { step: "03", title: "Integrated with Square POS", desc: "Orders go straight into the kitchen queue. Payment processed on the call." },
+    ],
+    stack: ["Vapi", "Claude AI", "Square POS", "n8n", "Twilio"],
+    color: "#D4863A",
+    colorRgb: "212,134,58",
+  },
+  dental: {
+    title: "Patient Voice Agent",
+    badge: "Dental Clinic AI",
+    headline: "Zero missed patient calls. 24/7 scheduling that sounds human.",
+    what: "A conversational voice AI that answers every call to a dental clinic - scheduling appointments, handling insurance pre-qualification questions, sending appointment reminders, and managing cancellations and rebookings automatically.",
+    why: "The clinic's two-person front desk was overwhelmed, resulting in 35% of calls going to voicemail. Most of those patients never called back. The voice agent eliminated that entirely.",
+    results: [
+      { stat: "0%", label: "Missed calls" },
+      { stat: "62%", label: "Fewer no-shows" },
+      { stat: "28", label: "Hours saved/week" },
+      { stat: "4.9★", label: "Patient satisfaction" },
+    ],
+    before: [
+      "35% of patient calls going to voicemail",
+      "Most voicemail patients never called back",
+      "High no-show rate with no automated reminders",
+      "28 hours/week spent on phone scheduling alone",
+    ],
+    after: [
+      "0% missed calls - every patient gets answered",
+      "62% reduction in no-shows via smart reminders",
+      "28 hours/week freed up for patient care",
+      "4.9★ patient satisfaction rating maintained",
+    ],
+    process: [
+      { step: "01", title: "Analyzed call patterns", desc: "Mapped peak call times, common questions, and where the front desk bottlenecked." },
+      { step: "02", title: "Built voice agent with Vapi", desc: "Natural conversation flow for scheduling, insurance questions, and reminders." },
+      { step: "03", title: "Connected to Dentrix", desc: "Direct integration with the clinic's practice management software - real-time availability." },
+    ],
+    stack: ["Vapi", "Claude AI", "Dentrix API", "n8n", "Twilio"],
+    color: "#5BA4A4",
+    colorRgb: "91,164,164",
+  },
+  realestate: {
+    title: "Lead Gen Agent",
+    badge: "Real Estate AI",
+    headline: "Every lead answered in under 60 seconds. Around the clock.",
+    what: "An AI lead-response agent for a real estate team that engages every inbound lead instantly over SMS and email - qualifying budget, timeline, and area, scoring the lead, booking showings into the agent's calendar, and running the full follow-up sequence until the lead answers or opts out.",
+    why: "The average agent takes over 15 hours to respond to a new lead, and 78% of buyers end up working with whoever answers first. Responding inside 5 minutes makes a lead 21x more likely to qualify - so the agent responds in seconds, every time, including nights and weekends.",
+    results: [
+      { stat: "<60s", label: "Response time, 24/7" },
+      { stat: "21x", label: "Higher qualification odds vs. 30-min response" },
+      { stat: "5+", label: "Follow-up touches, automated" },
+      { stat: "0", label: "Leads left cold" },
+    ],
+    before: [
+      "First response measured in hours, not seconds",
+      "Leads arriving nights and weekends went cold",
+      "Follow-up stopped after one or two attempts",
+      "No qualification - every lead treated the same",
+    ],
+    after: [
+      "Every lead engaged in under a minute, day or night",
+      "Budget, timeline, and area qualified automatically",
+      "Scored leads pushed to the CRM, showings booked",
+      "Persistent follow-up until answer or opt-out",
+    ],
+    process: [
+      { step: "01", title: "Wired every lead source into one intake", desc: "Zillow, portal, and website leads all flow into a single pipeline - nothing depends on an agent seeing an email." },
+      { step: "02", title: "Built instant qualification over SMS", desc: "The agent opens a natural conversation, qualifies budget, timeline, and area, and scores the lead in real time." },
+      { step: "03", title: "Automated booking and follow-up", desc: "Qualified leads book straight into the calendar via GoHighLevel; everyone else enters a persistent multi-touch sequence." },
+    ],
+    stack: ["Claude AI", "GoHighLevel", "Twilio", "n8n"],
+    color: "#8CAF6E",
+    colorRgb: "140,175,110",
   },
 };
 
@@ -537,7 +679,7 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
             </div>
           </div>
           <a
-            href="/build-session"
+            href="/book"
             style={{
               display: "inline-flex", alignItems: "center", gap: "8px",
               fontFamily: "var(--font-condensed)", fontWeight: 600,

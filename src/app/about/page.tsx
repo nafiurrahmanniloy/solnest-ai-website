@@ -794,7 +794,7 @@ function FinalCTASection() {
           className="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-8"
         >
           <MagneticButton
-            href="/build-session"
+            href="/book"
             className="group relative bg-rust text-cream overflow-hidden"
             style={{
               padding: "19px 44px",

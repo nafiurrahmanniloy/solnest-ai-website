@@ -195,7 +195,7 @@ export function FooterCTA() {
 
             {/* Door 2 - Done-For-You */}
             <MagneticButton
-              href="/build-session"
+              href="/book"
               className="group relative overflow-hidden flex-1"
               style={{
                 padding: "26px 40px",

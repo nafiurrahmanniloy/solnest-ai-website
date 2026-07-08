@@ -31,6 +31,7 @@ export default function Nav() {
 
   const navLinks = [
     { label: "How It Works", href: "/#how" },
+    { label: "For STR Operators", href: "/#community" },
     { label: "Services", href: "/services" },
     { label: "Case Studies", href: "/work" },
     { label: "About", href: "/about" },
@@ -146,7 +147,7 @@ export default function Nav() {
 
             {/* Book a Call CTA */}
             <MagneticButton
-              href="/build-session"
+              href="/book"
               className="group relative overflow-hidden"
               style={{
                 padding: "10px 22px",
@@ -287,7 +288,7 @@ export default function Nav() {
                 </motion.a>
               ))}
               <motion.a
-                href="/build-session"
+                href="/book"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15, duration: 0.28 }}

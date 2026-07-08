@@ -25,7 +25,7 @@ const paths = [
     title: "Done-For-You",
     desc: "Run any other business? Ryan's team builds your AI for you: audit, build, and ongoing advisory. Any industry.",
     ctaLabel: "Book a Call",
-    href: "/build-session",
+    href: "/book",
     external: false,
     accent: "#C9A84C",
     accentRgb: "201,168,76",

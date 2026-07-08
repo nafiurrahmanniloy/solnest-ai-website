@@ -402,7 +402,7 @@ function OfferCard({ offer }: { offer: (typeof offers)[0] }) {
         </div>
 
         <a
-          href="/build-session"
+          href="/book"
           style={{
             fontFamily: "var(--font-condensed)",
             fontWeight: 600,
@@ -761,7 +761,7 @@ export default function ServicesPage() {
             className="flex flex-col sm:flex-row items-center justify-center gap-5"
           >
             <MagneticButton
-              href="/build-session"
+              href="/book"
               className="group relative bg-rust text-cream overflow-hidden"
               style={{
                 padding: "18px 38px",
@@ -1099,7 +1099,7 @@ export default function ServicesPage() {
             transition={{ duration: 0.6, delay: 0.15 }}
           >
             <MagneticButton
-              href="/build-session"
+              href="/book"
               className="group relative bg-rust text-cream overflow-hidden"
               style={{
                 padding: "19px 42px",

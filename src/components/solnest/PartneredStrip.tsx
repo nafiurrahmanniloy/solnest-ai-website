@@ -55,24 +55,24 @@ export function PartneredStrip() {
         </span>
 
         {/*
-          Placeholder wordmarks - no real logo image assets yet for
-          STR Secrets / STR AI Summit. These are typographic stand-ins
-          styled like an understated monochrome "as featured in" bar.
-          TODO: swap for real <Image> logo assets when the client provides them.
+          STR Secrets: real logo asset (black-on-transparent source,
+          inverted to off-white via CSS filter for the dark strip).
+          STR AI Summit: still a typographic stand-in - no asset yet.
         */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-          <span
+          <img
+            src="/logos/str-secrets.png"
+            alt="Short Term Rental Secrets"
+            width={750}
+            height={185}
             style={{
-              fontFamily: "var(--font-display)",
-              fontStyle: "italic",
-              fontWeight: 500,
-              fontSize: "clamp(20px, 2vw, 28px)",
-              letterSpacing: "0.02em",
-              color: "rgba(240,235,225,0.7)",
+              height: "clamp(30px, 3.2vw, 42px)",
+              width: "auto",
+              // source logo is black; invert to match the strip's off-white text
+              filter: "brightness(0) saturate(100%) invert(93%) sepia(6%) saturate(300%) hue-rotate(15deg)",
+              opacity: 0.75,
             }}
-          >
-            STR Secrets
-          </span>
+          />
 
           <div
             aria-hidden="true"

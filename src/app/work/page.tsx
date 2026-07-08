@@ -422,7 +422,7 @@ export default function WorkPage() {
             transition={{ delay: 0.5, duration: 0.6 }}
           >
             <MagneticButton
-              href="/build-session"
+              href="/book"
               className="group relative bg-rust text-cream overflow-hidden"
               style={{ padding: "18px 40px", boxShadow: "0 0 40px rgba(192,82,43,0.3)" } as React.CSSProperties}
             >
@@ -559,7 +559,7 @@ export default function WorkPage() {
             className="flex flex-col sm:flex-row items-center justify-center gap-5"
           >
             <MagneticButton
-              href="/build-session"
+              href="/book"
               className="group relative bg-rust text-cream overflow-hidden"
               style={{ padding: "19px 40px", boxShadow: "0 0 40px rgba(192,82,43,0.3)" } as React.CSSProperties}
             >
