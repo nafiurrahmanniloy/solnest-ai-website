@@ -552,11 +552,11 @@ const caseStudiesData = {
   somos: {
     title: "Stay With Somos Platform",
     badge: "STR Operations Platform",
-    headline: "Four AI agents and one dashboard for a mixed arbitrage-and-management portfolio.",
-    what: "A full operations platform for Stay With Somos: an accounting agent working across two QuickBooks companies, a guest-messaging agent, a revenue agent on top of PriceLabs, and a lead agent, all behind a seven-page dashboard, with owner statements that correctly handle a portfolio mixing rental arbitrage and managed properties.",
+    headline: "Seven AI agents and one dashboard for a mixed arbitrage-and-management portfolio.",
+    what: "A full operations platform for Stay With Somos: seven specialist AI agents (guest messaging, revenue intelligence, analytics, operations, marketing, market comping, and lead response) plus an accounting engine posting across two QuickBooks companies, all behind a seven-page dashboard, with owner statements that correctly handle a portfolio mixing rental arbitrage and managed properties.",
     why: "Operators running both arbitrage units and managed properties get statements wrong with off-the-shelf tools: flat rent lines for one model, commission and expenses for the other. This platform models both per property, per owner.",
     results: [
-      { stat: "4", label: "AI agents behind one dashboard" },
+      { stat: "7", label: "AI agents behind one dashboard" },
       { stat: "2", label: "QuickBooks companies, one view" },
       { stat: "Mixed", label: "arbitrage + managed statements" },
       { stat: "7", label: "dashboard pages, live data" },
@@ -570,7 +570,7 @@ const caseStudiesData = {
     after: [
       "Accounting agent posts across both ledgers",
       "Per-property statements: flat rent or commission, correctly",
-      "Guest and revenue agents run the day-to-day",
+      "Seven agents run the day-to-day operation",
       "Lead agent responds and follows up automatically",
     ],
     process: [
@@ -582,7 +582,7 @@ const caseStudiesData = {
     color: "#5CBFA8",
     colorRgb: "92,191,168",
     motif: "panels",
-    sigilCount: 4,
+    sigilCount: 7,
   },
   automationstack: {
     title: "Solnest Automation Stack",
