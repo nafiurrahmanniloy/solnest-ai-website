@@ -1,15 +1,39 @@
+import dynamic from "next/dynamic";
 import Nav from "@/components/solnest/Nav";
 import Hero from "@/components/solnest/Hero";
 import { PartneredStrip } from "@/components/solnest/PartneredStrip";
-import { VDIvsVWASection } from "@/components/solnest/VDIvsVWASection";
-import { TwoWaysFork } from "@/components/solnest/TwoWaysFork";
-import { CommunitySection, CommunityPricing } from "@/components/solnest/CommunitySection";
-import { ServicesSection } from "@/components/solnest/ServicesSection";
-import { IntegrationStrip } from "@/components/solnest/IntegrationStrip";
-import { VideoTestimonials } from "@/components/solnest/VideoTestimonials";
-import { AboutSection } from "@/components/solnest/AboutSection";
-import { FooterCTA } from "@/components/solnest/FooterCTA";
 import Footer from "@/components/solnest/Footer";
+
+// Below-the-fold sections are code-split so the hero paints and hydrates
+// without downloading the whole page's JS. SSR stays on (default), so the
+// full HTML is still served to crawlers and AI answer engines.
+const VDIvsVWASection = dynamic(() =>
+  import("@/components/solnest/VDIvsVWASection").then((m) => ({ default: m.VDIvsVWASection }))
+);
+const TwoWaysFork = dynamic(() =>
+  import("@/components/solnest/TwoWaysFork").then((m) => ({ default: m.TwoWaysFork }))
+);
+const CommunitySection = dynamic(() =>
+  import("@/components/solnest/CommunitySection").then((m) => ({ default: m.CommunitySection }))
+);
+const CommunityPricing = dynamic(() =>
+  import("@/components/solnest/CommunitySection").then((m) => ({ default: m.CommunityPricing }))
+);
+const ServicesSection = dynamic(() =>
+  import("@/components/solnest/ServicesSection").then((m) => ({ default: m.ServicesSection }))
+);
+const IntegrationStrip = dynamic(() =>
+  import("@/components/solnest/IntegrationStrip").then((m) => ({ default: m.IntegrationStrip }))
+);
+const VideoTestimonials = dynamic(() =>
+  import("@/components/solnest/VideoTestimonials").then((m) => ({ default: m.VideoTestimonials }))
+);
+const AboutSection = dynamic(() =>
+  import("@/components/solnest/AboutSection").then((m) => ({ default: m.AboutSection }))
+);
+const FooterCTA = dynamic(() =>
+  import("@/components/solnest/FooterCTA").then((m) => ({ default: m.FooterCTA }))
+);
 
 export default function Home() {
   return (

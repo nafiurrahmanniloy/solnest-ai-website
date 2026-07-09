@@ -30,7 +30,7 @@ const itemVariants = {
 type CaseKey = keyof typeof caseStudies;
 
 const FLAGSHIP_KEYS = ["strsecrets", "legacyrnr", "westproperties", "somos", "automationstack"] as const;
-const LEDGER_KEYS = ["medspa", "restaurant", "dental", "realestate"] as const;
+const LEDGER_KEYS = ["medspa", "medspafinance", "restaurant", "dental", "realestate"] as const;
 
 // ─── Data: capabilities (ruled list, cross-referenced to the builds) ──────
 
