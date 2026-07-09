@@ -1,8 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView, AnimatePresence, useReducedMotion } from "framer-motion";
 import OrbitingSkills from "@/components/ui/orbiting-skills";
+
+// House ease, shared by all motion in this file.
+const EASE: [number, number, number, number] = [0.215, 0.61, 0.355, 1];
+const EASE_CSS = "cubic-bezier(0.215,0.61,0.355,1)";
 
 const services = [
   {
@@ -91,64 +95,76 @@ const industries = [
   },
 ];
 
-function IndustryCard({ industry }: { industry: (typeof industries)[0] }) {
+// Whispering-tail treatment: a ruled index row, not a box. Hairline rules ARE
+// the design for secondary content — rust condensed index, name, one-liner.
+function IndustryRow({ industry }: { industry: (typeof industries)[0] }) {
   const [hovered, setHovered] = useState(false);
   return (
     <motion.div
       variants={itemVariants}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
       style={{
-        position: "relative",
-        overflow: "hidden",
-        background: hovered ? "#111110" : "#0F0F0D",
-        border: `1px solid ${hovered ? "rgba(192,82,43,0.4)" : "rgba(192,82,43,0.12)"}`,
-        padding: "26px 24px 22px",
-        transition: "background 0.3s ease, border-color 0.3s ease, transform 0.35s cubic-bezier(0.215,0.61,0.355,1)",
-        transform: hovered ? "translateY(-4px)" : "translateY(0)",
+        display: "grid",
+        gridTemplateColumns: "38px minmax(0,1fr) auto",
+        alignItems: "baseline",
+        gap: "14px",
+        padding: "18px 2px",
+        borderBottom: "1px solid rgba(240,235,225,0.10)",
       }}
     >
-      <div
-        aria-hidden="true"
+      <span
         style={{
-          fontFamily: "var(--font-display)",
-          fontWeight: 300,
-          fontSize: "56px",
-          lineHeight: 1,
-          color: hovered ? "rgba(192,82,43,0.5)" : "rgba(192,82,43,0.25)",
-          letterSpacing: "-0.03em",
-          marginBottom: "14px",
-          transition: "color 0.3s ease",
+          fontFamily: "var(--font-condensed)",
+          fontWeight: 600,
+          fontSize: "12px",
+          letterSpacing: "0.2em",
+          fontVariantNumeric: "tabular-nums",
+          color: hovered ? "#C0522B" : "rgba(192,82,43,0.55)",
+          transition: `color 0.25s ${EASE_CSS}`,
         }}
       >
         {industry.num}
+      </span>
+      <div style={{ minWidth: 0 }}>
+        <h4
+          style={{
+            fontFamily: "var(--font-display)",
+            fontWeight: 300,
+            fontSize: "clamp(18px, 1.4vw, 23px)",
+            lineHeight: 1.25,
+            letterSpacing: "-0.01em",
+            color: hovered ? "#F0EBE1" : "rgba(240,235,225,0.78)",
+            transition: `color 0.25s ${EASE_CSS}`,
+            marginBottom: "4px",
+          }}
+        >
+          {industry.name}
+        </h4>
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontWeight: 300,
+            fontSize: "13.5px",
+            lineHeight: 1.6,
+            color: "rgba(212,204,184,0.5)",
+          }}
+        >
+          {industry.description}
+        </p>
       </div>
-      <h4
+      <span
+        aria-hidden="true"
         style={{
-          fontFamily: "var(--font-display)",
-          fontWeight: 300,
-          fontStyle: "italic",
-          fontSize: "clamp(19px, 1.6vw, 24px)",
-          color: "#F0EBE1",
-          marginBottom: "8px",
-          letterSpacing: "-0.01em",
-        }}
-      >
-        {industry.name}
-      </h4>
-      <p
-        style={{
-          fontFamily: "var(--font-body)",
-          fontWeight: 300,
+          color: "#C0522B",
           fontSize: "14px",
-          lineHeight: 1.65,
-          color: "rgba(212,204,184,0.5)",
+          opacity: hovered ? 1 : 0.3,
+          transform: hovered ? "translateX(4px)" : "translateX(0)",
+          transition: `opacity 0.25s ${EASE_CSS} 40ms, transform 0.25s ${EASE_CSS} 40ms`,
         }}
       >
-        {industry.description}
-      </p>
+        →
+      </span>
     </motion.div>
   );
 }
@@ -157,11 +173,16 @@ function IndustryCard({ industry }: { industry: (typeof industries)[0] }) {
 
 function AnimatedPrice({ target, suffix = "", style }: { target: number; suffix?: string; style?: React.CSSProperties }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: "-80px 0px -80px 0px" });
   const [display, setDisplay] = useState("0");
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (!inView) return;
+    if (reducedMotion) {
+      setDisplay(target.toLocaleString() + suffix);
+      return;
+    }
     const duration = 1400;
     const steps = 40;
     const stepTime = duration / steps;
@@ -181,24 +202,248 @@ function AnimatedPrice({ target, suffix = "", style }: { target: number; suffix?
     }, stepTime);
 
     return () => clearInterval(timer);
-  }, [inView, target, suffix]);
+  }, [inView, target, suffix, reducedMotion]);
 
   return <span ref={ref} style={{ fontVariantNumeric: "tabular-nums", ...style }}>{display}</span>;
 }
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
+  visible: { transition: { staggerChildren: 0.08 } },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 32 },
+  hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] } },
 };
 
+// ─── Case Sigil: one parameterized artwork recipe for every build ────────────
+// The site-wide substitute for screenshots. Composes 2–3 primitives from a
+// fixed motif vocabulary keyed to what each build does. Strokes only (fills
+// ≤8% alpha), at most one slow breathing/rotating element, killed under
+// reduced motion. Hover = strokes brighten + scale(1.05), 80ms beat delay.
+
+export type SigilMotif = "orbit" | "nodes" | "arcs" | "bars" | "panels";
+
+function sigilNodeLayout(count: number) {
+  const pts: { x: number; y: number }[] = [{ x: 120, y: 120 }];
+  const rest = Math.max(0, count - 1);
+  const inner = Math.min(6, rest);
+  for (let i = 0; i < inner; i++) {
+    const a = (i / inner) * Math.PI * 2 - Math.PI / 2;
+    pts.push({ x: 120 + Math.cos(a) * 54, y: 120 + Math.sin(a) * 54 });
+  }
+  const outer = rest - inner;
+  for (let i = 0; i < outer; i++) {
+    const a = (i / outer) * Math.PI * 2 - Math.PI / 2 + Math.PI / outer;
+    pts.push({ x: 120 + Math.cos(a) * 94, y: 120 + Math.sin(a) * 94 });
+  }
+  return { pts, inner };
+}
+
+export function CaseSigil({
+  motif,
+  accent,
+  accentRgb,
+  count,
+  size = "100%",
+  active = false,
+}: {
+  motif: SigilMotif;
+  accent: string;
+  accentRgb: string;
+  count?: number;
+  size?: number | string;
+  active?: boolean;
+}) {
+  const reducedMotion = useReducedMotion();
+  const line = (alpha: number) => `rgba(${accentRgb},${alpha})`;
+  const spin = reducedMotion ? "none" : "cs-sigil-rotate 34s linear infinite";
+  const breathe = reducedMotion ? "none" : "cs-sigil-breathe 24s linear infinite";
+
+  let art: React.ReactNode = null;
+  if (motif === "orbit") {
+    art = (
+      <>
+        <circle cx="120" cy="120" r="50" fill="none" stroke={line(0.55)} strokeWidth="1" />
+        <circle cx="120" cy="120" r="14" fill={line(0.06)} stroke={accent} strokeOpacity="0.9" strokeWidth="1.5" />
+        <g className="cs-sigil-anim" style={{ transformOrigin: "120px 120px", animation: spin }}>
+          <circle cx="120" cy="120" r="86" fill="none" stroke={line(0.7)} strokeWidth="1.25" strokeDasharray="2.5 7" />
+          <circle cx="206" cy="120" r="4" fill={line(0.08)} stroke={accent} strokeOpacity="0.9" strokeWidth="1.5" />
+        </g>
+      </>
+    );
+  } else if (motif === "nodes") {
+    const { pts, inner } = sigilNodeLayout(count ?? 5);
+    art = (
+      <>
+        {pts.slice(1, 1 + inner).map((p, i) => (
+          <line key={`e${i}`} x1={120} y1={120} x2={p.x} y2={p.y} stroke={line(0.5)} strokeWidth="1" />
+        ))}
+        {pts.slice(1 + inner).map((p, j) => {
+          const t = pts[1 + (j % inner)];
+          return <line key={`o${j}`} x1={t.x} y1={t.y} x2={p.x} y2={p.y} stroke={line(0.5)} strokeWidth="1" />;
+        })}
+        {pts.map((p, i) => (
+          <circle
+            key={`n${i}`}
+            cx={p.x}
+            cy={p.y}
+            r={i === 0 ? 6 : 3.2}
+            fill={line(0.06)}
+            stroke={i === 0 ? accent : line(0.65)}
+            strokeOpacity={i === 0 ? 0.9 : 1}
+            strokeWidth={i === 0 ? 1.5 : 1}
+            className={i === 0 ? "cs-sigil-anim" : undefined}
+            style={i === 0 ? { animation: breathe } : undefined}
+          />
+        ))}
+      </>
+    );
+  } else if (motif === "arcs") {
+    const radii = [30, 58, 86, 114];
+    art = (
+      <>
+        <circle cx="74" cy="168" r="5" fill={line(0.06)} stroke={accent} strokeOpacity="0.9" strokeWidth="1.5" />
+        {radii.map((r, i) => (
+          <path
+            key={r}
+            d={`M 74 ${168 - r} A ${r} ${r} 0 0 1 ${74 + r} 168`}
+            fill="none"
+            stroke={line(0.85 - i * 0.12)}
+            strokeWidth={i === 0 ? 1.5 : 1.25}
+            strokeLinecap="round"
+            className={i === radii.length - 1 ? "cs-sigil-anim" : undefined}
+            style={i === radii.length - 1 ? { animation: breathe } : undefined}
+          />
+        ))}
+      </>
+    );
+  } else if (motif === "bars") {
+    const heights = [38, 62, 50, 90, 118];
+    art = (
+      <>
+        <line x1="50" y1="178" x2="192" y2="178" stroke={line(0.5)} strokeWidth="1" />
+        {heights.map((h, i) => (
+          <rect
+            key={i}
+            x={56 + i * 26}
+            y={178 - h}
+            width="16"
+            height={h}
+            fill={line(0.05)}
+            stroke={i === heights.length - 1 ? accent : line(0.65)}
+            strokeOpacity={i === heights.length - 1 ? 0.9 : 1}
+            strokeWidth={i === heights.length - 1 ? 1.5 : 1}
+          />
+        ))}
+        <circle cx={168} cy={48} r="3.5" fill={line(0.08)} stroke={accent} strokeOpacity="0.9" strokeWidth="1.25" className="cs-sigil-anim" style={{ animation: breathe }} />
+      </>
+    );
+  } else {
+    art = (
+      <>
+        <rect x="50" y="88" width="116" height="82" fill={line(0.04)} stroke={line(0.5)} strokeWidth="1" />
+        <rect x="68" y="70" width="116" height="82" fill={line(0.05)} stroke={line(0.65)} strokeWidth="1" />
+        <g className="cs-sigil-anim" style={{ animation: breathe }}>
+          <rect x="86" y="52" width="116" height="82" fill={line(0.06)} stroke={accent} strokeOpacity="0.85" strokeWidth="1.5" />
+          <line x1="98" y1="68" x2="146" y2="68" stroke={line(0.8)} strokeWidth="1.25" />
+          <line x1="98" y1="82" x2="176" y2="82" stroke={line(0.45)} strokeWidth="1" />
+          <line x1="98" y1="94" x2="162" y2="94" stroke={line(0.45)} strokeWidth="1" />
+        </g>
+      </>
+    );
+  }
+
+  return (
+    <svg
+      viewBox="0 0 240 240"
+      width={size}
+      height={size}
+      aria-hidden="true"
+      focusable="false"
+      style={{
+        display: "block",
+        transform: active ? "scale(1.05)" : "scale(1)",
+        opacity: active ? 1 : 0.75,
+        transition: `transform 0.3s ${EASE_CSS} 80ms, opacity 0.3s ${EASE_CSS} 80ms`,
+      }}
+    >
+      <style>{`
+        @keyframes cs-sigil-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes cs-sigil-breathe { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+        @media (prefers-reduced-motion: reduce) { .cs-sigil-anim { animation: none !important; } }
+      `}</style>
+      {art}
+    </svg>
+  );
+}
+
+// ─── Stat numeral: display-typography treatment for every metric ─────────────
+// Numeral in cream at display scale, tabular-nums; unit/prefix slightly
+// smaller in the project accent. Integer stats count up via AnimatedPrice.
+
+function StatNumeral({
+  stat,
+  accentRgb,
+  size = "var(--fs-display-sm, clamp(19px, 1.6vw, 26px))",
+}: {
+  stat: string;
+  accentRgb: string;
+  size?: string;
+}) {
+  const numeralStyle: React.CSSProperties = {
+    fontFamily: "var(--font-display)",
+    fontWeight: 300,
+    fontSize: size,
+    lineHeight: 1,
+    letterSpacing: "-0.02em",
+    color: "#F0EBE1",
+    fontVariantNumeric: "tabular-nums",
+  };
+  const unitStyle: React.CSSProperties = {
+    fontFamily: "var(--font-display)",
+    fontWeight: 300,
+    fontSize: "0.62em",
+    lineHeight: 1,
+    color: `rgba(${accentRgb},0.9)`,
+  };
+  const m = /^(\D*?)(\d{1,4})(\D*)$/.exec(stat);
+  if (!m) {
+    return <span style={numeralStyle}>{stat}</span>;
+  }
+  const [, pre, num, suf] = m;
+  return (
+    <span style={{ display: "inline-flex", alignItems: "baseline", fontSize: size }}>
+      {pre ? <span style={unitStyle}>{pre}</span> : null}
+      <AnimatedPrice target={parseInt(num, 10)} style={{ ...numeralStyle, fontSize: "1em" }} />
+      {suf ? <span style={unitStyle}>{suf}</span> : null}
+    </span>
+  );
+}
+
 // ─── Recent Builds: Case Study Data ──────────────────────────────────────────
 
-const caseStudies = {
+export type CaseStudyResult = { stat: string; label: string };
+export type CaseStudyProcessStep = { step: string; title: string; desc: string };
+export type CaseStudy = {
+  title: string;
+  badge: string;
+  headline: string;
+  what: string;
+  why: string;
+  results: CaseStudyResult[];
+  before: string[];
+  after: string[];
+  process: CaseStudyProcessStep[];
+  stack: string[];
+  color: string;
+  colorRgb: string;
+  motif: SigilMotif;
+  sigilCount?: number;
+};
+
+const caseStudiesData = {
   strsecrets: {
     title: "STR Secrets",
     badge: "Multi-Tenant STR SaaS",
@@ -231,6 +476,8 @@ const caseStudies = {
     stack: ["React 19", "Node 22", "Express", "Supabase", "Socket.io", "Stripe", "OpenRouter", "n8n"],
     color: "#C0522B",
     colorRgb: "192,82,43",
+    motif: "nodes",
+    sigilCount: 5,
   },
   legacyrnr: {
     title: "LegacyRnR Control Center",
@@ -240,7 +487,7 @@ const caseStudies = {
     why: "A growing property-management operation had 19 distinct jobs to automate and no safe way to run AI against live guest and reservation data. The cockpit runs every agent with real logic and human approval gates.",
     results: [
       { stat: "19", label: "AI agents, one cockpit" },
-      { stat: "Guesty", label: "wired live (listings + reservations)" },
+      { stat: "Guesty", label: "wired in live" },
       { stat: "Dual", label: "approval on money + compliance" },
       { stat: "3", label: "guest, owner, education portals" },
     ],
@@ -264,6 +511,8 @@ const caseStudies = {
     stack: ["Next.js 14", "TypeScript", "Supabase", "Inngest", "Claude", "Guesty"],
     color: "#C9A84C",
     colorRgb: "201,168,76",
+    motif: "nodes",
+    sigilCount: 19,
   },
   automationstack: {
     title: "Solnest Automation Stack",
@@ -297,6 +546,7 @@ const caseStudies = {
     stack: ["Claude", "Python", "Node.js", "PriceLabs", "Apify", "n8n"],
     color: "#6E8BC0",
     colorRgb: "110,139,192",
+    motif: "bars",
   },
   medspa: {
     title: "Patient Concierge Agent",
@@ -330,6 +580,7 @@ const caseStudies = {
     stack: ["Claude AI", "Twilio", "Cal.com", "n8n", "Airtable"],
     color: "#B07BA5",
     colorRgb: "176,123,165",
+    motif: "orbit",
   },
   restaurant: {
     title: "Voice Ordering Agent",
@@ -363,6 +614,7 @@ const caseStudies = {
     stack: ["Vapi", "Claude AI", "Square POS", "n8n", "Twilio"],
     color: "#D4863A",
     colorRgb: "212,134,58",
+    motif: "arcs",
   },
   dental: {
     title: "Patient Voice Agent",
@@ -396,6 +648,7 @@ const caseStudies = {
     stack: ["Vapi", "Claude AI", "Dentrix API", "n8n", "Twilio"],
     color: "#5BA4A4",
     colorRgb: "91,164,164",
+    motif: "arcs",
   },
   realestate: {
     title: "Lead Gen Agent",
@@ -429,15 +682,25 @@ const caseStudies = {
     stack: ["Claude AI", "GoHighLevel", "Twilio", "n8n"],
     color: "#8CAF6E",
     colorRgb: "140,175,110",
+    motif: "orbit",
   },
-};
+} satisfies Record<string, CaseStudy>;
 
-type CaseStudyKey = keyof typeof caseStudies;
+export type CaseStudyKey = keyof typeof caseStudiesData;
 
-// ─── Recent Builds: Case Study Modal ─────────────────────────────────────────
+// Widened view: literal keys, uniform CaseStudy values (so optional fields
+// like `sigilCount` are visible on every entry for consumers).
+export const caseStudies: Record<CaseStudyKey, CaseStudy> = caseStudiesData;
 
-function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void }) {
-  const cs = caseStudies[id];
+// ─── Recent Builds: Case Study Dossier Modal ─────────────────────────────────
+// Asymmetric two-column dossier: narrative left (Problem / Build / diptych /
+// process rail), sticky fact rail right (stats, stack pills, CTA). Rail-first
+// single column on mobile. Reduced motion = opacity-only collapse.
+
+export function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void }) {
+  const cs: CaseStudy = caseStudies[id];
+  const reducedMotion = useReducedMotion();
+  const indexNum = String((Object.keys(caseStudies) as CaseStudyKey[]).indexOf(id) + 1).padStart(2, "0");
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const titleId = `services-case-modal-title-${id}`;
@@ -470,21 +733,38 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
+  const hairline = "1px solid rgba(240,235,225,0.10)";
+
+  // Internal stagger: 70ms steps, capped at 0.4s total. Opacity-only under
+  // reduced motion.
+  const rise = (i: number) => ({
+    initial: reducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 },
+    animate: reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 },
+    transition: { duration: 0.4, delay: Math.min(0.12 + i * 0.07, 0.4), ease: EASE },
+  });
+
+  const eyebrowRow = (label: string, mb = "16px") => (
+    <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: mb }}>
+      <div style={{ width: "34px", height: "1px", backgroundColor: cs.color }} />
+      <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px", letterSpacing: "0.25em", textTransform: "uppercase", color: cs.color }}>{label}</span>
+    </div>
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      exit={{ opacity: 0, transition: { duration: 0.22, ease: EASE } }}
+      transition={{ duration: 0.25, ease: EASE }}
       onClick={onClose}
       onWheel={(e) => e.stopPropagation()}
       onTouchMove={(e) => e.stopPropagation()}
       style={{
         position: "fixed", inset: 0, zIndex: 100,
-        background: "rgba(6,6,5,0.92)",
+        background: "rgba(13,13,11,0.85)",
         backdropFilter: "blur(12px)",
         display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "24px",
+        padding: "clamp(12px, 3vw, 28px)",
         overflow: "hidden",
         touchAction: "none",
       }}
@@ -494,17 +774,21 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        initial={{ y: 40, opacity: 0, scale: 0.97 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 40, opacity: 0, scale: 0.97 }}
-        transition={{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1.0] }}
+        initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
+        animate={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+        exit={
+          reducedMotion
+            ? { opacity: 0, transition: { duration: 0.22, ease: EASE } }
+            : { opacity: 0, y: 16, transition: { duration: 0.22, ease: EASE } }
+        }
+        transition={{ duration: 0.55, ease: EASE }}
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
         onTouchMove={(e) => e.stopPropagation()}
         style={{
-          width: "min(780px, 100%)",
+          width: "min(1040px, 100%)",
           maxHeight: "90vh",
-          background: "#0C0C0A",
+          background: "#0D0D0B",
           border: `1px solid rgba(${cs.colorRgb},0.18)`,
           borderRadius: "2px",
           overflowY: "auto",
@@ -513,193 +797,221 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
           touchAction: "pan-y",
         }}
       >
-        {/* Ambient glow */}
-        <div className="pointer-events-none absolute" style={{ top: '-10%', left: '20%', width: '60%', height: '40%', background: `radial-gradient(ellipse, rgba(${cs.colorRgb},0.12) 0%, transparent 70%)`, filter: 'blur(60px)' }} />
 
-        {/* Header */}
-        <div style={{ position: "relative", padding: "36px 40px 28px", borderBottom: `1px solid rgba(${cs.colorRgb},0.12)` }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px" }}>
-            <div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "7px", background: `rgba(${cs.colorRgb},0.1)`, border: `1px solid rgba(${cs.colorRgb},0.28)`, padding: "5px 14px", marginBottom: "14px" }}>
-                <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: cs.color, boxShadow: `0 0 8px rgba(${cs.colorRgb},0.6)` }} />
-                <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: cs.color }}>{cs.badge}</span>
-              </div>
-              <h2 id={titleId} style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(28px, 3.5vw, 42px)", color: "#F0EBE1", lineHeight: 1.1, letterSpacing: "-0.02em" }}>{cs.title}</h2>
-            </div>
-            <button
-              ref={closeBtnRef}
-              onClick={onClose}
-              aria-label="Close case study"
-              style={{
-                background: "rgba(240,235,225,0.04)", border: "1px solid rgba(240,235,225,0.1)",
-                width: "44px", height: "44px", display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", flexShrink: 0, color: "rgba(212,204,184,0.5)", fontSize: "20px",
-                fontFamily: "var(--font-body)", borderRadius: "2px", transition: "background 0.2s, color 0.2s",
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.08)"; e.currentTarget.style.color = "rgba(212,204,184,0.8)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.04)"; e.currentTarget.style.color = "rgba(212,204,184,0.5)"; }}
-              onFocus={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.08)"; e.currentTarget.style.color = "rgba(212,204,184,0.8)"; }}
-              onBlur={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.04)"; e.currentTarget.style.color = "rgba(212,204,184,0.5)"; }}
-            >
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-
-          {/* Headline quote */}
-          <p style={{
-            fontFamily: "var(--font-display)", fontStyle: "italic", fontWeight: 300,
-            fontSize: "clamp(18px, 2.2vw, 24px)", lineHeight: 1.5,
-            color: cs.color, marginTop: "18px", opacity: 0.85,
-          }}>
-            &ldquo;{cs.headline}&rdquo;
-          </p>
-        </div>
-
-        {/* Stats row */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1px",
-          background: `rgba(${cs.colorRgb},0.08)`,
-          borderBottom: `1px solid rgba(${cs.colorRgb},0.12)`,
-        }}>
-          {cs.results.map((r, i) => (
-            <motion.div
-              key={r.label}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.15 + i * 0.06 }}
-              style={{ background: "#0C0C0A", padding: "22px 16px", textAlign: "center" }}
-            >
-              <div style={{
-                fontFamily: "var(--font-display)", fontWeight: 300,
-                fontSize: "clamp(24px, 2.8vw, 36px)", color: cs.color,
-                lineHeight: 1, letterSpacing: "-0.03em",
-                textShadow: `0 0 30px rgba(${cs.colorRgb},0.35)`,
-              }}>{r.stat}</div>
-              <div style={{
-                fontFamily: "var(--font-condensed)", fontWeight: 600,
-                fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase",
-                color: `rgba(${cs.colorRgb},0.55)`, marginTop: "6px",
-              }}>{r.label}</div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Before / After */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px",
-          background: `rgba(${cs.colorRgb},0.08)`,
-          borderBottom: `1px solid rgba(${cs.colorRgb},0.12)`,
-        }}>
-          {/* Before */}
-          <div style={{ background: "#0C0C0A", padding: "28px 32px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-              <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "rgba(200,80,60,0.4)", border: "1px solid rgba(200,80,60,0.3)" }} />
-              <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(200,80,60,0.6)" }}>Before</span>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              {cs.before.map((item, i) => (
-                <div key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-                  <svg
-                    width="14" height="14" viewBox="0 0 14 14" fill="none"
-                    aria-hidden="true"
-                    style={{ flexShrink: 0, marginTop: "5px" }}
-                  >
-                    <path d="M3 3L11 11M11 3L3 11" stroke="rgba(200,80,60,0.6)" strokeWidth="1.4" strokeLinecap="round" />
-                  </svg>
-                  <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.6, color: "rgba(200,180,165,0.5)" }}>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* After */}
-          <div style={{ background: "#0C0C0A", padding: "28px 32px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-              <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: cs.color, boxShadow: `0 0 6px rgba(${cs.colorRgb},0.5)` }} />
-              <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: cs.color }}>After</span>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              {cs.after.map((item, i) => (
-                <div key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-                  <svg
-                    width="14" height="14" viewBox="0 0 14 14" fill="none"
-                    aria-hidden="true"
-                    style={{ flexShrink: 0, marginTop: "5px" }}
-                  >
-                    <path d="M2.5 7.5L5.8 10.5L11.5 4" stroke={cs.color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.6, color: "rgba(212,204,184,0.7)" }}>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* How it was built: process steps */}
-        <div style={{ padding: "28px 40px", borderBottom: `1px solid rgba(${cs.colorRgb},0.12)` }}>
-          <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.6)`, display: "block", marginBottom: "20px" }}>How It Was Built</span>
-          <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-            {cs.process.map((p, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.3 + i * 0.08 }}
-                style={{ display: "flex", gap: "18px", alignItems: "flex-start" }}
-              >
-                <span style={{
-                  fontFamily: "var(--font-display)", fontWeight: 300,
-                  fontSize: "28px", color: `rgba(${cs.colorRgb},0.2)`,
-                  lineHeight: 1, flexShrink: 0, width: "32px",
-                }}>{p.step}</span>
-                <div>
-                  <h4 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: "15px", color: "#F0EBE1", lineHeight: 1.3, marginBottom: "4px" }}>{p.title}</h4>
-                  <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.65, color: "rgba(212,204,184,0.5)" }}>{p.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Tech stack + CTA */}
-        <div style={{ padding: "28px 40px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "24px", flexWrap: "wrap" }}>
-          <div>
-            <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.55)`, display: "block", marginBottom: "12px" }}>Tech Stack</span>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-              {cs.stack.map((tool) => (
-                <span key={tool} style={{
-                  fontFamily: "var(--font-condensed)", fontWeight: 500,
-                  fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase",
-                  color: `rgba(${cs.colorRgb},0.7)`,
-                  border: `1px solid rgba(${cs.colorRgb},0.18)`,
-                  background: `rgba(${cs.colorRgb},0.05)`,
-                  padding: "5px 12px", borderRadius: "1px",
-                }}>{tool}</span>
-              ))}
-            </div>
-          </div>
-          <a
-            href="/book"
+        {/* Header: badge eyebrow, title, headline, sigil artwork, ghost numeral */}
+        <div style={{ position: "relative", overflow: "hidden", padding: "clamp(24px, 4.5vw, 40px) clamp(20px, 5vw, 44px) clamp(22px, 3.5vw, 32px)", borderBottom: hairline }}>
+          <div
+            aria-hidden="true"
+            style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 70% 20%, rgba(${cs.colorRgb},0.08), transparent 60%)`, pointerEvents: "none" }}
+          />
+          <div
+            aria-hidden="true"
             style={{
-              display: "inline-flex", alignItems: "center", gap: "8px",
+              position: "absolute", bottom: "-24px", right: "-6px",
               fontFamily: "var(--font-condensed)", fontWeight: 600,
-              fontSize: "12px", letterSpacing: "0.18em", textTransform: "uppercase",
-              color: cs.color, textDecoration: "none",
-              padding: "12px 24px",
-              border: `1px solid rgba(${cs.colorRgb},0.3)`,
-              background: `rgba(${cs.colorRgb},0.06)`,
-              borderRadius: "2px",
-              transition: "background 0.2s, border-color 0.2s",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
+              fontSize: "clamp(80px, 10vw, 200px)", lineHeight: 0.8, letterSpacing: "-0.03em",
+              color: "rgba(240,235,225,0.05)", pointerEvents: "none", userSelect: "none",
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.12)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.45)`; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.06)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.3)`; }}
-            onFocus={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.12)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.45)`; }}
-            onBlur={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.06)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.3)`; }}
           >
-            Book This For Me →
-          </a>
+            {indexNum}
+          </div>
+
+          <div style={{ position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "clamp(16px, 3vw, 36px)" }}>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              {eyebrowRow(cs.badge, "18px")}
+              <motion.h2
+                id={titleId}
+                {...rise(0)}
+                style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "var(--fs-display-md, clamp(26px, 2.6vw, 44px))", color: "#F0EBE1", lineHeight: 1.12, letterSpacing: "-0.02em", textWrap: "balance" }}
+              >
+                {cs.title}
+              </motion.h2>
+              <motion.p
+                {...rise(1)}
+                style={{
+                  fontFamily: "var(--font-display)", fontStyle: "italic", fontWeight: 300,
+                  fontSize: "clamp(17px, 2vw, 22px)", lineHeight: 1.5,
+                  color: cs.color, marginTop: "14px", opacity: 0.85, maxWidth: "56ch",
+                }}
+              >
+                {cs.headline}
+              </motion.p>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "16px", flexShrink: 0 }}>
+              <button
+                ref={closeBtnRef}
+                onClick={onClose}
+                aria-label="Close case study"
+                style={{
+                  background: "rgba(240,235,225,0.04)", border: "1px solid rgba(240,235,225,0.1)",
+                  width: "44px", height: "44px", display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: "pointer", flexShrink: 0, color: "rgba(212,204,184,0.5)", fontSize: "20px",
+                  fontFamily: "var(--font-body)", borderRadius: "2px", transition: `background 0.25s ${EASE_CSS}, color 0.25s ${EASE_CSS}`,
+                }}
+                className="focus-ring"
+                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.08)"; e.currentTarget.style.color = "rgba(212,204,184,0.8)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.04)"; e.currentTarget.style.color = "rgba(212,204,184,0.5)"; }}
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+              <motion.div {...rise(1)} className="hidden sm:block" style={{ width: "clamp(96px, 11vw, 140px)" }}>
+                <CaseSigil motif={cs.motif} accent={cs.color} accentRgb={cs.colorRgb} count={cs.sigilCount} />
+              </motion.div>
+            </div>
+          </div>
+        </div>
+
+        {/* Dossier body: narrative left (7), sticky fact rail right (4). Rail first on mobile. */}
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)]">
+
+          {/* Narrative column */}
+          <div className="order-2 lg:order-1" style={{ padding: "clamp(24px, 4vw, 40px) clamp(20px, 5vw, 44px) clamp(28px, 4vw, 44px)" }}>
+            <motion.div {...rise(2)}>
+              {eyebrowRow("The Problem")}
+              <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))", lineHeight: 1.75, color: "rgba(212,204,184,0.7)", maxWidth: "64ch" }}>
+                {cs.why}
+              </p>
+            </motion.div>
+
+            <motion.div {...rise(3)} style={{ marginTop: "36px" }}>
+              {eyebrowRow("The Build")}
+              <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))", lineHeight: 1.75, color: "rgba(212,204,184,0.7)", maxWidth: "64ch" }}>
+                {cs.what}
+              </p>
+            </motion.div>
+
+            {/* Before / After tonal diptych: BEFORE dim, AFTER lit on a faint accent panel */}
+            <motion.div {...rise(4)} className="grid grid-cols-1 sm:grid-cols-2" style={{ marginTop: "40px", borderTop: hairline }}>
+              <div
+                className="border-b border-[rgba(240,235,225,0.10)] sm:border-b-0 sm:border-r sm:border-[rgba(240,235,225,0.10)]"
+                style={{ padding: "22px clamp(16px, 2vw, 26px) 22px 0" }}
+              >
+                <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(212,204,184,0.45)", display: "block", marginBottom: "14px" }}>Before</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {cs.before.map((item, i) => (
+                    <div key={i} style={{ display: "flex", gap: "10px", alignItems: "baseline" }}>
+                      <span aria-hidden="true" style={{ color: "rgba(212,204,184,0.35)", fontSize: "12px", flexShrink: 0 }}>—</span>
+                      <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13.5px", lineHeight: 1.6, color: "rgba(212,204,184,0.6)" }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ padding: "22px clamp(16px, 2vw, 26px)", background: `rgba(${cs.colorRgb},0.04)` }}>
+                <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: cs.color, display: "block", marginBottom: "14px" }}>After</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {cs.after.map((item, i) => (
+                    <div key={i} style={{ display: "flex", gap: "10px", alignItems: "baseline" }}>
+                      <span aria-hidden="true" style={{ color: cs.color, fontSize: "12px", flexShrink: 0 }}>→</span>
+                      <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13.5px", lineHeight: 1.6, color: "rgba(240,235,225,0.9)" }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Process: one hairline spine, rust square stops, ghost step numerals */}
+            <div style={{ marginTop: "44px" }}>
+              <motion.div {...rise(5)}>{eyebrowRow("How It Was Built", "22px")}</motion.div>
+              <div style={{ position: "relative", paddingLeft: "26px" }}>
+                <motion.div
+                  aria-hidden="true"
+                  initial={reducedMotion ? { scaleY: 1 } : { scaleY: 0 }}
+                  animate={{ scaleY: 1 }}
+                  transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
+                  style={{ position: "absolute", left: "3px", top: "6px", bottom: "6px", width: "1px", background: "rgba(240,235,225,0.10)", transformOrigin: "top" }}
+                />
+                <div style={{ display: "flex", flexDirection: "column", gap: "26px" }}>
+                  {cs.process.map((p, i) => (
+                    <motion.div key={p.step} {...rise(5 + i)} style={{ position: "relative" }}>
+                      <div aria-hidden="true" style={{ position: "absolute", left: "-26px", top: "6px", width: "7px", height: "7px", background: "#C0522B" }} />
+                      <div style={{ display: "flex", gap: "16px", alignItems: "baseline" }}>
+                        <span
+                          aria-hidden="true"
+                          style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "26px", lineHeight: 1, letterSpacing: "-0.02em", color: "rgba(240,235,225,0.14)", flexShrink: 0, fontVariantNumeric: "tabular-nums" }}
+                        >
+                          {p.step}
+                        </span>
+                        <div>
+                          <h4 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: "15px", color: "#F0EBE1", lineHeight: 1.3, marginBottom: "4px" }}>{p.title}</h4>
+                          <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.65, color: "rgba(212,204,184,0.55)" }}>{p.desc}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Fact rail: sticky inside the modal scroll container */}
+          <div
+            className="order-1 lg:order-2 border-b border-[rgba(240,235,225,0.10)] lg:border-b-0 lg:border-l lg:border-[rgba(240,235,225,0.10)] lg:sticky lg:top-0 lg:self-start"
+            style={{ padding: "clamp(22px, 3.5vw, 30px) clamp(20px, 4vw, 34px)" }}
+          >
+            <div>
+              {cs.results.map((r, i) => (
+                <motion.div
+                  key={r.label}
+                  {...rise(1 + i)}
+                  style={{ padding: i === 0 ? "0 0 16px" : "16px 0", borderTop: i === 0 ? "none" : hairline }}
+                >
+                  <StatNumeral
+                    stat={r.stat}
+                    accentRgb={cs.colorRgb}
+                    size={i === 0 ? "var(--fs-display-md, clamp(26px, 2.6vw, 44px))" : "var(--fs-display-sm, clamp(19px, 1.6vw, 26px))"}
+                  />
+                  <div style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(212,204,184,0.5)", marginTop: "8px", lineHeight: 1.45 }}>{r.label}</div>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div {...rise(5)} style={{ borderTop: hairline, paddingTop: "18px" }}>
+              <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(212,204,184,0.5)", display: "block", marginBottom: "12px" }}>Stack</span>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {cs.stack.map((tool) => (
+                  <span
+                    key={tool}
+                    style={{
+                      fontFamily: "var(--font-condensed)", fontWeight: 500,
+                      fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase",
+                      color: "rgba(212,204,184,0.75)",
+                      border: "1px solid rgba(240,235,225,0.14)",
+                      borderRadius: "9999px",
+                      padding: "5px 14px",
+                      transition: `border-color 0.25s ${EASE_CSS}`,
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.4)`; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(240,235,225,0.14)"; }}
+                  >
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.a
+              {...rise(6)}
+              href="/book"
+              className="focus-ring"
+              style={{
+                marginTop: "24px",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
+                fontFamily: "var(--font-condensed)", fontWeight: 600,
+                fontSize: "12px", letterSpacing: "0.18em", textTransform: "uppercase",
+                color: cs.color, textDecoration: "none",
+                padding: "14px 20px",
+                border: `1px solid rgba(${cs.colorRgb},0.3)`,
+                background: `rgba(${cs.colorRgb},0.06)`,
+                borderRadius: "2px",
+                transition: `background 0.25s ${EASE_CSS}, border-color 0.25s ${EASE_CSS}`,
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.12)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.45)`; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.06)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.3)`; }}
+            >
+              Book This For Me →
+            </motion.a>
+          </div>
         </div>
       </motion.div>
     </motion.div>
@@ -707,16 +1019,31 @@ function CaseStudyModal({ id, onClose }: { id: CaseStudyKey; onClose: () => void
 }
 
 // ─── Recent Builds: Agent Card ───────────────────────────────────────────────
+// Dossier tile: sigil artwork up top, ghost index numeral behind, mini
+// hairline-divided stat rail, clean footer row. 3-beat hover choreography
+// (lift → wash/numeral → arrow/sigil) at 0/40/80ms, gated behind hover:hover.
 
-function AgentCard({ id, onOpen }: { id: CaseStudyKey; onOpen: (id: CaseStudyKey) => void }) {
+export function AgentCard({
+  id,
+  onOpen,
+  index = 0,
+  featured = false,
+}: {
+  id: CaseStudyKey;
+  onOpen: (id: CaseStudyKey) => void;
+  index?: number;
+  featured?: boolean;
+}) {
   const [hovered, setHovered] = useState(false);
-  const cs = caseStudies[id];
-  const mainResult = cs.results[0];
+  const cs: CaseStudy = caseStudies[id];
+  const railStats = featured ? cs.results : cs.results.slice(0, 3);
+  const num = String(index + 1).padStart(2, "0");
 
   return (
     <div
       role="button"
       tabIndex={0}
+      className="rb-agent-card"
       aria-label={`Open case study: ${cs.title}`}
       onClick={() => onOpen(id)}
       onKeyDown={(e) => {
@@ -731,68 +1058,112 @@ function AgentCard({ id, onOpen }: { id: CaseStudyKey; onOpen: (id: CaseStudyKey
       onBlur={() => setHovered(false)}
       style={{
         cursor: "pointer",
-        background: hovered ? "#131311" : "#0F0F0D",
-        border: `1px solid rgba(${cs.colorRgb},0.12)`,
+        background: hovered ? "#12110E" : "#0F0F0D",
+        border: `1px solid rgba(${cs.colorRgb},${hovered ? 0.24 : 0.12})`,
+        borderRadius: "2px",
         overflow: "hidden",
         width: "100%", height: "100%",
-        transition: "background 0.2s ease, box-shadow 0.2s ease, outline 0.15s ease, border-color 0.2s ease",
-        boxShadow: hovered ? `inset 0 0 40px rgba(${cs.colorRgb},0.06)` : "none",
         position: "relative",
         display: "flex", flexDirection: "column",
-        minHeight: "300px",
-        outline: "none",
-      }}
-      onFocusCapture={(e) => {
-        if (e.currentTarget === e.target) {
-          e.currentTarget.style.outline = `2px solid ${cs.color}`;
-          e.currentTarget.style.outlineOffset = "-2px";
-        }
-      }}
-      onBlurCapture={(e) => {
-        if (e.currentTarget === e.target) {
-          e.currentTarget.style.outline = "none";
-        }
+        minHeight: featured ? "400px" : "360px",
       }}
     >
-      {/* Header */}
-      <div style={{ padding: "18px 26px 16px", borderBottom: "1px solid rgba(255,255,255,0.04)", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: cs.color, boxShadow: `0 0 8px rgba(${cs.colorRgb},0.8)` }} />
-          <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px", letterSpacing: "0.18em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.85)` }}>{cs.badge}</span>
-        </div>
-        <span style={{ fontFamily: "var(--font-condensed)", fontSize: "14px", color: cs.color, opacity: hovered ? 1 : 0.25, transition: "opacity 0.2s ease" }}>→</span>
+      {/* Self-contained hover grammar so the exported card works on any page */}
+      <style>{`
+        .rb-agent-card { transition: background 0.25s ${EASE_CSS}, border-color 0.25s ${EASE_CSS}; }
+        .rb-agent-card:focus-visible { outline: 2px solid #C9A84C; outline-offset: 3px; }
+        @media (hover: hover) and (pointer: fine) {
+          .rb-agent-card { transition: transform 0.3s ${EASE_CSS}, background 0.25s ${EASE_CSS}, border-color 0.25s ${EASE_CSS}; }
+          .rb-agent-card:hover { transform: translateY(-4px); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .rb-agent-card:hover { transform: none; }
+        }
+      `}</style>
+
+      {/* Ghost index numeral: beat 2 (40ms) — tint toward accent, 10px drift */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute", top: "26px", left: "8px", zIndex: 0,
+          fontFamily: "var(--font-condensed)", fontWeight: 600,
+          fontSize: "clamp(80px, 10vw, 200px)", lineHeight: 0.8, letterSpacing: "-0.03em",
+          color: hovered ? `rgba(${cs.colorRgb},0.10)` : "rgba(240,235,225,0.05)",
+          transform: hovered ? "translateX(10px)" : "translateX(0)",
+          transition: `color 0.3s ${EASE_CSS} 40ms, transform 0.3s ${EASE_CSS} 40ms`,
+          pointerEvents: "none", userSelect: "none",
+        }}
+      >
+        {num}
       </div>
 
-      {/* Body */}
-      <div style={{ padding: "26px 28px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-        <div>
-          <div style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(38px, 3.2vw, 60px)", lineHeight: 1, letterSpacing: "-0.04em", color: cs.color, textShadow: `0 0 30px rgba(${cs.colorRgb},0.4)`, marginBottom: "6px" }}>
-            {mainResult.stat}
-          </div>
-          <div style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.7)`, marginBottom: "18px" }}>
-            {mainResult.label}
-          </div>
-          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(19px, 1.5vw, 24px)", lineHeight: 1.2, color: "#F0EBE1", letterSpacing: "-0.01em", marginBottom: "10px" }}>
-            {cs.title}
-          </h3>
-          <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "14px", lineHeight: 1.6, color: "rgba(212,204,184,0.5)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>
-            {cs.headline}
-          </p>
+      {/* Accent wash: beat 2 (40ms) */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute", inset: 0, zIndex: 0,
+          background: `radial-gradient(ellipse at 70% 20%, rgba(${cs.colorRgb},0.08), transparent 60%)`,
+          opacity: hovered ? 1 : 0,
+          transition: `opacity 0.3s ${EASE_CSS} 40ms`,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Header row: badge + small index numeral */}
+      <div style={{ position: "relative", zIndex: 1, padding: "18px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
+          <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: cs.color, flexShrink: 0 }} />
+          <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.85)`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{cs.badge}</span>
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "20px" }}>
-          {cs.stack.slice(0, 3).map((tool) => (
-            <span key={tool} style={{ fontFamily: "var(--font-condensed)", fontWeight: 500, fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.65)`, border: `1px solid rgba(${cs.colorRgb},0.2)`, background: `rgba(${cs.colorRgb},0.05)`, padding: "4px 10px" }}>
-              {tool}
-            </span>
-          ))}
+        <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px", letterSpacing: "0.18em", fontVariantNumeric: "tabular-nums", color: hovered ? cs.color : "rgba(240,235,225,0.35)", transition: `color 0.25s ${EASE_CSS} 40ms`, flexShrink: 0 }}>{num}</span>
+      </div>
+
+      {/* Sigil band: the site-wide substitute for screenshots */}
+      <div style={{ position: "relative", zIndex: 1, height: featured ? "150px" : "118px", display: "flex", justifyContent: "flex-end", alignItems: "center", padding: "8px 24px 0" }}>
+        <div style={{ width: featured ? "132px" : "102px" }}>
+          <CaseSigil motif={cs.motif} accent={cs.color} accentRgb={cs.colorRgb} count={cs.sigilCount} active={hovered} />
         </div>
       </div>
 
-      {hovered && (
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 26px", background: `linear-gradient(to top, rgba(${cs.colorRgb},0.12), transparent)`, display: "flex", justifyContent: "flex-end", pointerEvents: "none" }}>
-          <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: cs.color }}>View Case Study →</span>
+      {/* Title + headline */}
+      <div style={{ position: "relative", zIndex: 1, padding: "8px 24px 0" }}>
+        <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: featured ? "var(--fs-display-md, clamp(26px, 2.6vw, 44px))" : "var(--fs-display-sm, clamp(19px, 1.6vw, 26px))", lineHeight: 1.15, color: "#F0EBE1", letterSpacing: "-0.01em", marginBottom: "8px", textWrap: "balance" }}>
+          {cs.title}
+        </h3>
+        <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "14px", lineHeight: 1.6, color: "rgba(212,204,184,0.55)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>
+          {cs.headline}
+        </p>
+      </div>
+
+      {/* Featured tier: one-line before → after */}
+      {featured && (
+        <div style={{ position: "relative", zIndex: 1, padding: "16px 24px 0", display: "flex", alignItems: "baseline", gap: "10px", flexWrap: "wrap" }}>
+          <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.5, color: "rgba(212,204,184,0.55)" }}>{cs.before[0]}</span>
+          <span aria-hidden="true" style={{ color: cs.color, fontSize: "13px", flexShrink: 0 }}>→</span>
+          <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.5, color: "rgba(240,235,225,0.9)" }}>{cs.after[0]}</span>
         </div>
       )}
+
+      {/* Stat rail: hairline-divided, tabular numerals in cream, unit in accent */}
+      <div style={{ position: "relative", zIndex: 1, marginTop: "auto", padding: "18px 24px 16px", display: "flex" }}>
+        {railStats.map((r, i) => (
+          <div key={r.label} style={{ flex: 1, minWidth: 0, paddingLeft: i ? "14px" : 0, paddingRight: "10px", borderLeft: i ? "1px solid rgba(240,235,225,0.10)" : "none" }}>
+            <StatNumeral
+              stat={r.stat}
+              accentRgb={cs.colorRgb}
+              size={featured && i === 0 ? "clamp(28px, 2.4vw, 40px)" : "var(--fs-display-sm, clamp(19px, 1.6vw, 26px))"}
+            />
+            {/* Fixed 2-line label box so the numeral row aligns across sibling cards */}
+            <div style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(212,204,184,0.5)", marginTop: "7px", lineHeight: 1.4, height: "28px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>{r.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer row: beat 3 (80ms) — label brightens, arrow slides */}
+      <div style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(240,235,225,0.10)", padding: "13px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: hovered ? "#F0EBE1" : "rgba(212,204,184,0.55)", transition: `color 0.25s ${EASE_CSS} 80ms` }}>View Case Study</span>
+        <span aria-hidden="true" style={{ color: cs.color, fontSize: "14px", transform: hovered ? "translateX(5px)" : "translateX(0)", opacity: hovered ? 1 : 0.5, transition: `transform 0.25s ${EASE_CSS} 80ms, opacity 0.25s ${EASE_CSS} 80ms` }}>→</span>
+      </div>
     </div>
   );
 }
@@ -806,13 +1177,13 @@ function RecentBuildsShowcase({ ids, onOpen }: { ids: CaseStudyKey[]; onOpen: (i
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-60px" }}
+        viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
         variants={containerVariants}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
       >
-        {ids.map((id) => (
+        {ids.map((id, i) => (
           <motion.div key={id} variants={itemVariants}>
-            <AgentCard id={id} onOpen={onOpen} />
+            <AgentCard id={id} onOpen={onOpen} index={i} />
           </motion.div>
         ))}
       </motion.div>
@@ -826,23 +1197,32 @@ function RecentBuildsCarousel({ ids, onOpen }: { ids: CaseStudyKey[]; onOpen: (i
   const [active, setActive] = useState(0);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const [progress, setProgress] = useState(0);
 
-  const stepSize = () => {
+  const getSlides = () => {
     const track = trackRef.current;
-    if (!track) return 0;
-    const slide = track.querySelector<HTMLElement>("[data-slide]");
-    return slide ? slide.offsetWidth + 16 : track.clientWidth;
+    return track ? Array.from(track.querySelectorAll<HTMLElement>("[data-slide]")) : [];
   };
 
   const update = useCallback(() => {
     const track = trackRef.current;
     if (!track) return;
-    const slide = track.querySelector<HTMLElement>("[data-slide]");
-    const step = slide ? slide.offsetWidth + 16 : track.clientWidth;
-    const idx = step ? Math.round(track.scrollLeft / step) : 0;
+    const slides = Array.from(track.querySelectorAll<HTMLElement>("[data-slide]"));
+    if (slides.length === 0) return;
+    // Slides have mixed widths (featured first slide), so find the nearest
+    // slide origin instead of dividing by a fixed step.
+    const base = slides[0].offsetLeft;
+    let idx = 0;
+    let best = Infinity;
+    slides.forEach((el, i) => {
+      const d = Math.abs(el.offsetLeft - base - track.scrollLeft);
+      if (d < best) { best = d; idx = i; }
+    });
     setActive(Math.max(0, Math.min(ids.length - 1, idx)));
     setAtStart(track.scrollLeft <= 2);
     setAtEnd(track.scrollLeft + track.clientWidth >= track.scrollWidth - 2);
+    const max = track.scrollWidth - track.clientWidth;
+    setProgress(max > 0 ? Math.min(1, Math.max(0, track.scrollLeft / max)) : 1);
   }, [ids.length]);
 
   useEffect(() => {
@@ -852,99 +1232,106 @@ function RecentBuildsCarousel({ ids, onOpen }: { ids: CaseStudyKey[]; onOpen: (i
     return () => window.removeEventListener("resize", onResize);
   }, [update]);
 
-  const nudge = (dir: number) => {
-    const track = trackRef.current;
-    if (track) track.scrollBy({ left: dir * stepSize(), behavior: "smooth" });
-  };
   const goTo = (i: number) => {
     const track = trackRef.current;
-    if (track) track.scrollTo({ left: i * stepSize(), behavior: "smooth" });
+    const slides = getSlides();
+    if (!track || slides.length === 0) return;
+    const clamped = Math.max(0, Math.min(ids.length - 1, i));
+    track.scrollTo({ left: slides[clamped].offsetLeft - slides[0].offsetLeft, behavior: "smooth" });
   };
+  const nudge = (dir: number) => goTo(active + dir);
 
-  const arrowBase: React.CSSProperties = {
-    width: "46px", height: "46px", borderRadius: "9999px",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    border: "1px solid rgba(192,82,43,0.35)", background: "rgba(13,13,11,0.6)",
-    transition: "transform 0.2s ease, background 0.2s ease, border-color 0.2s ease",
-    flexShrink: 0,
-  };
+  // Hairline arrows: smaller, quieter than the old filled pills.
   const arrow = (disabled: boolean): React.CSSProperties => ({
-    ...arrowBase,
-    color: disabled ? "rgba(212,204,184,0.3)" : "#C0522B",
+    width: "36px", height: "36px", borderRadius: "9999px",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    border: "1px solid rgba(240,235,225,0.14)", background: "transparent",
+    color: disabled ? "rgba(212,204,184,0.25)" : "rgba(212,204,184,0.7)",
     cursor: disabled ? "not-allowed" : "pointer",
-    opacity: disabled ? 0.5 : 1,
+    transition: `border-color 0.25s ${EASE_CSS}, color 0.25s ${EASE_CSS}`,
+    flexShrink: 0,
   });
   const arrowEnter = (e: React.MouseEvent<HTMLButtonElement>, disabled: boolean) => {
     if (disabled) return;
-    e.currentTarget.style.transform = "scale(1.08)";
-    e.currentTarget.style.background = "rgba(192,82,43,0.12)";
+    e.currentTarget.style.borderColor = "rgba(192,82,43,0.45)";
+    e.currentTarget.style.color = "#C0522B";
   };
   const arrowLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.currentTarget.style.transform = "scale(1)";
-    e.currentTarget.style.background = "rgba(13,13,11,0.6)";
+    e.currentTarget.style.borderColor = "rgba(240,235,225,0.14)";
+    e.currentTarget.style.color = "rgba(212,204,184,0.7)";
   };
 
   return (
     <div>
-      <style>{`.rb-track::-webkit-scrollbar{display:none}`}</style>
-      <motion.div
-        ref={trackRef}
-        onScroll={update}
-        className="rb-track"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-60px" }}
-        variants={containerVariants}
-        style={{
-          display: "flex", gap: "16px", overflowX: "auto",
-          scrollSnapType: "x mandatory", scrollbarWidth: "none",
-          paddingBottom: "6px", WebkitOverflowScrolling: "touch",
-        }}
-      >
-        {ids.map((id) => (
-          <motion.div
-            key={id}
-            data-slide
-            variants={itemVariants}
-            style={{ flex: "0 0 clamp(280px, 31%, 440px)", scrollSnapAlign: "start" }}
-          >
-            <AgentCard id={id} onOpen={onOpen} />
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* Controls: prev / dots / next */}
-      <div className="flex items-center justify-center gap-4 mt-7">
-        <button
-          type="button" aria-label="Previous builds" onClick={() => nudge(-1)} disabled={atStart}
-          style={arrow(atStart)}
-          onMouseEnter={(e) => arrowEnter(e, atStart)} onMouseLeave={arrowLeave}
+      {/* Content-width track: cards clip at the content edge on both sides,
+          so the section keeps the same outer gap left and right. */}
+      <style>{`
+        .rb-track::-webkit-scrollbar { display: none; }
+      `}</style>
+      <div>
+        <motion.div
+          ref={trackRef}
+          onScroll={update}
+          className="rb-track"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+          variants={containerVariants}
+          style={{
+            display: "flex", gap: "16px", overflowX: "auto",
+            scrollSnapType: "x mandatory", scrollbarWidth: "none",
+            paddingBottom: "6px", WebkitOverflowScrolling: "touch",
+          }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
-        </button>
-
-        <div className="flex items-center gap-2">
           {ids.map((id, i) => (
-            <button
-              key={id} type="button" aria-label={`Go to build ${i + 1}`} onClick={() => goTo(i)}
+            <motion.div
+              key={id}
+              data-slide
+              variants={itemVariants}
               style={{
-                height: "6px", width: active === i ? "28px" : "6px",
-                borderRadius: "9999px", border: "none", padding: 0,
-                background: active === i ? "#C0522B" : "rgba(240,235,225,0.22)",
-                boxShadow: active === i ? "0 0 12px rgba(192,82,43,0.5)" : "none",
-                cursor: "pointer", transition: "width 0.3s ease, background 0.3s ease",
+                flex: i === 0 ? "0 0 min(88vw, clamp(420px, 48%, 640px))" : "0 0 clamp(280px, 31%, 420px)",
+                scrollSnapAlign: "start",
               }}
-            />
+            >
+              <AgentCard id={id} onOpen={onOpen} index={i} featured={i === 0} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
+      </div>
 
-        <button
-          type="button" aria-label="Next builds" onClick={() => nudge(1)} disabled={atEnd}
-          style={arrow(atEnd)}
-          onMouseEnter={(e) => arrowEnter(e, atEnd)} onMouseLeave={arrowLeave}
+      {/* Editorial index: counter + progress rule + hairline arrows */}
+      <div className="flex items-center gap-5 mt-7">
+        <span
+          aria-live="polite"
+          style={{
+            fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px",
+            letterSpacing: "0.2em", color: "rgba(240,235,225,0.7)",
+            fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap",
+          }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
-        </button>
+          {String(active + 1).padStart(2, "0")}
+          <span aria-hidden="true" style={{ color: "rgba(212,204,184,0.35)", margin: "0 6px" }}>—</span>
+          {String(ids.length).padStart(2, "0")}
+        </span>
+        <div aria-hidden="true" style={{ flex: 1, height: "1px", background: "rgba(240,235,225,0.10)", position: "relative" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${progress * 100}%`, background: "#C0522B", transition: "width 0.15s linear" }} />
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button" aria-label="Previous builds" onClick={() => nudge(-1)} disabled={atStart}
+            style={arrow(atStart)}
+            onMouseEnter={(e) => arrowEnter(e, atStart)} onMouseLeave={arrowLeave}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+          </button>
+          <button
+            type="button" aria-label="Next builds" onClick={() => nudge(1)} disabled={atEnd}
+            style={arrow(atEnd)}
+            onMouseEnter={(e) => arrowEnter(e, atEnd)} onMouseLeave={arrowLeave}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -978,8 +1365,8 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
         padding: "clamp(24px, 4vw, 48px) clamp(20px, 3.5vw, 44px) clamp(24px, 4vw, 44px)",
         display: "flex",
         flexDirection: "column",
-        transition: "background 0.3s ease, border-color 0.3s ease, transform 0.35s cubic-bezier(0.215,0.61,0.355,1), box-shadow 0.35s ease",
-        transform: hovered ? "translateY(-6px)" : "translateY(0)",
+        transition: "background 0.25s cubic-bezier(0.215,0.61,0.355,1), border-color 0.25s cubic-bezier(0.215,0.61,0.355,1), transform 0.35s cubic-bezier(0.215,0.61,0.355,1), box-shadow 0.35s cubic-bezier(0.215,0.61,0.355,1)",
+        transform: hovered ? "translateY(-4px)" : "translateY(0)",
         boxShadow: hovered
           ? "0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(192,82,43,0.15)"
           : "0 4px 24px rgba(0,0,0,0.2)",
@@ -995,7 +1382,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
           inset: 0,
           opacity: hovered ? 1 : 0,
           background: `radial-gradient(500px circle at ${glow.x}px ${glow.y}px, rgba(192,82,43,0.1), transparent 65%)`,
-          transition: "opacity 0.3s ease",
+          transition: "opacity 0.3s cubic-bezier(0.215,0.61,0.355,1)",
           zIndex: 0,
         }}
       />
@@ -1010,7 +1397,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
           background: hovered
             ? "linear-gradient(to right, #C0522B, rgba(192,82,43,0.2))"
             : "linear-gradient(to right, rgba(192,82,43,0.25), transparent)",
-          transition: "background 0.4s ease",
+          transition: "background 0.4s cubic-bezier(0.215,0.61,0.355,1)",
           zIndex: 1,
         }}
       />
@@ -1030,7 +1417,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
           userSelect: "none",
           pointerEvents: "none",
           letterSpacing: "-0.04em",
-          transition: "color 0.5s ease",
+          transition: "color 0.5s cubic-bezier(0.215,0.61,0.355,1)",
           zIndex: 0,
         }}
       >
@@ -1049,7 +1436,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
               fontSize: "12px",
               letterSpacing: "0.22em",
               color: hovered ? "#C0522B" : "rgba(192,82,43,0.45)",
-              transition: "color 0.25s ease",
+              transition: "color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
             }}
           >
             {service.num}
@@ -1078,12 +1465,13 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
           style={{
             fontFamily: "var(--font-display)",
             fontWeight: 300,
-            fontSize: "clamp(29px, 2.9vw, 50px)",
-            lineHeight: 1.1,
+            fontSize: "var(--fs-display-md, clamp(26px, 2.6vw, 44px))",
+            lineHeight: 1.15,
             color: "#F0EBE1",
             marginBottom: "16px",
             letterSpacing: "-0.01em",
             fontStyle: "italic",
+            textWrap: "balance",
           }}
         >
           {service.name}
@@ -1095,7 +1483,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
             height: "1px",
             background: hovered ? "rgba(192,82,43,0.3)" : "rgba(240,235,225,0.07)",
             marginBottom: "16px",
-            transition: "background 0.3s ease",
+            transition: "background 0.3s cubic-bezier(0.215,0.61,0.355,1)",
           }}
         />
 
@@ -1108,7 +1496,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
             lineHeight: 1.82,
             color: hovered ? "rgba(212,204,184,0.8)" : "rgba(212,204,184,0.55)",
             marginBottom: "8px",
-            transition: "color 0.25s ease",
+            transition: "color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
             flex: 1,
           }}
         >
@@ -1122,7 +1510,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
               fontWeight: 300,
               fontSize: "14px",
               lineHeight: 1.7,
-              color: "rgba(212,204,184,0.35)",
+              color: "rgba(212,204,184,0.55)",
               fontStyle: "italic",
               marginBottom: "8px",
             }}
@@ -1148,15 +1536,15 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
               <motion.span
                 initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.1 }}
+                viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+                transition={{ duration: 0.4, delay: 0.1, ease: [0.215, 0.61, 0.355, 1.0] }}
                 style={{
                   fontFamily: "var(--font-display)",
                   fontWeight: 300,
                   fontSize: "16px",
                   color: hovered ? "#C0522B" : "rgba(192,82,43,0.6)",
                   marginTop: "8px",
-                  transition: "color 0.25s ease",
+                  transition: "color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
                 }}
               >
                 $
@@ -1173,7 +1561,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
                   lineHeight: 1,
                   color: hovered ? "#F0EBE1" : "rgba(240,235,225,0.85)",
                   letterSpacing: "-0.02em",
-                  transition: "color 0.25s ease",
+                  transition: "color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
                   textShadow: hovered ? "0 0 40px rgba(192,82,43,0.3)" : "none",
                 }}
               />
@@ -1185,7 +1573,7 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
                 lineHeight: 1,
                 color: hovered ? "#F0EBE1" : "rgba(240,235,225,0.85)",
                 letterSpacing: "-0.02em",
-                transition: "color 0.25s ease",
+                transition: "color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
                 fontStyle: "italic",
               }}>
                 Custom
@@ -1195,17 +1583,17 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.3 }}
+              viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+              transition={{ duration: 0.4, delay: 0.3, ease: [0.215, 0.61, 0.355, 1.0] }}
               style={{
                 fontFamily: "var(--font-condensed)",
                 fontWeight: 500,
                 fontSize: "11px",
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
-                color: hovered ? "rgba(192,82,43,0.5)" : "rgba(212,204,184,0.35)",
+                color: hovered ? "rgba(192,82,43,0.7)" : "rgba(212,204,184,0.55)",
                 marginTop: "3px",
-                transition: "color 0.25s ease",
+                transition: "color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
               }}
             >
               {service.priceNote}
@@ -1214,18 +1602,18 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
 
           <a
             href={service.href}
+            className="link-underline focus-ring"
             style={{
               fontFamily: "var(--font-condensed)",
               fontWeight: 600,
               fontSize: "13px",
-              letterSpacing: hovered ? "0.2em" : "0.14em",
+              letterSpacing: "0.16em",
               textTransform: "uppercase",
               color: "#C0522B",
               textDecoration: "none",
-              transition: "letter-spacing 0.3s ease, opacity 0.2s ease",
+              transition: "opacity 0.25s cubic-bezier(0.215,0.61,0.355,1)",
               opacity: hovered ? 1 : 0.7,
               paddingBottom: "2px",
-              borderBottom: "1px solid rgba(192,82,43,0.4)",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -1286,27 +1674,19 @@ export function ServicesSection() {
     <>
     <section
       id="services"
-      className="relative py-12 md:py-16 overflow-hidden"
-      style={{ background: "#0D0D0B" }}
+      className="relative overflow-hidden"
+      style={{
+        background: "#0D0D0B",
+        paddingTop: "var(--section-pad, clamp(80px, 10vw, 144px))",
+        paddingBottom: "var(--section-pad, clamp(80px, 10vw, 144px))",
+      }}
     >
-      {/* Ambient glow top-right */}
+      {/* Section accent glow: single static layer, rust */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 right-0 z-0"
+        className="pointer-events-none absolute inset-0 z-0"
         style={{
-          width: "60vw", height: "60vw",
-          background: "radial-gradient(ellipse at top right, rgba(192,82,43,0.07) 0%, transparent 60%)",
-          filter: "blur(80px)",
-        }}
-      />
-      {/* Ambient glow bottom-left */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-0 z-0"
-        style={{
-          width: "40vw", height: "40vw",
-          background: "radial-gradient(ellipse at bottom left, rgba(192,82,43,0.04) 0%, transparent 60%)",
-          filter: "blur(60px)",
+          background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(192,82,43,0.07), transparent 60%)",
         }}
       />
 
@@ -1317,11 +1697,11 @@ export function ServicesSection() {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
             variants={containerVariants}
           >
-            <motion.div variants={itemVariants} className="flex items-center gap-4 mb-7">
-              <div style={{ width: "38px", height: "1px", backgroundColor: "#C0522B" }} />
+            <motion.div variants={itemVariants} className="flex items-center gap-3.5 mb-7">
+              <div style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
               <span style={{
                 fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "13px",
                 letterSpacing: "0.28em", textTransform: "uppercase", color: "#C0522B",
@@ -1334,8 +1714,9 @@ export function ServicesSection() {
               variants={itemVariants}
               style={{
                 fontFamily: "var(--font-display)", fontWeight: 300,
-                fontSize: "clamp(38px, 5vw, 90px)",
-                lineHeight: 1.06, color: "#F0EBE1", maxWidth: "960px",
+                fontSize: "var(--fs-display-xl, clamp(40px, 6vw, 96px))",
+                lineHeight: 1.05, color: "#F0EBE1", maxWidth: "960px",
+                textWrap: "balance",
               }}
             >
               Done talking about AI.{" "}
@@ -1345,9 +1726,11 @@ export function ServicesSection() {
             <motion.p
               variants={itemVariants}
               style={{
-                fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "18px",
-                lineHeight: 1.85, color: "rgba(212,204,184,0.6)",
+                fontFamily: "var(--font-body)", fontWeight: 300,
+                fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))",
+                lineHeight: 1.6, color: "rgba(212,204,184,0.6)",
                 maxWidth: "720px", marginTop: "18px",
+                textWrap: "pretty",
               }}
             >
               Most operators spend months stuck in the "I should automate this" phase. Ryan skips that entirely: he builds the solution, puts it in your business, and moves on.
@@ -1356,10 +1739,10 @@ export function ServicesSection() {
 
           {/* Orbiting AI Tools */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.215, 0.61, 0.355, 1.0] }}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.215, 0.61, 0.355, 1.0] }}
             className="hidden lg:flex items-center justify-center -ml-32"
           >
             <OrbitingSkills />
@@ -1370,12 +1753,12 @@ export function ServicesSection() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={containerVariants}
           className="mb-16 md:mb-20"
         >
-          <motion.div variants={itemVariants} className="flex items-center gap-4 mb-4">
-            <div style={{ width: "28px", height: "1px", backgroundColor: "#C0522B" }} />
+          <motion.div variants={itemVariants} className="flex items-center gap-3.5 mb-4">
+            <div style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
             <span style={{
               fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px",
               letterSpacing: "0.26em", textTransform: "uppercase", color: "#C0522B",
@@ -1386,16 +1769,18 @@ export function ServicesSection() {
 
           <motion.p variants={itemVariants} style={{
             fontFamily: "var(--font-body)", fontWeight: 300,
-            fontSize: "clamp(16px, 1.15vw, 19px)", lineHeight: 1.7,
+            fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))", lineHeight: 1.6,
             color: "rgba(212,204,184,0.6)", maxWidth: "620px", marginBottom: "32px",
+            textWrap: "pretty",
           }}>
             Short-term rentals are where we started. The same AI systems, agents, revenue
             intelligence, messaging, and automation, run just as well for any operation.
           </motion.p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Ruled index list: hairline rows, no boxes */}
+          <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-16" style={{ borderTop: "1px solid rgba(240,235,225,0.10)" }}>
             {industries.map((industry) => (
-              <IndustryCard key={industry.num} industry={industry} />
+              <IndustryRow key={industry.num} industry={industry} />
             ))}
           </div>
         </motion.div>
@@ -1405,11 +1790,11 @@ export function ServicesSection() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
             transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] }}
-            className="flex items-center gap-4 mb-6"
+            className="flex items-center gap-3.5 mb-6"
           >
-            <div style={{ width: "28px", height: "1px", backgroundColor: "#C0522B" }} />
+            <div style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
             <span style={{
               fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px",
               letterSpacing: "0.26em", textTransform: "uppercase", color: "#C0522B",
@@ -1421,13 +1806,14 @@ export function ServicesSection() {
           <motion.h3
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.215, 0.61, 0.355, 1.0] }}
             style={{
               fontFamily: "var(--font-display)", fontWeight: 300,
-              fontSize: "clamp(28px, 3.2vw, 52px)",
-              lineHeight: 1.12, color: "#F0EBE1", marginBottom: "12px",
+              fontSize: "var(--fs-display-md, clamp(26px, 2.6vw, 44px))",
+              lineHeight: 1.15, color: "#F0EBE1", marginBottom: "12px",
               maxWidth: "760px",
+              textWrap: "balance",
             }}
           >
             Built for{" "}
@@ -1437,12 +1823,14 @@ export function ServicesSection() {
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
             transition={{ duration: 0.7, delay: 0.15, ease: [0.215, 0.61, 0.355, 1.0] }}
             style={{
-              fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "16px",
-              lineHeight: 1.8, color: "rgba(212,204,184,0.55)",
+              fontFamily: "var(--font-body)", fontWeight: 300,
+              fontSize: "var(--fs-body, clamp(14px, 0.95vw, 16px))",
+              lineHeight: 1.6, color: "rgba(212,204,184,0.55)",
               maxWidth: "600px", marginBottom: "36px",
+              textWrap: "pretty",
             }}
           >
             Click any card to see the full case study: what it replaced, what it does now, and how it was built.
@@ -1458,7 +1846,7 @@ export function ServicesSection() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-16"
         >
@@ -1471,8 +1859,8 @@ export function ServicesSection() {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.8, ease: [0.215, 0.61, 0.355, 1.0] }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+          transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] }}
           style={{
             maxWidth: "800px",
             margin: "0 auto",

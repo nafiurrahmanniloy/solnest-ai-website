@@ -1,8 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { MagneticButton } from "@/components/ui/magnetic-button";
+
+// House motion system
+const EASE: [number, number, number, number] = [0.215, 0.61, 0.355, 1];
+const VIEWPORT = { once: true, margin: "-80px 0px -80px 0px" } as const;
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -41,11 +45,11 @@ const container = {
 };
 
 const item = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.65, ease: [0.215, 0.61, 0.355, 1.0] },
+    transition: { duration: 0.7, ease: EASE },
   },
 };
 
@@ -54,8 +58,6 @@ const item = {
 function PathCard({ data }: { data: (typeof paths)[0] }) {
   const ref = useRef<HTMLDivElement>(null);
   const [glow, setGlow] = useState({ x: 0, y: 0 });
-  const [hovered, setHovered] = useState(false);
-  const reduceMotion = useReducedMotion();
 
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
@@ -70,32 +72,22 @@ function PathCard({ data }: { data: (typeof paths)[0] }) {
       role="article"
       aria-label={`${data.title}: ${data.desc}`}
       onMouseMove={onMove}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="relative overflow-hidden flex flex-col h-full"
+      className="fork-card relative overflow-hidden flex flex-col h-full"
       style={{
         background: "#0D0D0B",
-        border: `1px solid ${hovered ? `rgba(${data.accentRgb},0.45)` : "rgba(240,235,225,0.08)"}`,
         padding: "clamp(32px, 4vw, 52px) clamp(28px, 3.4vw, 44px)",
-        transition: reduceMotion
-          ? "none"
-          : "border-color 0.3s ease, transform 0.35s cubic-bezier(0.215,0.61,0.355,1), box-shadow 0.35s ease",
-        transform: hovered && !reduceMotion ? "translateY(-6px)" : "translateY(0)",
-        boxShadow: hovered
-          ? `0 28px 64px rgba(0,0,0,0.45), 0 0 0 1px rgba(${data.accentRgb},0.12)`
-          : "none",
-      }}
+        "--card-rgb": data.accentRgb,
+      } as React.CSSProperties}
     >
-      {/* Mouse glow */}
+      {/* Mouse glow — accent wash, pre-rendered, opacity only */}
       <div
         aria-hidden="true"
+        className="fork-card-glow"
         style={{
           pointerEvents: "none",
           position: "absolute",
           inset: 0,
-          opacity: hovered ? 1 : 0,
           background: `radial-gradient(420px circle at ${glow.x}px ${glow.y}px, rgba(${data.accentRgb},0.1), transparent 65%)`,
-          transition: "opacity 0.3s ease",
         }}
       />
 
@@ -110,17 +102,16 @@ function PathCard({ data }: { data: (typeof paths)[0] }) {
           fontWeight: 300,
           fontSize: "clamp(96px, 16vw, 180px)",
           lineHeight: 1,
-          color: hovered ? `rgba(${data.accentRgb},0.08)` : "rgba(240,235,225,0.03)",
+          color: "rgba(240,235,225,0.03)",
           userSelect: "none",
           pointerEvents: "none",
           letterSpacing: "-0.04em",
-          transition: "color 0.4s ease",
         }}
       >
         {data.num}
       </div>
 
-      {/* Top accent line */}
+      {/* Top accent line — base layer */}
       <div
         aria-hidden="true"
         style={{
@@ -129,10 +120,20 @@ function PathCard({ data }: { data: (typeof paths)[0] }) {
           left: 0,
           right: 0,
           height: "2px",
-          background: hovered
-            ? `linear-gradient(to right, ${data.accent}, rgba(${data.accentRgb},0.2), transparent)`
-            : "linear-gradient(to right, rgba(240,235,225,0.08), transparent)",
-          transition: "background 0.35s ease",
+          background: "linear-gradient(to right, rgba(240,235,225,0.08), transparent)",
+        }}
+      />
+      {/* Top accent line — accent layer, fades in on hover (opacity only) */}
+      <div
+        aria-hidden="true"
+        className="fork-card-line"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "2px",
+          background: `linear-gradient(to right, ${data.accent}, rgba(${data.accentRgb},0.2), transparent)`,
         }}
       />
 
@@ -174,8 +175,8 @@ function PathCard({ data }: { data: (typeof paths)[0] }) {
           style={{
             fontFamily: "var(--font-display)",
             fontWeight: 300,
-            fontSize: "clamp(28px, 2.6vw, 42px)",
-            lineHeight: 1.08,
+            fontSize: "var(--fs-display-md, clamp(26px, 2.6vw, 44px))",
+            lineHeight: 1.15,
             color: "#F0EBE1",
             letterSpacing: "-0.01em",
             marginBottom: "18px",
@@ -198,8 +199,8 @@ function PathCard({ data }: { data: (typeof paths)[0] }) {
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 400,
-            fontSize: "clamp(15px, 1.05vw, 17px)",
-            lineHeight: 1.75,
+            fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))",
+            lineHeight: 1.6,
             color: "rgba(212,204,184,0.7)",
             marginBottom: "clamp(28px, 3vw, 40px)",
             flex: 1,
@@ -228,7 +229,7 @@ function PathCard({ data }: { data: (typeof paths)[0] }) {
               style={{
                 background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)",
                 zIndex: 1,
-                transition: "transform 0.55s ease",
+                transition: "transform 0.55s cubic-bezier(0.215,0.61,0.355,1)",
               }}
             />
             <span
@@ -255,7 +256,7 @@ function PathCard({ data }: { data: (typeof paths)[0] }) {
               display: "flex",
               alignItems: "center",
               border: "1px solid rgba(201,168,76,0.4)",
-              transition: "border-color 0.3s ease, background 0.3s ease",
+              transition: "border-color 0.3s cubic-bezier(0.215,0.61,0.355,1), background 0.3s cubic-bezier(0.215,0.61,0.355,1)",
             } as React.CSSProperties}
           >
             <span
@@ -293,36 +294,39 @@ export function TwoWaysFork() {
         style={{
           height: "1px",
           background:
-            "linear-gradient(to right, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
+            "linear-gradient(90deg, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
         }}
       />
 
-      {/* Ambient glows */}
+      {/* Card hover grammar — gated behind fine pointers, transform/opacity/border-color only */}
+      <style>{`
+        .fork-card {
+          border: 1px solid rgba(240,235,225,0.12);
+          transition: transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1), border-color 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        .fork-card-glow, .fork-card-line {
+          opacity: 0;
+          transition: opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        @media (hover: hover) and (pointer: fine) {
+          .fork-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(var(--card-rgb), 0.24);
+          }
+          .fork-card:hover .fork-card-glow,
+          .fork-card:hover .fork-card-line { opacity: 1; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .fork-card, .fork-card-glow, .fork-card-line { transition: none; }
+          .fork-card:hover { transform: none; }
+        }
+      `}</style>
+
+      {/* Static gold accent glow */}
       <div
         aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: "-6%",
-          left: "-4%",
-          width: "42%",
-          height: "50%",
-          background: "radial-gradient(ellipse, rgba(192,82,43,0.07) 0%, transparent 65%)",
-          filter: "blur(90px)",
-          pointerEvents: "none",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          bottom: "-4%",
-          right: "-4%",
-          width: "40%",
-          height: "48%",
-          background: "radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 65%)",
-          filter: "blur(80px)",
-          pointerEvents: "none",
-        }}
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.07), transparent 60%)" }}
       />
 
       <div className="relative z-10 max-w-[1200px] mx-auto px-5 md:px-8 py-20 md:py-28">
@@ -330,7 +334,7 @@ export function TwoWaysFork() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={VIEWPORT}
           variants={container}
           className="text-center mb-16 md:mb-20"
         >
@@ -369,8 +373,8 @@ export function TwoWaysFork() {
             style={{
               fontFamily: "var(--font-display)",
               fontWeight: 300,
-              fontSize: "clamp(32px, 3.6vw, 60px)",
-              lineHeight: 1.08,
+              fontSize: "var(--fs-display-lg, clamp(32px, 3.6vw, 64px))",
+              lineHeight: 1.1,
               color: "#F0EBE1",
               letterSpacing: "-0.02em",
               maxWidth: "760px",
@@ -387,7 +391,7 @@ export function TwoWaysFork() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={VIEWPORT}
           variants={container}
           className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6"
         >
@@ -396,15 +400,6 @@ export function TwoWaysFork() {
           ))}
         </motion.div>
       </div>
-
-      {/* Bottom border */}
-      <div
-        aria-hidden="true"
-        style={{
-          height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(192,82,43,0.15) 50%, transparent)",
-        }}
-      />
     </section>
   );
 }

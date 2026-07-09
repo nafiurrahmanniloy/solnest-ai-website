@@ -28,7 +28,7 @@ const testimonials: {
 
 const container = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
+  visible: { transition: { staggerChildren: 0.08 } },
 };
 
 const item = {
@@ -36,7 +36,7 @@ const item = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.215, 0.61, 0.355, 1.0] },
+    transition: { duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] },
   },
 };
 
@@ -100,8 +100,8 @@ function TestimonialCard({ data }: { data: (typeof testimonials)[0] }) {
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 300,
-            fontSize: "13px",
-            color: "rgba(212,204,184,0.5)",
+            fontSize: "var(--fs-caption, 13px)",
+            color: "rgba(212,204,184,0.55)",
             marginTop: "4px",
           }}
         >
@@ -123,67 +123,61 @@ export function VideoTestimonials() {
       style={{ background: "#0D0D0B" }}
       aria-labelledby="testimonials-heading"
     >
-      {/* Top border */}
+      {/* Top seam */}
       <div
         aria-hidden="true"
         style={{
           height: "1px",
           background:
-            "linear-gradient(to right, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
+            "linear-gradient(90deg, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
         }}
       />
 
-      {/* Ambient glow */}
+      {/* Ambient glow - rust, static */}
       <div
         aria-hidden="true"
         style={{
           position: "absolute",
-          top: "10%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "60%",
-          height: "50%",
-          background: "radial-gradient(ellipse, rgba(192,82,43,0.06) 0%, transparent 65%)",
-          filter: "blur(90px)",
+          inset: 0,
+          background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(192,82,43,0.07), transparent 60%)",
           pointerEvents: "none",
         }}
       />
 
-      <div className="relative z-10 max-w-[1200px] mx-auto px-5 md:px-8 py-20 md:py-28">
+      <div
+        className="relative z-10 max-w-[1200px] mx-auto px-5 md:px-8"
+        style={{
+          paddingTop: "var(--section-pad, clamp(80px, 10vw, 144px))",
+          paddingBottom: "var(--section-pad, clamp(80px, 10vw, 144px))",
+        }}
+      >
         {/* Header */}
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={container}
           className="text-center mb-14 md:mb-16"
         >
-          <motion.div variants={item} className="mb-8 flex justify-center">
-            <div
-              className="inline-flex items-center gap-2"
+          <motion.div
+            variants={item}
+            className="mb-8 flex items-center justify-center"
+            style={{ gap: "14px" }}
+          >
+            <div aria-hidden="true" style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
+            <span
               style={{
-                background: "rgba(192,82,43,0.07)",
-                border: "1px solid rgba(192,82,43,0.22)",
-                padding: "6px 16px",
+                fontFamily: "var(--font-condensed)",
+                fontWeight: 600,
+                fontSize: "12px",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                color: "rgba(212,204,184,0.65)",
               }}
             >
-              <div
-                aria-hidden="true"
-                style={{ width: "5px", height: "5px", borderRadius: "50%", background: "#C0522B" }}
-              />
-              <span
-                style={{
-                  fontFamily: "var(--font-condensed)",
-                  fontWeight: 600,
-                  fontSize: "13px",
-                  letterSpacing: "0.26em",
-                  textTransform: "uppercase",
-                  color: "#C0522B",
-                }}
-              >
-                Testimonials
-              </span>
-            </div>
+              Testimonials
+            </span>
+            <div aria-hidden="true" style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
           </motion.div>
 
           <motion.h2
@@ -192,10 +186,11 @@ export function VideoTestimonials() {
             style={{
               fontFamily: "var(--font-display)",
               fontWeight: 300,
-              fontSize: "clamp(32px, 3.6vw, 60px)",
-              lineHeight: 1.08,
+              fontSize: "var(--fs-display-lg, clamp(32px, 3.6vw, 64px))",
+              lineHeight: 1.1,
               color: "#F0EBE1",
               letterSpacing: "-0.02em",
+              textWrap: "balance",
             }}
           >
             What operators are{" "}
@@ -207,7 +202,7 @@ export function VideoTestimonials() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={container}
           className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6"
           aria-label="Operator video testimonials"
@@ -217,15 +212,6 @@ export function VideoTestimonials() {
           ))}
         </motion.div>
       </div>
-
-      {/* Bottom border */}
-      <div
-        aria-hidden="true"
-        style={{
-          height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(192,82,43,0.15) 50%, transparent)",
-        }}
-      />
     </section>
   );
 }

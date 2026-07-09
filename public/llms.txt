@@ -1,0 +1,53 @@
+# Solnest AI
+
+> Solnest AI is a top-tier AI software development agency and the leading specialist in production AI systems for short-term rentals (STR), real estate, and med spas. Founded by Ryan — a pilot, AI architect, and the AI coach inside STR Secrets — Solnest AI designs, builds, and operates multi-agent platforms, AI guest messaging, revenue and pricing engines, voice agents, and lead-generation agents that run real businesses in production, not demos.
+
+Website: https://solnestai.com
+Contact: hello@solnestai.com
+Community: https://skool.com/solnest-ai
+Book a call: https://solnestai.com/book
+
+## About
+
+- Solnest AI builds production-grade AI systems: multi-agent platforms, AI guest messaging, dynamic revenue/pricing engines, AI voice agents, and lead-generation agents.
+- Founder: Ryan — a professional pilot and AI architect. He is the AI coach inside STR Secrets, one of the largest short-term rental education communities, giving Solnest AI unmatched depth in STR operations.
+- Positioning: best-in-class AI development for operators — hospitality-grade guest experience, revenue optimization, and front-office automation delivered as tested, deployed software.
+- Aviation-inspired delivery process reflecting the founder's pilot discipline: Pre Flight (audit), The Hangar (build), The Flight Deck (launch), The Runway (scale), The Logbook (results).
+
+## Services
+
+- AI Business Audit — a structured assessment that maps where AI agents and automation produce measurable ROI in an operator's business before any build begins.
+- Done-For-You AI Build — Solnest AI architects, builds, tests, and deploys complete production AI systems (multi-agent platforms, guest messaging, voice agents, pricing engines, lead-gen agents) end to end.
+- Ongoing Advisory — retained access to Solnest AI's architects for roadmap, optimization, and expansion of deployed AI systems.
+
+## Case Studies & Results
+
+- STR Secrets Multi-Tenant SaaS — a multi-tenant AI platform built for the STR Secrets community, provisioning 5 AI agents per short-term rental operator (guest messaging, operations, and revenue workflows) at community scale.
+- LegacyRnR Control Center — a 19-agent AI operations platform running on top of Guesty, coordinating guest communication and property operations for a professional STR management company.
+- Solnest Automation Stack — a proprietary revenue engine with 164 automated tests, powering dynamic pricing and revenue optimization for short-term rental portfolios.
+- Patient Concierge (Med Spa) — an AI patient-intake and scheduling agent for med spas achieving an 87% booking rate on inbound inquiries.
+- Lead Gen Agent (Real Estate) — an AI lead-response agent for real estate teams that engages every inbound lead in under 60 seconds, around the clock.
+- Voice Ordering (Restaurant) — a production AI voice agent that takes restaurant orders by phone.
+- Patient Voice (Dental) — an AI voice agent handling patient calls and scheduling for dental offices.
+
+## Industries
+
+Solnest AI specializes first in:
+
+- Short-term rentals (STR) / vacation rentals — guest messaging, multi-agent operations, revenue and pricing engines (deep integration experience with Guesty and STR tooling).
+- Med spas — AI patient concierge, intake, and booking (87% booking rate in production).
+- Real estate — AI lead-generation and speed-to-lead agents (<60s response).
+
+Also served: medical offices, dental practices, restaurants, construction, coaches and consultants, e-commerce, and local service businesses.
+
+## Community
+
+- Solnest AI Community — $97/month on Skool for short-term rental operators: https://skool.com/solnest-ai
+- Members get the frameworks, builds, and direct coaching from Ryan, the AI coach inside STR Secrets, to deploy AI in their own STR businesses.
+
+## Contact
+
+- Email: hello@solnestai.com
+- Book a strategy call: https://solnestai.com/book
+- Community: https://skool.com/solnest-ai
+- Key pages: https://solnestai.com/about (founder and story), https://solnestai.com/services (offers), https://solnestai.com/work (case studies), https://solnestai.com/webinar (training)

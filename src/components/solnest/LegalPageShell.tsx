@@ -192,7 +192,9 @@ export default function LegalPageShell({
       </section>
 
       {/* Scoped styles - kept inside the shell so they ship/teardown with it. */}
-      <style>{`
+      {/* dangerouslySetInnerHTML: quotes get entity-escaped in SSR text nodes,
+          which breaks hydration inside raw-text <style> tags */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .legal-grid {
           display: grid;
           gap: 48px;
@@ -254,7 +256,7 @@ export default function LegalPageShell({
           color: rgba(240,235,225,0.95);
           font-weight: 500;
         }
-      `}</style>
+      ` }} />
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import Nav from "@/components/solnest/Nav";
 import Footer from "@/components/solnest/Footer";
 import { MagneticButton } from "@/components/ui/magnetic-button";
@@ -17,8 +17,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 22 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
 };
 
 // ─── Content ─────────────────────────────────────────────────────────────────
@@ -83,10 +83,15 @@ function AnimatedStat({
 }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const inView = useInView(ref, { once: true, margin: "-80px 0px -80px 0px" });
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (!inView) return;
+    if (prefersReducedMotion) {
+      setCount(value);
+      return;
+    }
     const steps = 50;
     let step = 0;
     const timer = setInterval(() => {
@@ -96,7 +101,7 @@ function AnimatedStat({
       if (step >= steps) clearInterval(timer);
     }, 1400 / steps);
     return () => clearInterval(timer);
-  }, [inView, value]);
+  }, [inView, value, prefersReducedMotion]);
 
   return (
     <div ref={ref} className="flex flex-col items-center py-6 md:py-7 text-center">
@@ -157,7 +162,7 @@ function HeroSection() {
       {/* Ambient glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-[-15vw] left-1/2 -translate-x-1/2 animate-breathe"
+        className="pointer-events-none absolute top-[-15vw] left-1/2 -translate-x-1/2"
         style={{
           width: "70vw",
           height: "50vw",
@@ -171,12 +176,12 @@ function HeroSection() {
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-60px" }}
+        viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
         variants={containerVariants}
-        className="relative z-10 max-w-[900px] mx-auto px-6 md:px-10 text-center"
+        className="relative z-10 max-w-[900px] mx-auto px-4 md:px-8 text-center"
       >
         {/* Eyebrow */}
-        <motion.div variants={itemVariants} className="flex items-center justify-center gap-3 mb-7">
+        <motion.div variants={itemVariants} className="flex items-center justify-center gap-3.5 mb-7">
           <div style={{ width: "34px", height: "1px", background: "#C0522B" }} />
           <span
             style={{
@@ -199,8 +204,8 @@ function HeroSection() {
           style={{
             fontFamily: "var(--font-display)",
             fontWeight: 300,
-            fontSize: "clamp(38px, 6vw, 78px)",
-            lineHeight: 1.1,
+            fontSize: "clamp(40px, 6vw, 96px)",
+            lineHeight: 1.05,
             letterSpacing: "-0.02em",
             color: "#F0EBE1",
             marginBottom: "24px",
@@ -249,7 +254,7 @@ function MeetRyanSection() {
           <motion.div
             initial={{ opacity: 0, scale: 1.04 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
             transition={{ duration: 0.9, ease: EASE }}
             style={{ position: "absolute", inset: 0 }}
           >
@@ -291,7 +296,7 @@ function MeetRyanSection() {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
             variants={containerVariants}
             style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "26px 28px", zIndex: 10 }}
           >
@@ -341,12 +346,12 @@ function MeetRyanSection() {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
             variants={containerVariants}
           >
             {/* Eyebrow */}
-            <motion.div variants={itemVariants} className="flex items-center gap-4 mb-7">
-              <div style={{ width: "36px", height: "1px", backgroundColor: "#C0522B" }} />
+            <motion.div variants={itemVariants} className="flex items-center gap-3.5 mb-7">
+              <div style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
               <span
                 style={{
                   fontFamily: "var(--font-condensed)",
@@ -501,16 +506,16 @@ function ValuesSection() {
         paddingBottom: "clamp(64px, 8vw, 100px)",
       }}
     >
-      <div className="max-w-[1200px] mx-auto px-6 md:px-10">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={containerVariants}
           className="text-center mb-12 md:mb-16"
         >
-          <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 mb-6">
-            <div style={{ width: "36px", height: "1px", backgroundColor: "#C0522B" }} />
+          <motion.div variants={itemVariants} className="flex items-center justify-center gap-3.5 mb-6">
+            <div style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
             <span
               style={{
                 fontFamily: "var(--font-condensed)",
@@ -523,7 +528,7 @@ function ValuesSection() {
             >
               How We Work
             </span>
-            <div style={{ width: "36px", height: "1px", backgroundColor: "#C0522B" }} />
+            <div style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
           </motion.div>
           <motion.h2
             variants={itemVariants}
@@ -545,7 +550,7 @@ function ValuesSection() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={containerVariants}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6"
         >
@@ -616,7 +621,7 @@ function StatsSection() {
         style={{
           height: "1px",
           background:
-            "linear-gradient(to right, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
+            "linear-gradient(90deg, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
         }}
       />
 
@@ -637,31 +642,27 @@ function StatsSection() {
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-40px" }}
+        viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
         variants={containerVariants}
-        className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 grid grid-cols-2 md:grid-cols-4"
+        className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-8 grid grid-cols-2 md:grid-cols-4"
       >
         {stats.map((s, i) => (
           <motion.div
             key={s.label}
             variants={itemVariants}
-            style={{
-              position: "relative",
-              borderRight: i < stats.length - 1 ? "1px solid rgba(240,235,225,0.06)" : "none",
-            }}
+            className={[
+              "relative border-[rgba(240,235,225,0.06)]",
+              i % 2 === 0 ? "border-r" : "",
+              i >= 2 ? "border-t md:border-t-0" : "",
+              i === 1 ? "md:border-r" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
           >
             <AnimatedStat value={s.value} suffix={s.suffix} label={s.label} accent={s.accent} />
           </motion.div>
         ))}
       </motion.div>
-
-      <div
-        aria-hidden="true"
-        style={{
-          height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(192,82,43,0.15) 50%, transparent)",
-        }}
-      />
     </div>
   );
 }
@@ -684,20 +685,20 @@ function CredibilityStrip() {
         style={{
           position: "absolute",
           top: 0,
-          left: "5%",
-          right: "5%",
+          left: 0,
+          right: 0,
           height: "1px",
           background:
-            "linear-gradient(to right, transparent, rgba(240,235,225,0.08) 30%, rgba(240,235,225,0.08) 70%, transparent)",
+            "linear-gradient(90deg, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
         }}
       />
 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
+        viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
         transition={{ duration: 0.7, ease: EASE }}
-        className="relative z-10 max-w-[720px] mx-auto px-6 md:px-10 flex flex-col items-center text-center"
+        className="relative z-10 max-w-[720px] mx-auto px-4 md:px-8 flex flex-col items-center text-center"
       >
         <span
           style={{
@@ -725,18 +726,6 @@ function CredibilityStrip() {
         </p>
       </motion.div>
 
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: "5%",
-          right: "5%",
-          height: "1px",
-          background:
-            "linear-gradient(to right, transparent, rgba(240,235,225,0.08) 30%, rgba(240,235,225,0.08) 70%, transparent)",
-        }}
-      />
     </section>
   );
 }
@@ -755,7 +744,7 @@ function FinalCTASection() {
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-[-15vw] right-[-5vw] animate-breathe"
+        className="pointer-events-none absolute bottom-[-15vw] right-[-5vw]"
         style={{
           width: "50vw",
           height: "50vw",
@@ -769,9 +758,9 @@ function FinalCTASection() {
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-60px" }}
+        viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
         variants={containerVariants}
-        className="relative z-10 max-w-[820px] mx-auto px-6 md:px-10 text-center"
+        className="relative z-10 max-w-[820px] mx-auto px-4 md:px-8 text-center"
       >
         <motion.h2
           variants={itemVariants}
@@ -807,7 +796,7 @@ function FinalCTASection() {
               style={{
                 background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)",
                 zIndex: 1,
-                transition: "transform 0.5s ease",
+                transition: "transform 0.5s cubic-bezier(0.215,0.61,0.355,1)",
                 borderRadius: "9999px",
               }}
               aria-hidden="true"
@@ -829,6 +818,7 @@ function FinalCTASection() {
 
           <a
             href="/work"
+            className="link-underline focus-ring"
             style={{
               fontFamily: "var(--font-condensed)",
               fontWeight: 600,
@@ -837,22 +827,9 @@ function FinalCTASection() {
               textTransform: "uppercase",
               color: "rgba(212,204,184,0.75)",
               textDecoration: "none",
-              transition: "color 0.2s ease",
               display: "inline-flex",
               alignItems: "center",
               gap: "8px",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.75)";
-            }}
-            onFocus={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
-            }}
-            onBlur={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.75)";
             }}
           >
             See our work

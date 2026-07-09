@@ -8,6 +8,8 @@ import Footer from "@/components/solnest/Footer";
 
 type Step = "date" | "time" | "details" | "confirmed";
 
+const EASE: [number, number, number, number] = [0.215, 0.61, 0.355, 1];
+
 interface Slots {
   [date: string]: string[];
 }
@@ -143,13 +145,35 @@ function BookPageContent() {
     color: "#F0EBE1",
     background: "rgba(240,235,225,0.04)",
     border: "1px solid rgba(192,82,43,0.2)",
-    borderRadius: "8px",
-    outline: "none",
-    transition: "border-color 0.2s ease",
+    borderRadius: "2px",
+    caretColor: "#C0522B",
+    transition: "border-color 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
   };
 
   return (
     <main style={{ background: "#0D0D0B", minHeight: "100vh", color: "#F0EBE1" }}>
+      <style>{`
+        @media (hover: hover) and (pointer: fine) {
+          .book-slot:hover:not(:disabled):not([data-selected]) {
+            border-color: rgba(192,82,43,0.4) !important;
+            background: rgba(192,82,43,0.06) !important;
+          }
+          .book-submit:hover:not(:disabled) {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+          }
+        }
+        .book-slot:focus-visible,
+        .book-submit:focus-visible,
+        .book-focus:focus-visible {
+          outline: 2px solid #C9A84C;
+          outline-offset: 3px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .book-slot, .book-submit, .book-focus { transition: none !important; }
+          .book-submit:hover:not(:disabled) { transform: none; }
+        }
+      `}</style>
       <Nav />
 
       {/* Hero */}
@@ -178,28 +202,39 @@ function BookPageContent() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1] }}
+          transition={{ duration: 0.7, ease: EASE }}
           style={{ position: "relative", zIndex: 1 }}
         >
           <div
             style={{
-              fontFamily: "var(--font-condensed)",
-              fontWeight: 600,
-              fontSize: "11px",
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              color: "#C0522B",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "14px",
               marginBottom: "16px",
             }}
           >
-            Build Session with Ryan
+            <div aria-hidden="true" style={{ width: "34px", height: "1px", background: "#C0522B", flexShrink: 0 }} />
+            <span
+              style={{
+                fontFamily: "var(--font-condensed)",
+                fontWeight: 600,
+                fontSize: "13px",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                color: "#C0522B",
+              }}
+            >
+              Build Session with Ryan
+            </span>
+            <div aria-hidden="true" style={{ width: "34px", height: "1px", background: "#C0522B", flexShrink: 0 }} />
           </div>
           <h1
             style={{
               fontFamily: "var(--font-display)",
               fontWeight: 300,
-              fontSize: "clamp(32px, 5vw, 56px)",
-              lineHeight: 1.15,
+              fontSize: "clamp(36px, 5vw, 64px)",
+              lineHeight: 1.1,
               color: "#F0EBE1",
               maxWidth: "700px",
               margin: "0 auto 20px",
@@ -231,7 +266,7 @@ function BookPageContent() {
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.2, ease: [0.215, 0.61, 0.355, 1] }}
+        transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
         style={{ maxWidth: "720px", margin: "0 auto", padding: "0 24px 80px" }}
       >
         {/* Step indicators */}
@@ -257,6 +292,7 @@ function BookPageContent() {
                 onClick={() => {
                   if (isPast) setStep(s);
                 }}
+                className="book-focus"
                 style={{
                   background: "none",
                   border: "none",
@@ -264,8 +300,9 @@ function BookPageContent() {
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
+                  padding: "10px 2px",
                   opacity: isActive ? 1 : isPast ? 0.7 : 0.3,
-                  transition: "opacity 0.2s ease",
+                  transition: "opacity 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
                 }}
               >
                 <span
@@ -287,7 +324,13 @@ function BookPageContent() {
                     color: isActive || isPast ? "#F0EBE1" : "rgba(212,204,184,0.4)",
                   }}
                 >
-                  {isPast ? "✓" : i + 1}
+                  {isPast ? (
+                    <svg width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                      <path d="M2.5 7.5L5.8 10.5L11.5 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  ) : (
+                    i + 1
+                  )}
                 </span>
                 <span
                   style={{
@@ -297,9 +340,8 @@ function BookPageContent() {
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     color: isActive ? "#F0EBE1" : "rgba(212,204,184,0.4)",
-                    display: "none",
                   }}
-                  className="sm-show"
+                  className="hidden sm:inline"
                 >
                   {labels[i]}
                 </span>
@@ -311,7 +353,7 @@ function BookPageContent() {
         {/* Card container */}
         <div
           style={{
-            borderRadius: "16px",
+            borderRadius: "2px",
             border: "1px solid rgba(192,82,43,0.15)",
             background: "rgba(18,18,16,0.6)",
             backdropFilter: "blur(20px)",
@@ -328,7 +370,7 @@ function BookPageContent() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.3, ease: EASE }}
               >
                 <h2
                   style={{
@@ -380,7 +422,8 @@ function BookPageContent() {
                     </p>
                     <button
                       onClick={fetchSlots}
-                      style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#C0522B", background: "transparent", border: "1px solid rgba(192,82,43,0.4)", borderRadius: "9999px", padding: "10px 24px", cursor: "pointer" }}
+                      className="book-focus"
+                      style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#C0522B", background: "transparent", border: "1px solid rgba(192,82,43,0.4)", borderRadius: "9999px", padding: "12px 24px", minHeight: "44px", cursor: "pointer" }}
                     >
                       Retry
                     </button>
@@ -401,6 +444,8 @@ function BookPageContent() {
                         <button
                           key={date}
                           disabled={!hasSlots}
+                          data-selected={isSelected || undefined}
+                          className="book-slot"
                           onClick={() => {
                             setSelectedDate(date);
                             setSelectedSlot(null);
@@ -408,7 +453,7 @@ function BookPageContent() {
                           }}
                           style={{
                             padding: "14px 12px",
-                            borderRadius: "10px",
+                            borderRadius: "2px",
                             border: isSelected
                               ? "1px solid #C0522B"
                               : "1px solid rgba(192,82,43,0.12)",
@@ -419,7 +464,7 @@ function BookPageContent() {
                               : "rgba(240,235,225,0.01)",
                             cursor: hasSlots ? "pointer" : "not-allowed",
                             opacity: hasSlots ? 1 : 0.3,
-                            transition: "all 0.2s ease",
+                            transition: "border-color 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), background 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
                             textAlign: "center",
                           }}
                         >
@@ -461,10 +506,11 @@ function BookPageContent() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.3, ease: EASE }}
               >
                 <button
                   onClick={() => setStep("date")}
+                  className="book-focus"
                   style={{
                     background: "none",
                     border: "none",
@@ -516,13 +562,16 @@ function BookPageContent() {
                     return (
                       <button
                         key={slot}
+                        data-selected={isSelected || undefined}
+                        className="book-slot"
                         onClick={() => {
                           setSelectedSlot(slot);
                           setStep("details");
                         }}
                         style={{
                           padding: "12px 8px",
-                          borderRadius: "8px",
+                          minHeight: "44px",
+                          borderRadius: "2px",
                           border: isSelected
                             ? "1px solid #C0522B"
                             : "1px solid rgba(192,82,43,0.15)",
@@ -530,7 +579,7 @@ function BookPageContent() {
                             ? "rgba(192,82,43,0.12)"
                             : "rgba(240,235,225,0.03)",
                           cursor: "pointer",
-                          transition: "all 0.2s ease",
+                          transition: "border-color 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), background 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
                           fontFamily: "var(--font-condensed)",
                           fontWeight: 500,
                           fontSize: "14px",
@@ -568,10 +617,11 @@ function BookPageContent() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.3, ease: EASE }}
               >
                 <button
                   onClick={() => setStep("time")}
+                  className="book-focus"
                   style={{
                     background: "none",
                     border: "none",
@@ -613,7 +663,7 @@ function BookPageContent() {
                 </p>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label
                         style={{
@@ -674,7 +724,7 @@ function BookPageContent() {
                     </div>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label
                         style={{
@@ -770,14 +820,15 @@ function BookPageContent() {
 
                   {errorMsg && (
                     <div
+                      role="alert"
                       style={{
                         padding: "12px 16px",
-                        borderRadius: "8px",
-                        background: "rgba(220,70,70,0.08)",
-                        border: "1px solid rgba(220,70,70,0.3)",
+                        borderRadius: "2px",
+                        background: "rgba(192,82,43,0.1)",
+                        border: "1px solid rgba(192,82,43,0.5)",
                         fontFamily: "var(--font-body)",
                         fontSize: "13px",
-                        color: "#F0C8C0",
+                        color: "#C0522B",
                         lineHeight: 1.5,
                       }}
                     >
@@ -788,6 +839,8 @@ function BookPageContent() {
                   <button
                     onClick={handleSubmit}
                     disabled={!form.firstName || !form.lastName || !form.email || submitting}
+                    aria-disabled={!form.firstName || !form.lastName || !form.email || submitting}
+                    className="book-submit book-focus"
                     style={{
                       marginTop: "8px",
                       padding: "16px 32px",
@@ -803,7 +856,7 @@ function BookPageContent() {
                       letterSpacing: "0.14em",
                       textTransform: "uppercase",
                       cursor: form.firstName && form.lastName && form.email ? "pointer" : "not-allowed",
-                      transition: "all 0.3s ease",
+                      transition: "background 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), filter 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
                       boxShadow: "0 0 30px rgba(192,82,43,0.25)",
                       display: "flex",
                       alignItems: "center",
@@ -855,13 +908,13 @@ function BookPageContent() {
                 key="confirmed"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.5, ease: EASE }}
                 style={{ textAlign: "center", padding: "40px 0" }}
               >
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                  transition={{ delay: 0.2, duration: 0.5, ease: EASE }}
                   style={{
                     width: "64px",
                     height: "64px",
@@ -915,7 +968,7 @@ function BookPageContent() {
                 <div
                   style={{
                     padding: "20px 28px",
-                    borderRadius: "12px",
+                    borderRadius: "2px",
                     background: "rgba(192,82,43,0.06)",
                     border: "1px solid rgba(192,82,43,0.15)",
                     display: "inline-block",
@@ -997,7 +1050,7 @@ function BookPageContent() {
                 key={i}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + i * 0.1, duration: 0.5 }}
+                transition={{ delay: Math.min(0.24 + i * 0.08, 0.4), duration: 0.7, ease: EASE }}
                 style={{ textAlign: "center" }}
               >
                 <div

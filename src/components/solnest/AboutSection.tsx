@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 
 const tags = [
@@ -29,10 +29,16 @@ const roles = [
 function AnimatedStat({ value, suffix, label, accent }: { value: number; suffix: string; label: string; accent: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const inView = useInView(ref, { once: true, margin: "-80px 0px -80px 0px" });
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (!inView) return;
+    // Reduced motion: skip the counter, land on the final value immediately.
+    if (prefersReducedMotion) {
+      setCount(value);
+      return;
+    }
     const steps = 50;
     let step = 0;
     const timer = setInterval(() => {
@@ -42,7 +48,7 @@ function AnimatedStat({ value, suffix, label, accent }: { value: number; suffix:
       if (step >= steps) clearInterval(timer);
     }, 1400 / steps);
     return () => clearInterval(timer);
-  }, [inView, value]);
+  }, [inView, value, prefersReducedMotion]);
 
   return (
     <div ref={ref} className="flex flex-col items-center py-7" style={{ textAlign: "center" }}>
@@ -83,13 +89,19 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.215, 0.61, 0.355, 1.0] } },
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] } },
 };
 
 export function AboutSection() {
   return (
-    <section className="relative overflow-hidden">
+    <section
+      className="relative overflow-hidden"
+      style={{
+        paddingTop: "var(--section-pad, clamp(80px, 10vw, 144px))",
+        paddingBottom: "var(--section-pad, clamp(80px, 10vw, 144px))",
+      }}
+    >
 
       {/* ── Top: Photo left + Bio right ── */}
       <div
@@ -102,10 +114,10 @@ export function AboutSection() {
           style={{ background: "#0D0D0B", minHeight: "clamp(420px, 58vw, 700px)" }}
         >
           <motion.div
-            initial={{ opacity: 0, scale: 1.04 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9, ease: [0.215, 0.61, 0.355, 1.0] }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+            transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] }}
             style={{ position: "absolute", inset: 0 }}
           >
             <Image
@@ -139,7 +151,7 @@ export function AboutSection() {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
             variants={containerVariants}
             style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "28px 32px", zIndex: 10 }}
           >
@@ -182,15 +194,15 @@ export function AboutSection() {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
             variants={containerVariants}
           >
             {/* Eyebrow */}
-            <motion.div variants={itemVariants} className="flex items-center gap-4 mb-7">
-              <div style={{ width: "36px", height: "1px", backgroundColor: "#C0522B" }} />
+            <motion.div variants={itemVariants} className="flex items-center mb-7" style={{ gap: "14px" }}>
+              <div style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
               <span style={{
-                fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "14px",
-                letterSpacing: "0.22em", textTransform: "uppercase", color: "#C0522B",
+                fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px",
+                letterSpacing: "0.25em", textTransform: "uppercase", color: "#C0522B",
               }}>
                 Meet Ryan Lefebvre
               </span>
@@ -201,9 +213,10 @@ export function AboutSection() {
               variants={itemVariants}
               style={{
                 fontFamily: "var(--font-display)", fontWeight: 300,
-                fontSize: "clamp(41px, 4.8vw, 86px)",
-                lineHeight: 1.08, color: "#1A1918", marginBottom: "24px",
+                fontSize: "var(--fs-display-xl, clamp(40px, 6vw, 96px))",
+                lineHeight: 1.05, color: "#1A1918", marginBottom: "24px",
                 letterSpacing: "-0.02em",
+                textWrap: "balance",
               }}
             >
               Pilot. Yo-yo enthusiast.<br />
@@ -232,7 +245,7 @@ export function AboutSection() {
                   </span>
                   <span style={{
                     fontFamily: "var(--font-body)", fontWeight: 400,
-                    fontSize: "17px", lineHeight: 1.6,
+                    fontSize: "var(--fs-body, clamp(14px, 0.95vw, 16px))", lineHeight: 1.6,
                     color: "rgba(44,42,37,0.7)",
                   }}>
                     {r.detail}
@@ -244,16 +257,18 @@ export function AboutSection() {
             {/* Bio */}
             <motion.p variants={itemVariants} style={{
               fontFamily: "var(--font-body)", fontWeight: 400,
-              fontSize: "clamp(18px, 1.26vw, 20px)", lineHeight: 1.8,
+              fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))", lineHeight: 1.6,
               color: "#2C2A25", marginBottom: "14px",
+              textWrap: "pretty",
             }}>
               Ryan built a full AI automation stack for his own STR operations, then realized every business owner he met had the same problem: too much manual work, not enough time.
             </motion.p>
 
             <motion.p variants={itemVariants} style={{
               fontFamily: "var(--font-body)", fontWeight: 400,
-              fontSize: "clamp(18px, 1.26vw, 20px)", lineHeight: 1.8,
+              fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))", lineHeight: 1.6,
               color: "#2C2A25",
+              textWrap: "pretty",
             }}>
               His gift is sitting across from any business owner, finding their biggest operational pain in minutes, and showing AI solving it live. That's not a pitch. That's just what he does.
             </motion.p>
@@ -265,7 +280,7 @@ export function AboutSection() {
             >
               <p style={{
                 fontFamily: "var(--font-display)", fontStyle: "italic", fontWeight: 300,
-                fontSize: "clamp(22px, 1.56vw, 26px)", lineHeight: 1.55,
+                fontSize: "var(--fs-display-sm, clamp(19px, 1.6vw, 26px))", lineHeight: 1.55,
                 color: "#C0522B",
               }}>
                 "Find the pain. Show the solution. Watch what happens."
@@ -283,25 +298,24 @@ export function AboutSection() {
       </div>
 
       {/* ── Bottom: Stats bar - redesigned ── */}
-      <div style={{ background: "#0D0D0B", position: "relative" }}>
+      <div style={{ background: "#0D0D0B", position: "relative", overflow: "hidden" }}>
         {/* Top accent line */}
         <div aria-hidden="true" style={{
           height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
         }} />
 
-        {/* Ambient glow */}
+        {/* Ambient glow - gold, static */}
         <div aria-hidden="true" style={{
-          position: "absolute", top: "-20%", left: "20%",
-          width: "60%", height: "100%",
-          background: "radial-gradient(ellipse, rgba(192,82,43,0.05) 0%, transparent 70%)",
-          filter: "blur(60px)", pointerEvents: "none",
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.07), transparent 60%)",
+          pointerEvents: "none",
         }} />
 
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={containerVariants}
           className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 grid grid-cols-2 md:grid-cols-4"
         >
@@ -318,12 +332,6 @@ export function AboutSection() {
             </motion.div>
           ))}
         </motion.div>
-
-        {/* Bottom accent line */}
-        <div aria-hidden="true" style={{
-          height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(192,82,43,0.15) 50%, transparent)",
-        }} />
       </div>
 
     </section>

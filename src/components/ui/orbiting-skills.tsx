@@ -1,8 +1,9 @@
 "use client"
 import React, { useEffect, useState, useRef, memo } from 'react';
+import { RiClaudeFill, RiSupabaseFill, RiWhatsappFill } from '@remixicon/react';
 
 // --- Type Definitions ---
-type IconType = 'claude' | 'twilio' | 'makecom' | 'n8n' | 'airtable' | 'vapi' | 'zapier' | 'openai' | 'slack' | 'stripe' | 'github' | 'vercel' | 'resend';
+type IconType = 'claude' | 'openai' | 'slack' | 'github' | 'guesty' | 'hostfully' | 'pricelabs' | 'airbnb' | 'airroi' | 'stripe' | 'supabase' | 'twilio' | 'vercel' | 'n8n' | 'make' | 'zapier' | 'airtable' | 'vapi' | 'whatsapp';
 
 type GlowColor = 'rust' | 'gold';
 
@@ -35,12 +36,93 @@ interface GlowingOrbitPathProps {
 // --- SVG Icon Components (AI tools) ---
 const iconComponents: Record<IconType, { component: () => React.JSX.Element; color: string }> = {
   claude: {
+    component: () => <RiClaudeFill color="#D97757" className="w-full h-full" />,
+    color: '#D97757'
+  },
+  supabase: {
+    component: () => <RiSupabaseFill color="#3FCF8E" className="w-full h-full" />,
+    color: '#3FCF8E'
+  },
+  whatsapp: {
+    component: () => <RiWhatsappFill color="#25D366" className="w-full h-full" />,
+    color: '#25D366'
+  },
+  n8n: {
     component: () => (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="#C0522B"/>
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M21.4737 5.6842c-1.1772 0-2.1663.8051-2.4468 1.8947h-2.8955c-1.235 0-2.289.893-2.492 2.111l-.1038.623a1.263 1.263 0 0 1-1.246 1.0555H11.289c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947s-2.1663.8051-2.4467 1.8947H4.973c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947C1.1311 9.4737 0 10.6047 0 12s1.131 2.5263 2.5263 2.5263c1.1772 0 2.1663-.8051 2.4468-1.8947h1.4223c.2804 1.0896 1.2696 1.8947 2.4467 1.8947 1.1772 0 2.1663-.8051 2.4468-1.8947h1.0008a1.263 1.263 0 0 1 1.2459 1.0555l.1038.623c.203 1.218 1.257 2.111 2.492 2.111h.3692c.2804 1.0895 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263c-1.1772 0-2.1664.805-2.4468 1.8947h-.3692a1.263 1.263 0 0 1-1.246-1.0555l-.1037-.623A2.5215 2.5215 0 0 0 14.5322 12a2.5215 2.5215 0 0 0 .8503-1.4126l.1037-.623a1.263 1.263 0 0 1 1.246-1.0554h2.8955c.2805 1.0895 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.1311 2.5263-2.5263s-1.1311-2.5263-2.5263-2.5263z" fill="#EA4B71"/>
       </svg>
     ),
-    color: '#C0522B'
+    color: '#EA4B71'
+  },
+  make: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M13.38 3.498c-.27 0-.511.19-.566.465L9.85 18.986a.578.578 0 0 0 .453.678l4.095.826a.58.58 0 0 0 .682-.455l2.963-15.021a.578.578 0 0 0-.453-.678l-4.096-.826a.589.589 0 0 0-.113-.012zm-5.876.098a.576.576 0 0 0-.516.318L.062 17.697a.575.575 0 0 0 .256.774l3.733 1.877a.578.578 0 0 0 .775-.258l6.926-13.781a.577.577 0 0 0-.256-.776L7.762 3.658a.571.571 0 0 0-.258-.062zm11.74.115a.576.576 0 0 0-.576.576v15.426c0 .318.258.578.576.578h4.178a.58.58 0 0 0 .578-.578V4.287a.578.578 0 0 0-.578-.576Z" fill="#B02DE9"/>
+      </svg>
+    ),
+    color: '#B02DE9'
+  },
+  zapier: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M14.928 12.004a3.567 3.567 0 0 1-.312 1.464 3.567 3.567 0 0 1-1.464.312h-2.296a3.568 3.568 0 0 1-1.464-.312 3.567 3.567 0 0 1-.312-1.464v-.008a3.567 3.567 0 0 1 .312-1.464 3.566 3.566 0 0 1 1.464-.312h2.296c.52 0 1.014.111 1.464.312.2.45.311.945.312 1.464v.008zm8.75-1.596h-6.9l4.879-4.879a9.672 9.672 0 0 0-1.128-1.336 9.674 9.674 0 0 0-1.336-1.128L14.314 7.944v-6.9A9.672 9.672 0 0 0 12.71.908h-1.42a9.66 9.66 0 0 0-1.604.135v6.901L4.807 3.065A9.674 9.674 0 0 0 3.47 4.193a9.672 9.672 0 0 0-1.128 1.336l4.879 4.879h-6.9S.185 11.463.185 12.184v1.42c0 .721.135 1.604.135 1.604h6.901l-4.879 4.879c.336.472.712.918 1.128 1.336.418.416.864.792 1.336 1.128l4.879-4.879v6.9s.883.136 1.604.136h1.42c.721 0 1.604-.135 1.604-.135v-6.901l4.879 4.879a9.674 9.674 0 0 0 1.336-1.128 9.672 9.672 0 0 0 1.128-1.336l-4.879-4.879h6.9s.136-.883.136-1.604v-1.42c0-.721-.135-1.604-.135-1.604z" fill="#FF4F00"/>
+      </svg>
+    ),
+    color: '#FF4F00'
+  },
+  airtable: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M11.992 1.966c-.434 0-.87.086-1.28.257L1.779 5.917c-.503.208-.49.908.012 1.116l8.982 3.558a3.266 3.266 0 0 0 2.454 0l8.982-3.558c.503-.196.503-.908.012-1.116l-8.957-3.694a3.255 3.255 0 0 0-1.272-.257z" fill="#FCB400"/>
+        <path d="M23.4 8.056a.589.589 0 0 0-.222.045l-10.012 3.877a.612.612 0 0 0-.38.564v8.896a.6.6 0 0 0 .821.552L23.62 18.1a.583.583 0 0 0 .38-.551V8.653a.6.6 0 0 0-.6-.596z" fill="#18BFFF"/>
+        <path d="M.676 8.095a.644.644 0 0 0-.48.19C.086 8.396 0 8.53 0 8.69v8.355c0 .442.515.737.908.54l6.27-3.006.307-.147 2.969-1.436c.466-.22.43-.908-.061-1.092L.883 8.138a.57.57 0 0 0-.207-.044z" fill="#F82B60"/>
+      </svg>
+    ),
+    color: '#FCB400'
+  },
+  vapi: {
+    component: () => (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/logos/vapi.png" alt="Vapi" className="w-full h-full object-contain rounded-full" />
+    ),
+    color: '#5CFFC9'
+  },
+  airbnb: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M12.001 18.275c-1.353-1.697-2.148-3.184-2.413-4.457-.263-1.027-.16-1.848.291-2.465.477-.71 1.188-1.056 2.121-1.056s1.643.345 2.12 1.063c.446.61.558 1.432.286 2.465-.291 1.298-1.085 2.785-2.412 4.458zm9.601 1.14c-.185 1.246-1.034 2.28-2.2 2.783-2.253.98-4.483-.583-6.392-2.704 3.157-3.951 3.74-7.028 2.385-9.018-.795-1.14-1.933-1.695-3.394-1.695-2.944 0-4.563 2.49-3.927 5.382.37 1.565 1.352 3.343 2.917 5.332-.98 1.085-1.91 1.856-2.732 2.333-.636.344-1.245.558-1.828.609-2.679.399-4.778-2.2-3.825-4.88.132-.345.395-.98.845-1.961l.025-.053c1.464-3.178 3.242-6.79 5.285-10.795l.053-.132.58-1.116c.45-.822.635-1.19 1.351-1.643.346-.21.77-.315 1.246-.315.954 0 1.698.558 2.016 1.007.158.239.345.557.582.953l.558 1.089.08.159c2.041 4.004 3.821 7.608 5.279 10.794l.026.025.533 1.22.318.764c.243.613.294 1.222.213 1.858zm1.22-2.39c-.186-.583-.505-1.271-.9-2.094v-.03c-1.889-4.006-3.642-7.608-5.307-10.844l-.111-.163C15.317 1.461 14.468 0 12.001 0c-2.44 0-3.476 1.695-4.535 3.898l-.081.16c-1.669 3.236-3.421 6.843-5.303 10.847v.053l-.559 1.22c-.21.504-.317.768-.345.847C-.172 20.74 2.611 24 5.98 24c.027 0 .132 0 .265-.027h.372c1.75-.213 3.554-1.325 5.384-3.317 1.829 1.989 3.635 3.104 5.382 3.317h.372c.133.027.239.027.265.027 3.37.003 6.152-3.261 4.802-6.975z" fill="#FF5A5F"/>
+      </svg>
+    ),
+    color: '#FF5A5F'
+  },
+  guesty: {
+    component: () => (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/logos/guesty.png" alt="Guesty" className="w-full h-full object-contain rounded-full" />
+    ),
+    color: '#4F44E0'
+  },
+  hostfully: {
+    component: () => (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/logos/hostfully.png" alt="Hostfully" className="w-full h-full object-contain rounded-full" />
+    ),
+    color: '#28B498'
+  },
+  pricelabs: {
+    component: () => (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/logos/pricelabs.png" alt="PriceLabs" className="w-full h-full object-contain rounded-full" />
+    ),
+    color: '#2D6BFF'
+  },
+  airroi: {
+    component: () => (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/logos/airroi.png" alt="AirROI" className="w-full h-full object-contain rounded-full" />
+    ),
+    color: '#C9A84C'
   },
   twilio: {
     component: () => (
@@ -49,52 +131,6 @@ const iconComponents: Record<IconType, { component: () => React.JSX.Element; col
       </svg>
     ),
     color: '#F22F46'
-  },
-  makecom: {
-    component: () => (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <circle cx="12" cy="12" r="10" stroke="#6D00CC" strokeWidth="1.5" fill="none"/>
-        <path d="M8 12l2.5 2.5L16 9" stroke="#6D00CC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    color: '#6D00CC'
-  },
-  n8n: {
-    component: () => (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <rect x="3" y="8" width="5" height="8" rx="1" fill="#EA4B71"/>
-        <rect x="10" y="5" width="5" height="14" rx="1" fill="#EA4B71" opacity="0.7"/>
-        <rect x="17" y="8" width="5" height="8" rx="1" fill="#EA4B71" opacity="0.5"/>
-      </svg>
-    ),
-    color: '#EA4B71'
-  },
-  airtable: {
-    component: () => (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-        <path d="M11.52 2.309l-8.36 3.156c-.33.124-.33.592 0 .717l8.36 3.156c.296.112.628.112.924 0l8.36-3.156c.33-.125.33-.593 0-.717l-8.36-3.156a1.067 1.067 0 0 0-.924 0z" fill="#FCB400"/>
-        <path d="M12.68 11.397V21.09c0 .37.376.622.72.483l8.75-3.474c.222-.088.37-.302.37-.54V7.866c0-.37-.376-.622-.72-.483l-8.75 3.474a.573.573 0 0 0-.37.54z" fill="#18BFFF"/>
-        <path d="M11.28 11.397V21.09c0 .37-.376.622-.72.483L1.81 18.1a.573.573 0 0 1-.37-.54V7.866c0-.37.376-.622.72-.483l8.75 3.474c.222.088.37.302.37.54z" fill="#F82B60"/>
-      </svg>
-    ),
-    color: '#FCB400'
-  },
-  vapi: {
-    component: () => (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="none" stroke="#5CFFC9" strokeWidth="1.5"/>
-        <path d="M9 9l3 6 3-6" stroke="#5CFFC9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    color: '#5CFFC9'
-  },
-  zapier: {
-    component: () => (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-        <path d="M15.478 7.889H8.522l-2.7 4.667 2.7 4.667h6.956l2.7-4.667-2.7-4.667zm-3.478 7a2.333 2.333 0 1 1 0-4.667 2.333 2.333 0 0 1 0 4.667z" fill="#FF4A00"/>
-      </svg>
-    ),
-    color: '#FF4A00'
   },
   openai: {
     component: () => (
@@ -135,15 +171,6 @@ const iconComponents: Record<IconType, { component: () => React.JSX.Element; col
       </svg>
     ),
     color: '#ffffff'
-  },
-  resend: {
-    component: () => (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <rect x="2" y="4" width="20" height="16" rx="2.5" stroke="#C9A84C" strokeWidth="1.5"/>
-        <path d="M3 6.5l9 6.5 9-6.5" stroke="#C9A84C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    color: '#C9A84C'
   }
 };
 
@@ -156,22 +183,29 @@ SkillIcon.displayName = 'SkillIcon';
 
 // --- Configuration for the Orbiting Skills ---
 const skillsConfig: SkillConfig[] = [
-  // Inner Orbit (4 icons)
+  // Inner Orbit (4 icons) - the AI + comms core
   { id: 'claude', orbitRadius: 90, size: 38, speed: 0.8, iconType: 'claude', phaseShift: 0, glowColor: 'rust', label: 'Claude AI' },
   { id: 'openai', orbitRadius: 90, size: 36, speed: 0.8, iconType: 'openai', phaseShift: Math.PI / 2, glowColor: 'rust', label: 'OpenAI' },
-  { id: 'twilio', orbitRadius: 90, size: 36, speed: 0.8, iconType: 'twilio', phaseShift: Math.PI, glowColor: 'rust', label: 'Twilio' },
-  { id: 'makecom', orbitRadius: 90, size: 36, speed: 0.8, iconType: 'makecom', phaseShift: (3 * Math.PI) / 2, glowColor: 'rust', label: 'Make.com' },
-  // Outer Orbit (5 icons)
-  { id: 'n8n', orbitRadius: 155, size: 42, speed: -0.5, iconType: 'n8n', phaseShift: 0, glowColor: 'gold', label: 'n8n' },
-  { id: 'airtable', orbitRadius: 155, size: 38, speed: -0.5, iconType: 'airtable', phaseShift: (2 * Math.PI) / 5, glowColor: 'gold', label: 'Airtable' },
-  { id: 'vapi', orbitRadius: 155, size: 38, speed: -0.5, iconType: 'vapi', phaseShift: (4 * Math.PI) / 5, glowColor: 'gold', label: 'Vapi' },
-  { id: 'zapier', orbitRadius: 155, size: 36, speed: -0.5, iconType: 'zapier', phaseShift: (6 * Math.PI) / 5, glowColor: 'gold', label: 'Zapier' },
-  { id: 'slack', orbitRadius: 155, size: 36, speed: -0.5, iconType: 'slack', phaseShift: (8 * Math.PI) / 5, glowColor: 'gold', label: 'Slack' },
+  { id: 'slack', orbitRadius: 90, size: 36, speed: 0.8, iconType: 'slack', phaseShift: Math.PI, glowColor: 'rust', label: 'Slack' },
+  { id: 'github', orbitRadius: 90, size: 36, speed: 0.8, iconType: 'github', phaseShift: (3 * Math.PI) / 2, glowColor: 'rust', label: 'GitHub' },
+  // Middle Orbit (5 icons) - the STR stack
+  { id: 'guesty', orbitRadius: 155, size: 42, speed: -0.5, iconType: 'guesty', phaseShift: 0, glowColor: 'gold', label: 'Guesty' },
+  { id: 'hostfully', orbitRadius: 155, size: 40, speed: -0.5, iconType: 'hostfully', phaseShift: (2 * Math.PI) / 5, glowColor: 'gold', label: 'Hostfully' },
+  { id: 'pricelabs', orbitRadius: 155, size: 40, speed: -0.5, iconType: 'pricelabs', phaseShift: (4 * Math.PI) / 5, glowColor: 'gold', label: 'PriceLabs' },
+  { id: 'airbnb', orbitRadius: 155, size: 38, speed: -0.5, iconType: 'airbnb', phaseShift: (6 * Math.PI) / 5, glowColor: 'gold', label: 'Airbnb' },
+  { id: 'airroi', orbitRadius: 155, size: 40, speed: -0.5, iconType: 'airroi', phaseShift: (8 * Math.PI) / 5, glowColor: 'gold', label: 'AirROI' },
   // Outermost Orbit (4 icons) - real infra/tooling stack
   { id: 'stripe', orbitRadius: 215, size: 40, speed: 0.32, iconType: 'stripe', phaseShift: 0, glowColor: 'gold', label: 'Stripe' },
-  { id: 'github', orbitRadius: 215, size: 38, speed: 0.32, iconType: 'github', phaseShift: Math.PI / 2, glowColor: 'gold', label: 'GitHub' },
-  { id: 'vercel', orbitRadius: 215, size: 38, speed: 0.32, iconType: 'vercel', phaseShift: Math.PI, glowColor: 'gold', label: 'Vercel' },
-  { id: 'resend', orbitRadius: 215, size: 38, speed: 0.32, iconType: 'resend', phaseShift: (3 * Math.PI) / 2, glowColor: 'gold', label: 'Resend' },
+  { id: 'supabase', orbitRadius: 215, size: 38, speed: 0.32, iconType: 'supabase', phaseShift: Math.PI / 2, glowColor: 'gold', label: 'Supabase' },
+  { id: 'twilio', orbitRadius: 215, size: 38, speed: 0.32, iconType: 'twilio', phaseShift: Math.PI, glowColor: 'gold', label: 'Twilio' },
+  { id: 'vercel', orbitRadius: 215, size: 36, speed: 0.32, iconType: 'vercel', phaseShift: (3 * Math.PI) / 2, glowColor: 'gold', label: 'Vercel' },
+  // Fourth Orbit (6 icons) - the build/automation toolbox
+  { id: 'n8n', orbitRadius: 275, size: 40, speed: -0.22, iconType: 'n8n', phaseShift: 0, glowColor: 'rust', label: 'n8n' },
+  { id: 'make', orbitRadius: 275, size: 38, speed: -0.22, iconType: 'make', phaseShift: Math.PI / 3, glowColor: 'rust', label: 'Make.com' },
+  { id: 'zapier', orbitRadius: 275, size: 38, speed: -0.22, iconType: 'zapier', phaseShift: (2 * Math.PI) / 3, glowColor: 'rust', label: 'Zapier' },
+  { id: 'airtable', orbitRadius: 275, size: 38, speed: -0.22, iconType: 'airtable', phaseShift: Math.PI, glowColor: 'rust', label: 'Airtable' },
+  { id: 'vapi', orbitRadius: 275, size: 40, speed: -0.22, iconType: 'vapi', phaseShift: (4 * Math.PI) / 3, glowColor: 'rust', label: 'Vapi' },
+  { id: 'whatsapp', orbitRadius: 275, size: 38, speed: -0.22, iconType: 'whatsapp', phaseShift: (5 * Math.PI) / 3, glowColor: 'rust', label: 'WhatsApp' },
 ];
 
 // --- Memoized Orbiting Skill Component ---
@@ -187,7 +221,7 @@ const OrbitingSkill = memo(({ config, angle }: OrbitingSkillProps) => {
 
   return (
     <div
-      className="absolute top-1/2 left-1/2 transition-all duration-300 ease-out"
+      className="absolute top-1/2 left-1/2"
       style={{
         width: `${size}px`,
         height: `${size}px`,
@@ -334,25 +368,26 @@ export default function OrbitingSkills() {
   const orbitConfigs: Array<{ radius: number; glowColor: GlowColor; delay: number }> = [
     { radius: 90, glowColor: 'rust', delay: 0 },
     { radius: 155, glowColor: 'gold', delay: 1.5 },
-    { radius: 215, glowColor: 'gold', delay: 0.75 }
+    { radius: 215, glowColor: 'gold', delay: 0.75 },
+    { radius: 275, glowColor: 'rust', delay: 2.2 }
   ];
 
   return (
     <div
       ref={containerRef}
       className="relative flex items-center justify-center"
-      style={{ width: '460px', height: '460px' }}
+      style={{ width: '620px', height: '620px' }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       <style>{`
         @keyframes orbit-breathe {
           0%, 100% {
-            transform: scale(1);
+            transform: translate(-50%, -50%) scale(1);
             opacity: 0.85;
           }
           50% {
-            transform: scale(1.025);
+            transform: translate(-50%, -50%) scale(1.025);
             opacity: 1;
           }
         }

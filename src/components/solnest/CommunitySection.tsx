@@ -8,9 +8,20 @@ import { BorderBeam } from "@/components/ui/border-beam";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-const classrooms = [
+type Classroom = {
+  num: string;
+  name: string;
+  desc: string;
+  accent: string;
+  accentRgb: string;
+  /** Boarding-pass style index code for the aviation stages (presentation only). */
+  code?: string;
+};
+
+const classrooms: Classroom[] = [
   {
     num: "01",
+    code: "PF-01",
     name: "Pre Flight",
     desc: "Start here. Get oriented on how the classroom is structured and what to do first.",
     accent: "#C0522B",
@@ -18,6 +29,7 @@ const classrooms = [
   },
   {
     num: "02",
+    code: "GS-02",
     name: "Ground School: Claude",
     desc: "The foundation. Learn how Claude actually works, set it up right, and teach it your business.",
     accent: "#C9A84C",
@@ -25,6 +37,7 @@ const classrooms = [
   },
   {
     num: "03",
+    code: "LC-03",
     name: "Live Claude Series",
     desc: "Weekly live builds. Real problems, real demos, recorded and added to the library.",
     accent: "#C0522B",
@@ -32,6 +45,7 @@ const classrooms = [
   },
   {
     num: "04",
+    code: "HG-04",
     name: "The Hangar",
     desc: "Every STR session, build, and breakdown. SOPs, workflows, and tools built for short-term rentals.",
     accent: "#C9A84C",
@@ -39,6 +53,7 @@ const classrooms = [
   },
   {
     num: "05",
+    code: "FD-05",
     name: "The Flight Deck",
     desc: "General business AI sessions. Office hours, jam sessions, and live builds for any industry.",
     accent: "#C0522B",
@@ -46,6 +61,7 @@ const classrooms = [
   },
   {
     num: "06",
+    code: "RW-06",
     name: "The Runway",
     desc: "Fresh drops. New tools, quick wins, and AI updates worth knowing about.",
     accent: "#C9A84C",
@@ -53,6 +69,7 @@ const classrooms = [
   },
   {
     num: "07",
+    code: "LB-07",
     name: "The Logbook",
     desc: "The resource vault. Download agents, prompts, SOPs, Skills, and MCPs built inside the community.",
     accent: "#C0522B",
@@ -186,7 +203,7 @@ type StrAgentKey = keyof typeof strAgents;
 
 const container = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.07 } },
+  visible: { transition: { staggerChildren: 0.08 } },
 };
 
 const item = {
@@ -194,16 +211,7 @@ const item = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.215, 0.61, 0.355, 1.0] },
-  },
-};
-
-const itemFast = {
-  hidden: { opacity: 0, y: 14 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.215, 0.61, 0.355, 1.0] },
+    transition: { duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] },
   },
 };
 
@@ -240,7 +248,7 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
         cursor: "default",
         transition: reduceMotion
           ? "none"
-          : "border-color 0.3s ease, transform 0.35s cubic-bezier(0.215,0.61,0.355,1), box-shadow 0.35s ease",
+          : "border-color 0.3s cubic-bezier(0.215,0.61,0.355,1), transform 0.35s cubic-bezier(0.215,0.61,0.355,1), box-shadow 0.35s cubic-bezier(0.215,0.61,0.355,1)",
         transform: hovered && !reduceMotion ? "translateY(-4px)" : "translateY(0)",
         boxShadow: hovered
           ? `0 20px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(${data.accentRgb},0.12)`
@@ -256,7 +264,7 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
           inset: 0,
           opacity: hovered ? 1 : 0,
           background: `radial-gradient(300px circle at ${glow.x}px ${glow.y}px, rgba(${data.accentRgb},0.1), transparent 65%)`,
-          transition: "opacity 0.3s ease",
+          transition: "opacity 0.3s cubic-bezier(0.215,0.61,0.355,1)",
         }}
       />
 
@@ -275,7 +283,7 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
           userSelect: "none",
           pointerEvents: "none",
           letterSpacing: "-0.04em",
-          transition: "color 0.4s ease",
+          transition: "color 0.4s cubic-bezier(0.215,0.61,0.355,1)",
         }}
       >
         {data.num}
@@ -291,7 +299,7 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
           background: hovered
             ? `linear-gradient(to right, ${data.accent}, rgba(${data.accentRgb},0.2), transparent)`
             : "linear-gradient(to right, rgba(240,235,225,0.06), transparent)",
-          transition: "background 0.35s ease",
+          transition: "background 0.35s cubic-bezier(0.215,0.61,0.355,1)",
         }}
       />
 
@@ -302,13 +310,13 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
             fontFamily: "var(--font-condensed)",
             fontWeight: 600,
             fontSize: "12px",
-            letterSpacing: "0.28em",
-            color: hovered ? data.accent : `rgba(${data.accentRgb},0.5)`,
+            letterSpacing: "0.25em",
+            color: hovered ? data.accent : `rgba(${data.accentRgb},0.55)`,
             marginBottom: "22px",
-            transition: "color 0.25s ease",
+            transition: "color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
           }}
         >
-          {data.num}
+          {data.code ?? data.num}
         </div>
 
         <p
@@ -320,7 +328,7 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
             textTransform: "uppercase",
             color: hovered ? "#F0EBE1" : "rgba(240,235,225,0.8)",
             marginBottom: "14px",
-            transition: "color 0.25s ease",
+            transition: "color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
           }}
         >
           {data.name}
@@ -332,7 +340,7 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
             height: "1px",
             background: hovered ? `rgba(${data.accentRgb},0.3)` : "rgba(240,235,225,0.06)",
             marginBottom: "14px",
-            transition: "background 0.3s ease",
+            transition: "background 0.3s cubic-bezier(0.215,0.61,0.355,1)",
           }}
         />
 
@@ -343,7 +351,7 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
             fontSize: "16px",
             lineHeight: 1.7,
             color: hovered ? "rgba(212,204,184,0.88)" : "rgba(212,204,184,0.55)",
-            transition: "color 0.25s ease",
+            transition: "color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
           }}
         >
           {data.desc}
@@ -357,6 +365,7 @@ function ClassroomCard({ data }: { data: (typeof classrooms)[0] }) {
 
 function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }) {
   const cs = strAgents[id];
+  const reduceMotion = useReducedMotion();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const titleId = `community-case-modal-title-${id}`;
@@ -394,7 +403,7 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.3, ease: [0.215, 0.61, 0.355, 1.0] }}
       onClick={onClose}
       onWheel={(e) => e.stopPropagation()}
       onTouchMove={(e) => e.stopPropagation()}
@@ -413,9 +422,9 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        initial={{ y: 40, opacity: 0, scale: 0.97 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 40, opacity: 0, scale: 0.97 }}
+        initial={reduceMotion ? { opacity: 0 } : { y: 40, opacity: 0, scale: 0.97 }}
+        animate={reduceMotion ? { opacity: 1 } : { y: 0, opacity: 1, scale: 1 }}
+        exit={reduceMotion ? { opacity: 0 } : { y: 40, opacity: 0, scale: 0.97 }}
         transition={{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1.0] }}
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
@@ -436,14 +445,14 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
         <div className="pointer-events-none absolute" style={{ top: '-10%', left: '20%', width: '60%', height: '40%', background: `radial-gradient(ellipse, rgba(${cs.colorRgb},0.12) 0%, transparent 70%)`, filter: 'blur(60px)' }} />
 
         {/* Header */}
-        <div style={{ position: "relative", padding: "36px 40px 28px", borderBottom: `1px solid rgba(${cs.colorRgb},0.12)` }}>
+        <div style={{ position: "relative", padding: "36px clamp(20px, 5vw, 40px) 28px", borderBottom: `1px solid rgba(${cs.colorRgb},0.12)` }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px" }}>
             <div>
               <div style={{ display: "inline-flex", alignItems: "center", gap: "7px", background: `rgba(${cs.colorRgb},0.1)`, border: `1px solid rgba(${cs.colorRgb},0.28)`, padding: "5px 14px", marginBottom: "14px" }}>
                 <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: cs.color, boxShadow: `0 0 8px rgba(${cs.colorRgb},0.6)` }} />
                 <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: cs.color }}>{cs.badge}</span>
               </div>
-              <h2 id={titleId} style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "clamp(28px, 3.5vw, 42px)", color: "#F0EBE1", lineHeight: 1.1, letterSpacing: "-0.02em" }}>{cs.title}</h2>
+              <h2 id={titleId} style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: "var(--fs-display-md, clamp(26px, 2.6vw, 44px))", color: "#F0EBE1", lineHeight: 1.15, letterSpacing: "-0.02em", textWrap: "balance" } as React.CSSProperties}>{cs.title}</h2>
             </div>
             <button
               ref={closeBtnRef}
@@ -452,13 +461,13 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
               style={{
                 background: "rgba(240,235,225,0.04)", border: "1px solid rgba(240,235,225,0.1)",
                 width: "44px", height: "44px", display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", flexShrink: 0, color: "rgba(212,204,184,0.5)", fontSize: "20px",
-                fontFamily: "var(--font-body)", borderRadius: "2px", transition: "background 0.2s, color 0.2s",
+                cursor: "pointer", flexShrink: 0, color: "rgba(212,204,184,0.55)", fontSize: "20px",
+                fontFamily: "var(--font-body)", borderRadius: "2px",
+                transition: "background 0.25s cubic-bezier(0.215,0.61,0.355,1), color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
               }}
+              className="cmty-focus"
               onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.08)"; e.currentTarget.style.color = "rgba(212,204,184,0.8)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.04)"; e.currentTarget.style.color = "rgba(212,204,184,0.5)"; }}
-              onFocus={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.08)"; e.currentTarget.style.color = "rgba(212,204,184,0.8)"; }}
-              onBlur={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.04)"; e.currentTarget.style.color = "rgba(212,204,184,0.5)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(240,235,225,0.04)"; e.currentTarget.style.color = "rgba(212,204,184,0.55)"; }}
             >
               <span aria-hidden="true">×</span>
             </button>
@@ -483,9 +492,9 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
           {cs.results.map((r, i) => (
             <motion.div
               key={r.label}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.15 + i * 0.06 }}
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
+              animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: Math.min(0.15 + i * 0.06, 0.4), ease: [0.215, 0.61, 0.355, 1.0] }}
               style={{ background: "#0C0C0A", padding: "22px 16px", textAlign: "center" }}
             >
               <div style={{
@@ -504,13 +513,12 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
         </div>
 
         {/* Before / After */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px",
+        <div className="cmty-ba-grid" style={{
           background: `rgba(${cs.colorRgb},0.08)`,
           borderBottom: `1px solid rgba(${cs.colorRgb},0.12)`,
         }}>
           {/* Before */}
-          <div style={{ background: "#0C0C0A", padding: "28px 32px" }}>
+          <div style={{ background: "#0C0C0A", padding: "28px clamp(20px, 4vw, 32px)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
               <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "rgba(200,80,60,0.4)", border: "1px solid rgba(200,80,60,0.3)" }} />
               <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(200,80,60,0.6)" }}>Before</span>
@@ -525,14 +533,14 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
                   >
                     <path d="M3 3L11 11M11 3L3 11" stroke="rgba(200,80,60,0.6)" strokeWidth="1.4" strokeLinecap="round" />
                   </svg>
-                  <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.6, color: "rgba(200,180,165,0.5)" }}>{line}</span>
+                  <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "14px", lineHeight: 1.6, color: "rgba(200,180,165,0.55)" }}>{line}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* After */}
-          <div style={{ background: "#0C0C0A", padding: "28px 32px" }}>
+          <div style={{ background: "#0C0C0A", padding: "28px clamp(20px, 4vw, 32px)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
               <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: cs.color, boxShadow: `0 0 6px rgba(${cs.colorRgb},0.5)` }} />
               <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: cs.color }}>After</span>
@@ -547,7 +555,7 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
                   >
                     <path d="M2.5 7.5L5.8 10.5L11.5 4" stroke={cs.color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.6, color: "rgba(212,204,184,0.7)" }}>{line}</span>
+                  <span style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "14px", lineHeight: 1.6, color: "rgba(212,204,184,0.7)" }}>{line}</span>
                 </div>
               ))}
             </div>
@@ -555,15 +563,15 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
         </div>
 
         {/* How it was built - process steps */}
-        <div style={{ padding: "28px 40px", borderBottom: `1px solid rgba(${cs.colorRgb},0.12)` }}>
+        <div style={{ padding: "28px clamp(20px, 5vw, 40px)", borderBottom: `1px solid rgba(${cs.colorRgb},0.12)` }}>
           <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.6)`, display: "block", marginBottom: "20px" }}>How It Was Built</span>
           <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
             {cs.process.map((p, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.3 + i * 0.08 }}
+                initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -16 }}
+                animate={reduceMotion ? { opacity: 1 } : { opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: Math.min(0.24 + i * 0.08, 0.4), ease: [0.215, 0.61, 0.355, 1.0] }}
                 style={{ display: "flex", gap: "18px", alignItems: "flex-start" }}
               >
                 <span style={{
@@ -573,7 +581,7 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
                 }}>{p.step}</span>
                 <div>
                   <h4 style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: "15px", color: "#F0EBE1", lineHeight: 1.3, marginBottom: "4px" }}>{p.title}</h4>
-                  <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "13px", lineHeight: 1.65, color: "rgba(212,204,184,0.5)" }}>{p.desc}</p>
+                  <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "14px", lineHeight: 1.6, color: "rgba(212,204,184,0.55)" }}>{p.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -581,14 +589,14 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
         </div>
 
         {/* Tech stack + CTA */}
-        <div style={{ padding: "28px 40px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "24px", flexWrap: "wrap" }}>
+        <div style={{ padding: "28px clamp(20px, 5vw, 40px)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "24px", flexWrap: "wrap" }}>
           <div>
             <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.55)`, display: "block", marginBottom: "12px" }}>Tech Stack</span>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
               {cs.stack.map((tool) => (
                 <span key={tool} style={{
                   fontFamily: "var(--font-condensed)", fontWeight: 500,
-                  fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase",
+                  fontSize: "12px", letterSpacing: "0.12em", textTransform: "uppercase",
                   color: `rgba(${cs.colorRgb},0.7)`,
                   border: `1px solid rgba(${cs.colorRgb},0.18)`,
                   background: `rgba(${cs.colorRgb},0.05)`,
@@ -610,14 +618,13 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
               border: `1px solid rgba(${cs.colorRgb},0.3)`,
               background: `rgba(${cs.colorRgb},0.06)`,
               borderRadius: "2px",
-              transition: "background 0.2s, border-color 0.2s",
+              transition: "background 0.25s cubic-bezier(0.215,0.61,0.355,1), border-color 0.25s cubic-bezier(0.215,0.61,0.355,1)",
               whiteSpace: "nowrap",
               flexShrink: 0,
             }}
+            className="cmty-focus"
             onMouseEnter={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.12)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.45)`; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.06)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.3)`; }}
-            onFocus={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.12)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.45)`; }}
-            onBlur={(e) => { e.currentTarget.style.background = `rgba(${cs.colorRgb},0.06)`; e.currentTarget.style.borderColor = `rgba(${cs.colorRgb},0.3)`; }}
           >
             Build This Inside the Community →
           </a>
@@ -630,7 +637,6 @@ function StrAgentModal({ id, onClose }: { id: StrAgentKey; onClose: () => void }
 // ─── STR Agent Card ─────────────────────────────────────────────────────────────
 
 function StrAgentCard({ id, onOpen, featured }: { id: StrAgentKey; onOpen: (id: StrAgentKey) => void; featured?: boolean }) {
-  const [hovered, setHovered] = useState(false);
   const cs = strAgents[id];
   const mainResult = cs.results[0];
 
@@ -646,35 +652,28 @@ function StrAgentCard({ id, onOpen, featured }: { id: StrAgentKey; onOpen: (id: 
           onOpen(id);
         }
       }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
+      className="cmty-str-card"
       style={{
         cursor: "pointer",
-        background: hovered ? "#131311" : "#0F0F0D",
-        border: `1px solid ${hovered ? `rgba(${cs.colorRgb},0.4)` : "rgba(240,235,225,0.08)"}`,
+        background: "#0F0F0D",
+        border: "1px solid rgba(240,235,225,0.12)",
         overflow: "hidden",
         width: "100%", height: "100%",
-        transition: "background 0.2s ease, box-shadow 0.2s ease, border-color 0.3s ease, outline 0.15s ease",
-        boxShadow: hovered ? `inset 0 0 40px rgba(${cs.colorRgb},0.06)` : "none",
         position: "relative",
         display: "flex", flexDirection: "column",
         minHeight: featured ? "340px" : "310px",
-        outline: "none",
-      }}
-      onFocusCapture={(e) => {
-        if (e.currentTarget === e.target) {
-          e.currentTarget.style.outline = `2px solid ${cs.color}`;
-          e.currentTarget.style.outlineOffset = "-2px";
-        }
-      }}
-      onBlurCapture={(e) => {
-        if (e.currentTarget === e.target) {
-          e.currentTarget.style.outline = "none";
-        }
       }}
     >
+      {/* Pre-rendered accent wash (opacity-only on hover) */}
+      <div
+        aria-hidden="true"
+        className="cmty-str-card-wash"
+        style={{
+          position: "absolute", inset: 0, pointerEvents: "none",
+          background: `radial-gradient(ellipse 80% 55% at 50% 0%, rgba(${cs.colorRgb},0.1), transparent 65%)`,
+        }}
+      />
+
       {featured && (
         <div
           aria-hidden="true"
@@ -694,7 +693,7 @@ function StrAgentCard({ id, onOpen, featured }: { id: StrAgentKey; onOpen: (id: 
         {featured && (
           <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "#C9A84C" }}>Featured</span>
         )}
-        <span style={{ fontFamily: "var(--font-condensed)", fontSize: "14px", color: cs.color, opacity: hovered ? 1 : 0.25, transition: "opacity 0.2s ease" }}>→</span>
+        <span aria-hidden="true" className="cmty-str-card-arrow" style={{ fontFamily: "var(--font-condensed)", fontSize: "14px", color: cs.color }}>→</span>
       </div>
 
       {/* Body */}
@@ -706,27 +705,26 @@ function StrAgentCard({ id, onOpen, featured }: { id: StrAgentKey; onOpen: (id: 
           <div style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.7)`, marginBottom: "20px" }}>
             {mainResult.label}
           </div>
-          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: featured ? "clamp(24px, 2vw, 32px)" : "clamp(20px, 1.7vw, 26px)", lineHeight: 1.2, color: "#F0EBE1", letterSpacing: "-0.01em", marginBottom: "10px" }}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 300, fontSize: featured ? "var(--fs-display-md, clamp(26px, 2.6vw, 44px))" : "var(--fs-display-sm, clamp(19px, 1.6vw, 26px))", lineHeight: featured ? 1.15 : 1.2, color: "#F0EBE1", letterSpacing: "-0.01em", marginBottom: "10px", textWrap: "balance" } as React.CSSProperties}>
             {cs.title}
           </h3>
-          <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "15px", lineHeight: 1.65, color: "rgba(212,204,184,0.5)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>
+          <p style={{ fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "var(--fs-body, clamp(14px, 0.95vw, 16px))", lineHeight: 1.6, color: "rgba(212,204,184,0.55)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>
             {cs.headline}
           </p>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "22px" }}>
           {cs.stack.slice(0, 3).map((tool) => (
-            <span key={tool} style={{ fontFamily: "var(--font-condensed)", fontWeight: 500, fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.65)`, border: `1px solid rgba(${cs.colorRgb},0.2)`, background: `rgba(${cs.colorRgb},0.05)`, padding: "4px 10px" }}>
+            <span key={tool} style={{ fontFamily: "var(--font-condensed)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.12em", textTransform: "uppercase", color: `rgba(${cs.colorRgb},0.65)`, border: `1px solid rgba(${cs.colorRgb},0.2)`, background: `rgba(${cs.colorRgb},0.05)`, padding: "4px 10px" }}>
               {tool}
             </span>
           ))}
         </div>
       </div>
 
-      {hovered && (
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 28px", background: `linear-gradient(to top, rgba(${cs.colorRgb},0.12), transparent)`, display: "flex", justifyContent: "flex-end", pointerEvents: "none" }}>
-          <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: cs.color }}>View Case Study →</span>
-        </div>
-      )}
+      {/* Always rendered; hidden-until-hover only on hover-capable devices */}
+      <div className="cmty-str-card-cta" style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 28px", background: `linear-gradient(to top, rgba(${cs.colorRgb},0.12), transparent)`, display: "flex", justifyContent: "flex-end", pointerEvents: "none" }}>
+        <span style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase", color: cs.color }}>View Case Study →</span>
+      </div>
     </div>
   );
 }
@@ -782,7 +780,7 @@ function StrAgentShowcase() {
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-60px" }}
+        viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
         variants={container}
         className="mb-16 md:mb-20"
       >
@@ -802,16 +800,17 @@ function StrAgentShowcase() {
             />
             <span style={{
               fontFamily: "var(--font-condensed)", fontWeight: 600,
-              fontSize: "13px", letterSpacing: "0.26em", textTransform: "uppercase", color: "#C9A84C",
+              fontSize: "12px", letterSpacing: "0.25em", textTransform: "uppercase", color: "#C9A84C",
             }}>
               STR Automations We Build
             </span>
           </div>
           <p style={{
             fontFamily: "var(--font-body)", fontWeight: 400,
-            fontSize: "clamp(15px, 1.1vw, 18px)", lineHeight: 1.75,
+            fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))", lineHeight: 1.6,
             color: "rgba(212,204,184,0.7)", maxWidth: "680px",
-          }}>
+            textWrap: "pretty",
+          } as React.CSSProperties}>
             The AI systems short-term rental operators build inside the community: the exact
             automations for the busywork that eats your week. Click a card to see how each one works.
           </p>
@@ -849,27 +848,61 @@ export function CommunitySection() {
       style={{ background: "#0D0D0B" }}
       aria-labelledby="community-heading"
     >
-      {/* ── Top border ── */}
+      {/* ── Scoped interaction CSS (hover-gated card grammar + focus-visible) ── */}
+      <style>{`
+        .cmty-str-card {
+          transition: transform 0.3s cubic-bezier(0.215,0.61,0.355,1), border-color 0.3s cubic-bezier(0.215,0.61,0.355,1);
+        }
+        .cmty-str-card-wash {
+          opacity: 0;
+          transition: opacity 0.3s cubic-bezier(0.215,0.61,0.355,1);
+        }
+        .cmty-str-card-arrow {
+          display: inline-block;
+          opacity: 0.25;
+          transition: opacity 0.25s cubic-bezier(0.215,0.61,0.355,1), transform 0.25s cubic-bezier(0.215,0.61,0.355,1);
+        }
+        .cmty-str-card-cta {
+          opacity: 1;
+          transition: opacity 0.25s cubic-bezier(0.215,0.61,0.355,1), transform 0.25s cubic-bezier(0.215,0.61,0.355,1);
+        }
+        .cmty-str-card:focus-visible,
+        .cmty-focus:focus-visible {
+          outline: 2px solid #C9A84C;
+          outline-offset: 3px;
+        }
+        .cmty-str-card:focus-visible .cmty-str-card-wash { opacity: 1; }
+        .cmty-str-card:focus-visible .cmty-str-card-arrow { opacity: 1; transform: translateX(4px); }
+        @media (hover: hover) and (pointer: fine) {
+          .cmty-str-card-cta { opacity: 0; transform: translateY(6px); }
+          .cmty-str-card:hover, .cmty-str-card:focus-visible { transform: translateY(-4px); border-color: rgba(240,235,225,0.24); }
+          .cmty-str-card:hover .cmty-str-card-wash { opacity: 1; }
+          .cmty-str-card:hover .cmty-str-card-arrow { opacity: 1; transform: translateX(4px); }
+          .cmty-str-card:hover .cmty-str-card-cta, .cmty-str-card:focus-visible .cmty-str-card-cta { opacity: 1; transform: translateY(0); }
+        }
+        .cmty-ba-grid { display: grid; grid-template-columns: 1fr; gap: 1px; }
+        @media (min-width: 560px) { .cmty-ba-grid { grid-template-columns: 1fr 1fr; } }
+        @media (prefers-reduced-motion: reduce) {
+          .cmty-str-card, .cmty-str-card-wash, .cmty-str-card-arrow, .cmty-str-card-cta { transition: none; }
+          .cmty-str-card:hover, .cmty-str-card:focus-visible { transform: none; }
+          .cmty-str-card:hover .cmty-str-card-arrow, .cmty-str-card:focus-visible .cmty-str-card-arrow { transform: none; }
+        }
+      `}</style>
+
+      {/* ── Top seam (single hairline recipe, top only) ── */}
       <div
         aria-hidden="true"
         style={{
           height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
         }}
       />
 
-      {/* ── Ambient glows ── */}
+      {/* ── Accent glow (slate-blue, static) + cream lift ── */}
       <div aria-hidden="true" style={{
-        position: "absolute", top: "-8%", left: "-4%",
-        width: "45%", height: "55%",
-        background: "radial-gradient(ellipse, rgba(192,82,43,0.08) 0%, transparent 65%)",
-        filter: "blur(90px)", pointerEvents: "none",
-      }} />
-      <div aria-hidden="true" style={{
-        position: "absolute", bottom: "5%", right: "-4%",
-        width: "38%", height: "48%",
-        background: "radial-gradient(ellipse, rgba(201,168,76,0.05) 0%, transparent 65%)",
-        filter: "blur(80px)", pointerEvents: "none",
+        position: "absolute", inset: 0, pointerEvents: "none",
+        background:
+          "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(110,139,192,0.07), transparent 60%), radial-gradient(ellipse 70% 40% at 50% 110%, rgba(240,235,225,0.02), transparent 60%)",
       }} />
 
       {/* ── Grid texture ── */}
@@ -889,7 +922,7 @@ export function CommunitySection() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={container}
           className="mb-16 md:mb-20"
         >
@@ -910,7 +943,7 @@ export function CommunitySection() {
               />
               <span style={{
                 fontFamily: "var(--font-condensed)", fontWeight: 600,
-                fontSize: "13px", letterSpacing: "0.26em", textTransform: "uppercase", color: "#C0522B",
+                fontSize: "12px", letterSpacing: "0.25em", textTransform: "uppercase", color: "#C0522B",
               }}>
                 The STR AI Group
               </span>
@@ -925,10 +958,11 @@ export function CommunitySection() {
                 variants={item}
                 style={{
                   fontFamily: "var(--font-display)", fontWeight: 300,
-                  fontSize: "clamp(34px, 3.6vw, 64px)",
-                  lineHeight: 1.04, color: "#F0EBE1",
+                  fontSize: "var(--fs-display-lg, clamp(32px, 3.6vw, 64px))",
+                  lineHeight: 1.1, color: "#F0EBE1",
                   letterSpacing: "-0.02em", marginBottom: "22px",
-                }}
+                  textWrap: "balance",
+                } as React.CSSProperties}
               >
                 Built for{" "}
                 <span style={{ fontStyle: "italic", color: "#C0522B" }}>
@@ -941,9 +975,10 @@ export function CommunitySection() {
                 variants={item}
                 style={{
                   fontFamily: "var(--font-body)", fontWeight: 400,
-                  fontSize: "clamp(15px, 1.1vw, 18px)", lineHeight: 1.8,
+                  fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))", lineHeight: 1.6,
                   color: "rgba(212,204,184,0.75)", maxWidth: "560px",
-                }}
+                  textWrap: "pretty",
+                } as React.CSSProperties}
               >
                 This is not a general AI community. Every live build, agent, prompt, and SOP
                 inside is built specifically for STR hosts and property managers, running
@@ -982,7 +1017,7 @@ export function CommunitySection() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={container}
           className="grid grid-cols-2 md:grid-cols-4 mb-14"
           style={{ borderTop: "1px solid rgba(240,235,225,0.08)", borderBottom: "1px solid rgba(240,235,225,0.08)" }}
@@ -991,7 +1026,7 @@ export function CommunitySection() {
           {communityStats.map((s, i) => (
             <motion.div
               key={s.label}
-              variants={itemFast}
+              variants={item}
               className="flex flex-col items-center justify-center py-8 px-4"
               style={{
                 borderRight: i < communityStats.length - 1 ? "1px solid rgba(240,235,225,0.08)" : "none",
@@ -1026,7 +1061,7 @@ export function CommunitySection() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={container}
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-12 gap-3 mb-14"
           aria-label="Community classrooms"
@@ -1045,15 +1080,6 @@ export function CommunitySection() {
         </motion.div>
 
       </div>
-
-      {/* ── Bottom border ── */}
-      <div
-        aria-hidden="true"
-        style={{
-          height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(192,82,43,0.15) 50%, transparent)",
-        }}
-      />
     </section>
   );
 }
@@ -1067,12 +1093,13 @@ export function CommunityPricing() {
       style={{ background: "#0D0D0B" }}
       aria-label="Community pricing for short-term rental operators"
     >
-      <div className="relative z-10 max-w-[1360px] mx-auto px-5 md:px-8 py-20 md:py-28">
+      {/* pt-0: pricing reads as the Community section's closing beat (no dead void, no seam) */}
+      <div className="relative z-10 max-w-[1360px] mx-auto px-5 md:px-8 pt-0 pb-20 md:pb-28">
         <motion.div
-          initial={{ opacity: 0, y: 32 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.75, ease: [0.215, 0.61, 0.355, 1.0] }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+          transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] }}
           className="relative overflow-hidden"
           style={{
             background: "rgba(13,13,11,0.97)",
@@ -1087,7 +1114,7 @@ export function CommunityPricing() {
             <div className="flex-1">
               <p style={{
                 fontFamily: "var(--font-condensed)", fontWeight: 600,
-                fontSize: "14px", letterSpacing: "0.28em", textTransform: "uppercase",
+                fontSize: "12px", letterSpacing: "0.25em", textTransform: "uppercase",
                 color: "#C0522B", marginBottom: "20px",
               }}>
                 Everything Inside
@@ -1139,7 +1166,7 @@ export function CommunityPricing() {
                 >
                   <span style={{
                     fontFamily: "var(--font-condensed)", fontWeight: 600,
-                    fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase",
+                    fontSize: "12px", letterSpacing: "0.25em", textTransform: "uppercase",
                     color: "#C9A84C",
                   }}>
                     For STR Operators
@@ -1147,7 +1174,7 @@ export function CommunityPricing() {
                 </div>
                 <p style={{
                   fontFamily: "var(--font-condensed)", fontWeight: 600,
-                  fontSize: "13px", letterSpacing: "0.24em", textTransform: "uppercase",
+                  fontSize: "12px", letterSpacing: "0.25em", textTransform: "uppercase",
                   color: "rgba(192,82,43,0.7)", marginBottom: "6px",
                 }}>
                   Membership
@@ -1178,7 +1205,7 @@ export function CommunityPricing() {
                   style={{
                     background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)",
                     zIndex: 1,
-                    transition: "transform 0.55s ease",
+                    transition: "transform 0.55s cubic-bezier(0.215,0.61,0.355,1)",
                   }}
                 />
                 <span style={{
@@ -1190,10 +1217,10 @@ export function CommunityPricing() {
                 </span>
               </MagneticButton>
 
-              <p style={{
+              <p className="text-left lg:text-right" style={{
                 fontFamily: "var(--font-body)", fontWeight: 400,
-                fontSize: "15px", color: "rgba(240,235,225,0.4)",
-                lineHeight: 1.7, textAlign: "right",
+                fontSize: "var(--fs-body, clamp(14px, 0.95vw, 16px))", color: "rgba(240,235,225,0.55)",
+                lineHeight: 1.6,
               }}>
                 Built for short-term rental operators · Cancel anytime · Sign up via browser (not Skool app)
               </p>

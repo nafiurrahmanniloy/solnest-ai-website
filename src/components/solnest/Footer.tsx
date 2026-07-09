@@ -15,17 +15,20 @@ const footerLinks = [
 export default function Footer() {
   return (
     <footer className="relative overflow-hidden" style={{ background: "#0D0D0B" }}>
-      {/* Top gradient divider */}
+      {/* Top seam */}
       <div
         className="absolute top-0 left-0 right-0 pointer-events-none"
         style={{
           height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(192,82,43,0.35), rgba(201,168,76,0.18), transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
         }}
         aria-hidden="true"
       />
 
-      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-14 pt-16 md:pt-20 pb-8 md:pb-10">
+      <div
+        className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-14 pb-8 md:pb-10"
+        style={{ paddingTop: "var(--strip-pad, clamp(40px, 5vw, 80px))" }}
+      >
         {/* ── Top row: Logo + Nav + Socials ── */}
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-12 md:gap-16 items-start mb-16 md:mb-20">
 
@@ -33,8 +36,8 @@ export default function Footer() {
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.65, ease: [0.215, 0.61, 0.355, 1.0] }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+            transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] }}
           >
             <Image
               src="/solnest-logo.png"
@@ -52,15 +55,16 @@ export default function Footer() {
               style={{
                 fontFamily: "var(--font-body)",
                 fontWeight: 300,
-                fontSize: "19px",
-                lineHeight: 1.75,
+                fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))",
+                lineHeight: 1.6,
                 color: "rgba(212,204,184,0.55)",
                 maxWidth: "360px",
+                textWrap: "pretty",
               }}
             >
               Watch what happens when AI meets your business.
               <br />
-              <span style={{ color: "rgba(212,204,184,0.35)", fontSize: "17px" }}>
+              <span style={{ color: "rgba(212,204,184,0.55)", fontSize: "var(--fs-body, clamp(14px, 0.95vw, 16px))" }}>
                 Built by Ryan - for operators who move fast.
               </span>
             </p>
@@ -70,20 +74,22 @@ export default function Footer() {
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.65, delay: 0.08, ease: [0.215, 0.61, 0.355, 1.0] }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+            transition={{ duration: 0.7, delay: 0.08, ease: [0.215, 0.61, 0.355, 1.0] }}
             className="flex flex-col gap-4"
           >
-            <span style={{
-              fontFamily: "var(--font-condensed)",
-              fontWeight: 600,
-              fontSize: "12px",
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              color: "#C0522B",
-              marginBottom: "4px",
-            }}>
-              Links
+            <span className="flex items-center" style={{ gap: "14px", marginBottom: "4px" }}>
+              <span aria-hidden="true" style={{ width: "34px", height: "1px", backgroundColor: "#C0522B", flexShrink: 0 }} />
+              <span style={{
+                fontFamily: "var(--font-condensed)",
+                fontWeight: 600,
+                fontSize: "12px",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                color: "rgba(212,204,184,0.65)",
+              }}>
+                Links
+              </span>
             </span>
             {footerLinks.map((link) => (
               <a
@@ -91,26 +97,15 @@ export default function Footer() {
                 href={link.href}
                 target={link.external ? "_blank" : undefined}
                 rel={link.external ? "noopener noreferrer" : undefined}
+                className="link-underline focus-ring self-start"
                 style={{
                   fontFamily: "var(--font-body)",
                   fontWeight: 400,
-                  fontSize: "18px",
+                  fontSize: "var(--fs-body, clamp(14px, 0.95vw, 16px))",
                   color: "rgba(212,204,184,0.60)",
                   textDecoration: "none",
-                  transition: "color 0.2s ease",
                   lineHeight: 1.5,
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.60)";
-                }}
-                onFocus={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
-                }}
-                onBlur={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.60)";
+                  padding: "4px 0",
                 }}
               >
                 {link.label}
@@ -122,20 +117,22 @@ export default function Footer() {
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.65, delay: 0.16, ease: [0.215, 0.61, 0.355, 1.0] }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+            transition={{ duration: 0.7, delay: 0.16, ease: [0.215, 0.61, 0.355, 1.0] }}
             className="flex flex-col gap-5"
           >
-            <span style={{
-              fontFamily: "var(--font-condensed)",
-              fontWeight: 600,
-              fontSize: "12px",
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              color: "#C0522B",
-              marginBottom: "0px",
-            }}>
-              Follow
+            <span className="flex items-center" style={{ gap: "14px" }}>
+              <span aria-hidden="true" style={{ width: "34px", height: "1px", backgroundColor: "#C0522B", flexShrink: 0 }} />
+              <span style={{
+                fontFamily: "var(--font-condensed)",
+                fontWeight: 600,
+                fontSize: "12px",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                color: "rgba(212,204,184,0.65)",
+              }}>
+                Follow
+              </span>
             </span>
             <SocialHandles />
           </motion.div>
@@ -143,9 +140,10 @@ export default function Footer() {
 
         {/* ── Bottom bar: separator + copyright ── */}
         <div
+          aria-hidden="true"
           style={{
             height: "1px",
-            background: "linear-gradient(to right, rgba(192,82,43,0.15), rgba(212,204,184,0.08), transparent)",
+            background: "rgba(240,235,225,0.10)",
             marginBottom: "20px",
           }}
         />
@@ -153,7 +151,7 @@ export default function Footer() {
           <p style={{
             fontFamily: "var(--font-body)",
             fontWeight: 300,
-            fontSize: "15px",
+            fontSize: "var(--fs-caption, 13px)",
             color: "rgba(212,204,184,0.55)",
           }}>
             © {new Date().getFullYear()} Solnest AI. All rights reserved.
@@ -166,25 +164,14 @@ export default function Footer() {
               <a
                 key={link.href}
                 href={link.href}
+                className="link-underline focus-ring"
                 style={{
                   fontFamily: "var(--font-body)",
                   fontWeight: 300,
-                  fontSize: "15px",
+                  fontSize: "var(--fs-caption, 13px)",
                   color: "rgba(212,204,184,0.55)",
                   textDecoration: "none",
-                  transition: "color 0.2s ease",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.55)";
-                }}
-                onFocus={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
-                }}
-                onBlur={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.55)";
+                  padding: "4px 0",
                 }}
               >
                 {link.label}
@@ -193,25 +180,14 @@ export default function Footer() {
           </div>
           <a
             href="mailto:hello@solnestai.com"
+            className="link-underline focus-ring"
             style={{
               fontFamily: "var(--font-body)",
               fontWeight: 300,
-              fontSize: "15px",
+              fontSize: "var(--fs-caption, 13px)",
               color: "rgba(212,204,184,0.55)",
               textDecoration: "none",
-              transition: "color 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.55)";
-            }}
-            onFocus={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "#F0EBE1";
-            }}
-            onBlur={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "rgba(212,204,184,0.55)";
+              padding: "4px 0",
             }}
           >
             hello@solnestai.com

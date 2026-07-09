@@ -26,7 +26,7 @@ const integrations = [
 function LogoCard({ name, highlight }: { name: string; highlight: boolean }) {
   return (
     <div
-      className="flex-shrink-0"
+      className={`flex-shrink-0 integration-logo${highlight ? ' integration-logo--hi' : ''}`}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -39,9 +39,8 @@ function LogoCard({ name, highlight }: { name: string; highlight: boolean }) {
         border: highlight
           ? '1px solid rgba(192,82,43,0.22)'
           : '1px solid rgba(212,204,184,0.06)',
-        borderRadius: '10px',
+        borderRadius: '2px',
         whiteSpace: 'nowrap' as const,
-        transition: 'border-color 0.3s ease, background 0.3s ease',
       }}
     >
       {/* Dot indicator */}
@@ -65,7 +64,7 @@ function LogoCard({ name, highlight }: { name: string; highlight: boolean }) {
           fontSize: 'clamp(13px, 1vw, 17px)',
           letterSpacing: '0.14em',
           textTransform: 'uppercase',
-          color: highlight ? '#C0522B' : 'rgba(212,204,184,0.35)',
+          color: highlight ? '#C0522B' : 'rgba(212,204,184,0.55)',
         }}
       >
         {name}
@@ -74,30 +73,31 @@ function LogoCard({ name, highlight }: { name: string; highlight: boolean }) {
   )
 }
 
-function MarqueeRow({ direction = 'left', speed = '50s' }: { direction?: 'left' | 'right'; speed?: string }) {
-  const items = [...integrations, ...integrations]
+function MarqueeGroup({ ariaHidden = false }: { ariaHidden?: boolean }) {
+  return (
+    <div
+      aria-hidden={ariaHidden || undefined}
+      style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}
+    >
+      {integrations.map((item) => (
+        <LogoCard key={item.name} name={item.name} highlight={item.highlight} />
+      ))}
+    </div>
+  )
+}
 
+function MarqueeRow({ direction = 'left', speed = '50s' }: { direction?: 'left' | 'right'; speed?: string }) {
   return (
     <div
       className="marquee-row overflow-hidden"
-      style={{ width: '100%', position: 'relative' }}
+      style={{
+        width: '100%',
+        position: 'relative',
+        // Edge fade
+        maskImage: 'linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)',
+        WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)',
+      }}
     >
-      {/* Fade edges */}
-      <div
-        className="pointer-events-none absolute inset-y-0 left-0 z-10"
-        style={{
-          width: 'clamp(60px, 10vw, 160px)',
-          background: 'linear-gradient(to right, #0D0D0B, transparent)',
-        }}
-      />
-      <div
-        className="pointer-events-none absolute inset-y-0 right-0 z-10"
-        style={{
-          width: 'clamp(60px, 10vw, 160px)',
-          background: 'linear-gradient(to left, #0D0D0B, transparent)',
-        }}
-      />
-
       <div
         className={direction === 'left' ? 'animate-marquee' : 'animate-marquee-reverse'}
         style={{
@@ -107,9 +107,9 @@ function MarqueeRow({ direction = 'left', speed = '50s' }: { direction?: 'left' 
           animationDuration: speed,
         }}
       >
-        {items.map((item, i) => (
-          <LogoCard key={`${item.name}-${i}`} name={item.name} highlight={item.highlight} />
-        ))}
+        <MarqueeGroup />
+        {/* Duplicate track for the seamless loop — hidden from assistive tech */}
+        <MarqueeGroup ariaHidden />
       </div>
     </div>
   )
@@ -121,40 +121,53 @@ export function IntegrationStrip() {
       className="relative overflow-hidden"
       style={{
         background: '#0D0D0B',
-        paddingTop: 'clamp(56px, 6vw, 96px)',
-        paddingBottom: 'clamp(56px, 6vw, 96px)',
+        paddingTop: 'var(--strip-pad, clamp(40px, 5vw, 80px))',
+        paddingBottom: 'var(--strip-pad, clamp(40px, 5vw, 80px))',
       }}
     >
-      {/* Ambient glow behind the marquee */}
+      <style>{`
+        .integration-logo {
+          opacity: 0.55;
+          transition: opacity 0.25s cubic-bezier(0.215,0.61,0.355,1), border-color 0.25s cubic-bezier(0.215,0.61,0.355,1), background 0.25s cubic-bezier(0.215,0.61,0.355,1);
+        }
+        .integration-logo--hi { opacity: 0.9; }
+        @media (hover: hover) and (pointer: fine) {
+          .integration-logo:hover { opacity: 1; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .marquee-row .animate-marquee,
+          .marquee-row .animate-marquee-reverse { animation: none; }
+        }
+      `}</style>
+
+      {/* Section accent glow: single static layer, gold */}
       <div
-        className="pointer-events-none absolute"
+        className="pointer-events-none absolute inset-0"
         style={{
-          top: '20%', left: '30%',
-          width: '40%', height: '60%',
-          background: 'radial-gradient(ellipse, rgba(192,82,43,0.08) 0%, transparent 65%)',
-          filter: 'blur(60px)',
+          background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.07), transparent 60%)',
         }}
         aria-hidden="true"
       />
 
-      {/* Top separator */}
+      {/* Top seam — single full-bleed hairline */}
       <div
+        aria-hidden="true"
         style={{
           position: 'absolute',
           top: 0,
-          left: '5%',
-          right: '5%',
+          left: 0,
+          right: 0,
           height: '1px',
-          background: 'linear-gradient(to right, transparent, rgba(192,82,43,0.20) 30%, rgba(201,168,76,0.10) 50%, rgba(192,82,43,0.20) 70%, transparent)',
+          background: 'linear-gradient(90deg, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)',
         }}
       />
 
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 18 }}
+        initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-40px' }}
-        transition={{ duration: 0.65 }}
+        viewport={{ once: true, margin: '-80px 0px -80px 0px' }}
+        transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1] }}
         className="text-center mb-12"
         style={{ padding: '0 24px' }}
       >
@@ -181,10 +194,11 @@ export function IntegrationStrip() {
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 300,
-            fontSize: 'clamp(28px, 3.2vw, 56px)',
+            fontSize: 'var(--fs-display-lg, clamp(32px, 3.6vw, 64px))',
             color: '#F0EBE1',
             letterSpacing: '-0.02em',
             lineHeight: 1.1,
+            textWrap: 'balance',
           }}
         >
           Plugs into what you{' '}
@@ -195,10 +209,11 @@ export function IntegrationStrip() {
           style={{
             fontFamily: 'var(--font-body)',
             fontWeight: 300,
-            fontSize: 'clamp(13px, 0.85vw, 16px)',
-            color: 'rgba(212,204,184,0.40)',
+            fontSize: 'var(--fs-body, clamp(14px, 0.95vw, 16px))',
+            color: 'rgba(212,204,184,0.55)',
             marginTop: '14px',
-            lineHeight: 1.7,
+            lineHeight: 1.6,
+            textWrap: 'pretty',
           }}
         >
           No rip-and-replace. Solnest AI plugs directly into the tools you already run on.
@@ -209,25 +224,13 @@ export function IntegrationStrip() {
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: '-20px' }}
-        transition={{ duration: 0.8, delay: 0.12 }}
+        viewport={{ once: true, margin: '-80px 0px -80px 0px' }}
+        transition={{ duration: 0.7, delay: 0.12, ease: [0.215, 0.61, 0.355, 1] }}
         className="flex flex-col gap-5"
       >
         <MarqueeRow direction="left" speed="48s" />
         <MarqueeRow direction="right" speed="54s" />
       </motion.div>
-
-      {/* Bottom separator */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: '5%',
-          right: '5%',
-          height: '1px',
-          background: 'linear-gradient(to right, transparent, rgba(192,82,43,0.20) 30%, rgba(201,168,76,0.10) 50%, rgba(192,82,43,0.20) 70%, transparent)',
-        }}
-      />
     </section>
   )
 }

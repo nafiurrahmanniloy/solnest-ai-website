@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import Nav from "@/components/solnest/Nav";
 import Footer from "@/components/solnest/Footer";
 
+const EASE: [number, number, number, number] = [0.215, 0.61, 0.355, 1];
+
 function BuildSessionContent() {
   const params = useSearchParams();
   const prefillFirstName = params.get("firstName") || "";
@@ -47,40 +49,77 @@ function BuildSessionContent() {
 
   return (
     <main style={{ background: "#0D0D0B", minHeight: "100vh", color: "#F0EBE1" }}>
+      <style>{`
+        @media (hover: hover) and (pointer: fine) {
+          .bs-pay:hover:not(:disabled) {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+          }
+        }
+        .bs-pay:focus-visible {
+          outline: 2px solid #C9A84C;
+          outline-offset: 3px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .bs-pay { transition: none !important; }
+          .bs-pay:hover:not(:disabled) { transform: none; }
+        }
+      `}</style>
       <Nav />
 
       <section
+        className="relative overflow-hidden"
         style={{
           padding: "120px 24px 60px",
           textAlign: "center",
-          maxWidth: "720px",
-          margin: "0 auto",
         }}
       >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-[-10vw] right-[-10vw]"
+          style={{
+            width: "50vw",
+            height: "50vw",
+            background: "radial-gradient(ellipse at center, rgba(192,82,43,0.12) 0%, transparent 65%)",
+            filter: "blur(70px)",
+          }}
+        />
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1] }}
+          transition={{ duration: 0.7, ease: EASE }}
+          style={{ position: "relative", zIndex: 1, maxWidth: "720px", margin: "0 auto" }}
         >
           <div
             style={{
-              fontFamily: "var(--font-condensed)",
-              fontWeight: 600,
-              fontSize: "11px",
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              color: "#C0522B",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "14px",
               marginBottom: "16px",
             }}
           >
-            Build Session
+            <div aria-hidden="true" style={{ width: "34px", height: "1px", background: "#C0522B", flexShrink: 0 }} />
+            <span
+              style={{
+                fontFamily: "var(--font-condensed)",
+                fontWeight: 600,
+                fontSize: "13px",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                color: "#C0522B",
+              }}
+            >
+              Build Session
+            </span>
+            <div aria-hidden="true" style={{ width: "34px", height: "1px", background: "#C0522B", flexShrink: 0 }} />
           </div>
           <h1
             style={{
               fontFamily: "var(--font-display)",
               fontWeight: 300,
-              fontSize: "clamp(32px, 5vw, 56px)",
-              lineHeight: 1.15,
+              fontSize: "clamp(36px, 5vw, 64px)",
+              lineHeight: 1.1,
               color: "#F0EBE1",
               marginBottom: "20px",
             }}
@@ -108,13 +147,13 @@ function BuildSessionContent() {
 
       <section style={{ maxWidth: "560px", margin: "0 auto", padding: "0 24px 40px" }}>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
           style={{
             background: "rgba(240,235,225,0.02)",
             border: "1px solid rgba(192,82,43,0.15)",
-            borderRadius: "14px",
+            borderRadius: "2px",
             padding: "32px",
           }}
         >
@@ -179,7 +218,9 @@ function BuildSessionContent() {
                   color: "rgba(240,235,225,0.85)",
                 }}
               >
-                <span style={{ color: "#C0522B", marginTop: "1px" }}>✓</span>
+                <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true" style={{ flexShrink: 0, marginTop: "3px" }}>
+                  <path d="M2.5 7.5L5.8 10.5L11.5 4" stroke="#C0522B" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
                 <span>{item}</span>
               </div>
             ))}
@@ -191,7 +232,7 @@ function BuildSessionContent() {
               padding: "12px 14px",
               background: "rgba(201,168,76,0.06)",
               border: "1px solid rgba(201,168,76,0.2)",
-              borderRadius: "8px",
+              borderRadius: "2px",
               color: "rgba(240,235,225,0.75)",
               fontFamily: "var(--font-body)",
               fontSize: "13px",
@@ -217,12 +258,13 @@ function BuildSessionContent() {
 
           {errorMsg && (
             <div
+              role="alert"
               style={{
                 marginBottom: "16px",
                 padding: "12px 14px",
                 background: "rgba(192,82,43,0.1)",
-                border: "1px solid rgba(192,82,43,0.3)",
-                borderRadius: "8px",
+                border: "1px solid rgba(192,82,43,0.5)",
+                borderRadius: "2px",
                 color: "#C0522B",
                 fontFamily: "var(--font-body)",
                 fontSize: "14px",
@@ -236,12 +278,14 @@ function BuildSessionContent() {
           <button
             onClick={handlePay}
             disabled={submitting}
+            aria-disabled={submitting}
+            className="bs-pay"
             style={{
               width: "100%",
               padding: "16px 20px",
               background: "#C0522B",
               border: "none",
-              borderRadius: "10px",
+              borderRadius: "9999px",
               color: "#F0EBE1",
               fontFamily: "var(--font-condensed)",
               fontWeight: 600,
@@ -250,7 +294,8 @@ function BuildSessionContent() {
               textTransform: "uppercase",
               cursor: submitting ? "wait" : "pointer",
               opacity: submitting ? 0.6 : 1,
-              transition: "all 0.2s ease",
+              boxShadow: "0 0 30px rgba(192,82,43,0.25)",
+              transition: "filter 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
             }}
           >
             {submitting ? "Redirecting to checkout..." : `Pay ${price} & Pick a Time →`}

@@ -1,41 +1,58 @@
 "use client";
 
+import { useRef } from "react";
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { BlurText } from "@/components/ui/blur-text-animation";
 
 const ShaderBackground = dynamic(
   () => import("@/components/ui/animated-shader-hero").then((m) => ({ default: m.ShaderBackground })),
-  { ssr: false, loading: () => <div style={{ position: "absolute", inset: 0, background: "#000" }} /> }
+  { ssr: false, loading: () => <div style={{ position: "absolute", inset: 0, background: "#0D0D0B" }} /> }
 );
+
+const EASE: [number, number, number, number] = [0.215, 0.61, 0.355, 1.0];
+
+const BODY_COPY =
+  "Run a short-term rental? Join the community for $97/mo: live builds, the agent library, the SOPs, all of it. Run any other business? Book a call and Ryan's team builds your AI for you. The only question is whether you start today or three months from now.";
 
 const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.12,
+      staggerChildren: 0.08,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.7,
-      ease: [0.215, 0.61, 0.355, 1.0],
+      ease: EASE,
     },
   },
 };
 
 export function FooterCTA() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  // Sanctioned parallax moment (c): heading rises ~40px as the section scrolls in.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end end"],
+  });
+  const headingParallaxY = useTransform(scrollYProgress, [0, 1], [40, 0]);
+
   return (
     <section
-      className="relative py-12 md:py-16 overflow-hidden"
-      style={{ background: "#000" }}
+      ref={sectionRef}
+      className="relative py-20 md:py-28 overflow-hidden"
+      style={{ background: "#0D0D0B" }}
     >
       {/* Animated WebGL shader background */}
       <div aria-hidden="true">
@@ -53,12 +70,12 @@ export function FooterCTA() {
         }}
       />
 
-      {/* Top gradient line */}
+      {/* Top seam */}
       <div
         className="absolute top-0 left-0 right-0 h-px pointer-events-none"
         style={{
           background:
-            "linear-gradient(to right, transparent, rgba(192,82,43,0.4), transparent)",
+            "linear-gradient(90deg, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
           zIndex: 10,
         }}
         aria-hidden="true"
@@ -71,79 +88,88 @@ export function FooterCTA() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
           variants={containerVariants}
         >
           {/* Small label */}
           <motion.div
             variants={itemVariants}
-            className="flex items-center justify-center gap-4 mb-6"
+            className="flex items-center justify-center mb-6"
+            style={{ gap: "14px" }}
           >
-            <div style={{ width: "38px", height: "1px", backgroundColor: "#C0522B" }} />
+            <div style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
             <span
               style={{
                 fontFamily: "var(--font-condensed)",
                 fontWeight: 600,
-                fontSize: "13px",
+                fontSize: "12px",
                 letterSpacing: "0.25em",
                 textTransform: "uppercase",
-                color: "#C0522B",
+                color: "rgba(212,204,184,0.65)",
               }}
             >
               Two ways in. Pick your door.
             </span>
-            <div style={{ width: "38px", height: "1px", backgroundColor: "#C0522B" }} />
+            <div style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
           </motion.div>
 
-          {/* Huge headline */}
-          <motion.h2
-            variants={itemVariants}
-            className="mb-8"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontWeight: 300,
-              lineHeight: 1.05,
-              color: "#F0EBE1",
-            }}
-          >
-            <span
+          {/* Huge headline - sanctioned parallax: rises ~40px on scroll */}
+          <motion.div style={{ y: prefersReducedMotion ? 0 : headingParallaxY }}>
+            <motion.h2
+              variants={itemVariants}
+              className="mb-8"
               style={{
-                display: "block",
-                fontSize: "clamp(32px, 7vw, 96px)",
+                fontFamily: "var(--font-display)",
+                fontWeight: 300,
+                lineHeight: 1.05,
+                color: "#F0EBE1",
+                textWrap: "balance",
               }}
             >
-              The operators who move
-            </span>
-            <span
-              style={{
-                display: "block",
-                fontSize: "clamp(32px, 7vw, 96px)",
-              }}
-            >
-              fast{" "}
-              <span style={{ color: "#C0522B", fontStyle: "italic" }}>
-                win.
+              <span
+                style={{
+                  display: "block",
+                  fontSize: "var(--fs-display-xl, clamp(40px, 6vw, 96px))",
+                }}
+              >
+                The operators who move
               </span>
-            </span>
-          </motion.h2>
+              <span
+                style={{
+                  display: "block",
+                  fontSize: "var(--fs-display-xl, clamp(40px, 6vw, 96px))",
+                }}
+              >
+                fast{" "}
+                <span style={{ color: "#C0522B", fontStyle: "italic" }}>
+                  win.
+                </span>
+              </span>
+            </motion.h2>
+          </motion.div>
 
-          {/* Body - blur text loops to keep it alive on long page views */}
+          {/* Body - blur text animates once, settles at final state */}
           <motion.p
             variants={itemVariants}
             style={{
               fontFamily: "var(--font-body)",
               fontWeight: 300,
-              fontSize: "20px",
-              lineHeight: 1.8,
+              fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))",
+              lineHeight: 1.6,
               maxWidth: "720px",
               margin: "0 auto 56px",
+              textWrap: "pretty",
             }}
           >
-            <BlurText
-              text="Run a short-term rental? Join the community for $97/mo: live builds, the agent library, the SOPs, all of it. Run any other business? Book a call and Ryan's team builds your AI for you. The only question is whether you start today or three months from now."
-              loopDelay={1500}
-              style={{ color: "rgba(212,204,184,0.75)" }}
-            />
+            {prefersReducedMotion ? (
+              <span style={{ color: "rgba(212,204,184,0.75)" }}>{BODY_COPY}</span>
+            ) : (
+              <BlurText
+                text={BODY_COPY}
+                once
+                style={{ color: "rgba(212,204,184,0.75)" }}
+              />
+            )}
           </motion.p>
 
           {/* Dual CTA - the two doors */}
@@ -173,7 +199,7 @@ export function FooterCTA() {
                   background:
                     "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)",
                   zIndex: 1,
-                  transition: "transform 0.5s ease",
+                  transition: "transform 0.5s cubic-bezier(0.215,0.61,0.355,1)",
                 }}
                 aria-hidden="true"
               />
@@ -230,8 +256,8 @@ export function FooterCTA() {
             style={{
               fontFamily: "var(--font-body)",
               fontWeight: 300,
-              fontSize: "15px",
-              color: "rgba(212,204,184,0.45)",
+              fontSize: "var(--fs-caption, 13px)",
+              color: "rgba(212,204,184,0.55)",
               lineHeight: 1.7,
             }}
           >
@@ -239,17 +265,6 @@ export function FooterCTA() {
           </motion.p>
         </motion.div>
       </div>
-
-      {/* Bottom gradient line */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(to right, transparent, rgba(192,82,43,0.4), transparent)",
-          zIndex: 10,
-        }}
-        aria-hidden="true"
-      />
     </section>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import dynamic from "next/dynamic";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { ShutterText } from "@/components/ui/hero-shutter-text";
@@ -25,13 +25,13 @@ function useIsDesktop() {
 }
 
 /**
- * Hold the heavy Spline robot back until the browser is idle (or ~1.4s as a
- * fallback) so its ~1MB runtime download, parse, and second WebGL context don't
- * block the main thread or fight the GPU while the headline intro is playing.
- * The robot already fades in, so mounting it a beat later is invisible to users
- * but removes the biggest source of intro jank.
+ * Hold the heavy Spline robot back ~1.2s so its runtime parse and second
+ * WebGL context don't block the main thread or fight the GPU while the
+ * headline intro is playing. The network is warmed at T=0 (see the warm-up
+ * effect in Hero), so by mount time both the runtime chunk and the scene
+ * file are already in the browser cache - the delay only dodges the parse.
  */
-function useDeferredMount(delayMs = 2800) {
+function useDeferredMount(delayMs = 1200) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
     // A fixed timeout (NOT requestIdleCallback): rIC fires opportunistically
@@ -49,44 +49,36 @@ const TunnelBackground = dynamic(() => import("@/components/ui/tunnel-hero"), {
   loading: () => <div style={{ position: "absolute", inset: 0, background: "#0D0D0B" }} />,
 });
 
-const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const SCRAMBLE_DURATION = 1400;
-const SCRAMBLE_INTERVAL = 40;
-
-function ScrambleText({ text }: { text: string }) {
-  const [display, setDisplay] = useState(text);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const startTimeRef = useRef<number>(0);
-
-  useEffect(() => {
-    startTimeRef.current = Date.now();
-    intervalRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTimeRef.current;
-      if (elapsed >= SCRAMBLE_DURATION) {
-        setDisplay(text);
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        return;
-      }
-      setDisplay(
-        text
-          .split("")
-          .map(() => SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)])
-          .join("")
-      );
-    }, SCRAMBLE_INTERVAL);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [text]);
-
-  return <>{display}</>;
-}
+// House ease - the one sanctioned motion curve site-wide.
+const EASE: [number, number, number, number] = [0.215, 0.61, 0.355, 1];
 
 export default function Hero() {
   const isDesktop = useIsDesktop();
   const robotReady = useDeferredMount();
+  const prefersReducedMotion = useReducedMotion();
+
+  // Warm the network at T=0: kick off the Spline runtime chunk and the scene
+  // file immediately so the deferred mount parses from browser cache instead
+  // of hitting the network cold. Fire-and-forget; errors swallowed - the
+  // deferred mount handles real failures via its own error boundary.
+  useEffect(() => {
+    import("@splinetool/react-spline").catch(() => {});
+    fetch("/robot.splinecode").catch(() => {});
+  }, []);
+
+  // Sanctioned parallax moment (a): the Spline column drifts up ~60px slower
+  // than the copy as the hero scrolls away. Transforms only; off under
+  // reduced motion.
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const splineY = useTransform(scrollYProgress, [0, 1], [0, -60]);
+
   return (
     <section
+      ref={sectionRef}
       className="relative overflow-hidden"
       style={{ background: "#0D0D0B", minHeight: "100dvh", display: "flex", alignItems: "center" }}
     >
@@ -100,7 +92,7 @@ export default function Hero() {
 
       {/* Ambient glow - left side */}
       <div
-        className="pointer-events-none absolute top-[-10vw] left-[-5vw] z-[1] animate-breathe"
+        className="pointer-events-none absolute top-[-10vw] left-[-5vw] z-[1]"
         style={{
           width: "55vw", height: "55vw",
           background: "radial-gradient(ellipse at center, rgba(192,82,43,0.13) 0%, transparent 65%)",
@@ -118,9 +110,9 @@ export default function Hero() {
 
           {/* Eyebrow */}
           <motion.div
-            initial={{ opacity: 0, y: 14 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.55 }}
+            transition={{ delay: 0.1, duration: 0.7, ease: EASE }}
             className="flex items-center gap-3 mb-8"
           >
             <div style={{ width: "34px", height: "1px", background: "#C0522B", flexShrink: 0 }} />
@@ -149,9 +141,9 @@ export default function Hero() {
                 display: "block",
                 fontFamily: "var(--font-display)",
                 fontWeight: 300,
-                fontSize: "clamp(36px, 4.2vw, 82px)",
+                fontSize: "var(--fs-display-xl, clamp(40px, 6vw, 96px))",
                 color: "#F0EBE1",
-                lineHeight: 1.08,
+                lineHeight: 1.05,
                 letterSpacing: "-0.02em",
               }}
             />
@@ -162,8 +154,8 @@ export default function Hero() {
                 display: "block",
                 fontFamily: "var(--font-display)",
                 fontWeight: 300,
-                fontSize: "clamp(36px, 4.2vw, 82px)",
-                lineHeight: 1.08,
+                fontSize: "var(--fs-display-xl, clamp(40px, 6vw, 96px))",
+                lineHeight: 1.05,
                 letterSpacing: "-0.02em",
               }}
             >
@@ -192,9 +184,9 @@ export default function Hero() {
                 display: "block",
                 fontFamily: "var(--font-display)",
                 fontWeight: 300,
-                fontSize: "clamp(36px, 4.2vw, 82px)",
+                fontSize: "var(--fs-display-xl, clamp(40px, 6vw, 96px))",
                 color: "#F0EBE1",
-                lineHeight: 1.08,
+                lineHeight: 1.05,
                 letterSpacing: "-0.02em",
               }}
             />
@@ -205,7 +197,7 @@ export default function Hero() {
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ delay: 0.65, duration: 0.6, ease: [0.215, 0.61, 0.355, 1.0] }}
+            transition={{ delay: 0.65, duration: 0.7, ease: EASE }}
             style={{
               height: "1px",
               background: "linear-gradient(to right, rgba(192,82,43,0.6), transparent)",
@@ -219,7 +211,7 @@ export default function Hero() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.75, duration: 0.3 }}
+            transition={{ delay: 0.75, duration: 0.7, ease: EASE }}
             style={{
               fontFamily: "var(--font-body)",
               fontWeight: 300,
@@ -240,7 +232,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.9, duration: 0.5 }}
+            transition={{ delay: 0.9, duration: 0.7, ease: EASE }}
             className="flex items-center gap-3 mb-7"
           >
             <div className="flex -space-x-2">
@@ -266,9 +258,9 @@ export default function Hero() {
 
           {/* CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 14 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0, duration: 0.6 }}
+            transition={{ delay: 1.0, duration: 0.7, ease: EASE }}
             className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-7"
           >
             {/* Primary door → scroll to the STR community deep-dive */}
@@ -284,7 +276,7 @@ export default function Hero() {
                 className="absolute inset-0 -translate-x-full group-hover:translate-x-full"
                 style={{
                   background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)",
-                  zIndex: 1, transition: "transform 0.5s ease",
+                  zIndex: 1, transition: "transform 0.5s cubic-bezier(0.215,0.61,0.355,1)",
                 }}
                 aria-hidden="true"
               />
@@ -324,7 +316,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.15, duration: 0.5 }}
+            transition={{ delay: 1.15, duration: 0.7, ease: EASE }}
             className="flex flex-wrap items-center gap-x-5 gap-y-2"
           >
             {["Cancel anytime", "No long-term contract"].map((item) => (
@@ -345,90 +337,94 @@ export default function Hero() {
 
         </div>
 
-        {/* ── RIGHT: Spline robot - desktop only, mounted after the intro
-            settles so its heavy runtime doesn't stall the headline reveal ── */}
-        {isDesktop && robotReady && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1.4 }}
-            aria-hidden="true"
-            className="hidden lg:block"
+        {/* ── RIGHT: Spline robot column. The sized frame is ALWAYS rendered
+            (height reserved unconditionally) so mounting the robot never
+            shifts layout. A static rust radial glow acts as the poster while
+            the scene loads - and is the permanent stand-in under reduced
+            motion. The scene itself still mounts after the intro settles so
+            its heavy runtime doesn't stall the headline reveal. ── */}
+        <motion.div
+          aria-hidden="true"
+          className="hidden lg:block"
+          style={{
+            position: "relative",
+            // Extra headroom so the robot's idle float never clips off the top
+            height: "clamp(480px, 62vw, 860px)",
+            marginRight: "-8vw",
+            // Sanctioned hero parallax: column drifts up slower than copy.
+            y: prefersReducedMotion ? 0 : splineY,
+          }}
+        >
+          {/* Static rust radial glow - loading poster / reduced-motion
+              stand-in. Never animated. */}
+          <div
             style={{
-              position: "relative",
-              // Extra headroom so the robot's idle float never clips off the top
-              height: "clamp(480px, 62vw, 860px)",
-              marginRight: "-8vw",
+              position: "absolute",
+              inset: 0,
+              background:
+                "radial-gradient(ellipse 60% 55% at 57% 45%, rgba(192,82,43,0.1), transparent 65%)",
+              pointerEvents: "none",
             }}
-          >
-            {/* Masked layer - soft-edged window onto the 3D scene. The mask
-                lives here (not on the outer wrapper) so the watermark cover
-                below is NOT faded out by it. */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                WebkitMaskImage:
-                  "radial-gradient(ellipse 80% 84% at 57% 45%, black 40%, transparent 72%)",
-                maskImage:
-                  "radial-gradient(ellipse 80% 84% at 57% 45%, black 40%, transparent 72%)",
-              }}
+          />
+
+          {isDesktop && robotReady && !prefersReducedMotion && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.9, ease: EASE }}
+              style={{ position: "absolute", inset: 0 }}
             >
-              <SplineScene
-                src="/robot.splinecode"
+              {/* Masked layer - soft-edged window onto the 3D scene. The
+                  radial mask fades the canvas (including the bottom-right
+                  "Built with Spline" watermark baked into the pixels) to
+                  full transparency at the edges. */}
+              <div
                 style={{
                   position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  // Shrink the canvas so the baked float covers far fewer
-                  // on-screen pixels and always stays inside the frame.
-                  // (The float amplitude itself is baked into the .splinecode
-                  // scene and can only be reduced in the Spline editor.)
-                  transform: "scale(0.86) translateY(2%)",
-                  transformOrigin: "center center",
-                  // Disable cursor interactivity so the baked "Look At" event
-                  // never fires - this stops the robot from following the mouse
-                  // AND from swinging out of position while Lenis smooth-scrolls
-                  // the canvas under a stationary cursor. (Decorative only.)
-                  pointerEvents: "none",
+                  inset: 0,
+                  WebkitMaskImage:
+                    "radial-gradient(ellipse 80% 84% at 57% 45%, black 40%, transparent 72%)",
+                  maskImage:
+                    "radial-gradient(ellipse 80% 84% at 57% 45%, black 40%, transparent 72%)",
                 }}
-              />
-            </div>
-
-            {/* Cover the "Built with Spline" watermark, which the runtime
-                paints into the canvas pixels (bottom-right) on free-plan
-                exports - it is not a DOM node, so it can only be masked here
-                or removed via a paid Spline re-export. Feathered so it blends
-                into the dark hero background. */}
-            <div
-              style={{
-                position: "absolute",
-                right: 0,
-                bottom: 0,
-                width: "42%",
-                height: "34%",
-                background:
-                  "radial-gradient(ellipse at bottom right, #0D0D0B 60%, transparent 85%)",
-                pointerEvents: "none",
-                zIndex: 4,
-              }}
-            />
-          </motion.div>
-        )}
+              >
+                <SplineScene
+                  src="/robot.splinecode"
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    // Shrink the canvas so the baked float covers far fewer
+                    // on-screen pixels and always stays inside the frame.
+                    // (The float amplitude itself is baked into the .splinecode
+                    // scene and can only be reduced in the Spline editor.)
+                    transform: "scale(0.86) translateY(2%)",
+                    transformOrigin: "center center",
+                    // Disable cursor interactivity so the baked "Look At" event
+                    // never fires - this stops the robot from following the mouse
+                    // AND from swinging out of position while Lenis smooth-scrolls
+                    // the canvas under a stationary cursor. (Decorative only.)
+                    pointerEvents: "none",
+                  }}
+                />
+              </div>
+            </motion.div>
+          )}
+        </motion.div>
       </div>
 
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 0.8 }}
+        transition={{ delay: 2, duration: 0.7, ease: EASE }}
         className="absolute bottom-8 left-[max(40px,4vw)] z-[3] pointer-events-none hidden lg:flex flex-col items-center gap-1"
         aria-hidden="true"
       >
         <motion.div
-          animate={{ y: [0, 10, 0] }}
+          animate={prefersReducedMotion ? { y: 0 } : { y: [0, 10, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
           style={{ width: "1px", height: "40px", background: "linear-gradient(to bottom, transparent, rgba(192,82,43,0.5))" }}
         />

@@ -12,46 +12,61 @@ export function PartneredStrip() {
       className="relative overflow-hidden"
       style={{
         background: "#0D0D0B",
-        paddingTop: "clamp(28px, 3.2vw, 44px)",
-        paddingBottom: "clamp(28px, 3.2vw, 44px)",
+        paddingTop: "var(--strip-pad, clamp(40px, 5vw, 80px))",
+        paddingBottom: "var(--strip-pad, clamp(40px, 5vw, 80px))",
       }}
       aria-label="Partnered with"
     >
-      {/* Top hairline */}
+      {/* Section seam - single full-bleed hairline, top only */}
       <div
         aria-hidden="true"
         style={{
           position: "absolute",
           top: 0,
-          left: "5%",
-          right: "5%",
+          left: 0,
+          right: 0,
           height: "1px",
           background:
-            "linear-gradient(to right, transparent, rgba(240,235,225,0.08) 30%, rgba(240,235,225,0.08) 70%, transparent)",
+            "linear-gradient(90deg, transparent, rgba(192,82,43,0.3) 30%, rgba(201,168,76,0.2) 60%, transparent)",
         }}
       />
 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
+        viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
         transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] }}
         className="relative z-10 max-w-[1000px] mx-auto px-5 md:px-8 flex flex-col items-center text-center"
       >
-        {/* Eyebrow */}
+        {/* Eyebrow - house device: rust rule, 14px gap, flanked (centered) */}
         <span
           style={{
-            fontFamily: "var(--font-condensed)",
-            fontWeight: 600,
-            fontSize: "10px",
-            letterSpacing: "0.28em",
-            textTransform: "uppercase",
-            color: "rgba(212,204,184,0.35)",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "14px",
             marginBottom: "18px",
-            display: "inline-block",
           }}
         >
-          Partnered With
+          <span
+            aria-hidden="true"
+            style={{ width: "34px", height: "1px", background: "#C0522B", flexShrink: 0 }}
+          />
+          <span
+            style={{
+              fontFamily: "var(--font-condensed)",
+              fontWeight: 600,
+              fontSize: "12px",
+              letterSpacing: "0.25em",
+              textTransform: "uppercase",
+              color: "rgba(212,204,184,0.65)",
+            }}
+          >
+            Partnered With
+          </span>
+          <span
+            aria-hidden="true"
+            style={{ width: "34px", height: "1px", background: "#C0522B", flexShrink: 0 }}
+          />
         </span>
 
         {/*
@@ -65,12 +80,12 @@ export function PartneredStrip() {
             alt="Short Term Rental Secrets"
             width={750}
             height={185}
+            className="opacity-60 hover:opacity-100 transition-opacity duration-[250ms] ease-[cubic-bezier(0.215,0.61,0.355,1)]"
             style={{
               height: "clamp(30px, 3.2vw, 42px)",
               width: "auto",
               // source logo is black; invert to match the strip's off-white text
               filter: "brightness(0) saturate(100%) invert(93%) sepia(6%) saturate(300%) hue-rotate(15deg)",
-              opacity: 0.75,
             }}
           />
 
@@ -85,13 +100,14 @@ export function PartneredStrip() {
           />
 
           <span
+            className="opacity-60 hover:opacity-100 transition-opacity duration-[250ms] ease-[cubic-bezier(0.215,0.61,0.355,1)]"
             style={{
               fontFamily: "var(--font-condensed)",
               fontWeight: 600,
               fontSize: "clamp(14px, 1.3vw, 18px)",
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color: "rgba(240,235,225,0.5)",
+              color: "rgba(240,235,225,0.92)",
             }}
           >
             STR AI Summit
@@ -104,7 +120,7 @@ export function PartneredStrip() {
             fontFamily: "var(--font-body)",
             fontWeight: 300,
             fontSize: "13px",
-            color: "rgba(212,204,184,0.35)",
+            color: "rgba(212,204,184,0.55)",
             marginTop: "16px",
             lineHeight: 1.6,
           }}
@@ -112,20 +128,6 @@ export function PartneredStrip() {
           Ryan is the AI coach inside STR Secrets.
         </p>
       </motion.div>
-
-      {/* Bottom hairline */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: "5%",
-          right: "5%",
-          height: "1px",
-          background:
-            "linear-gradient(to right, transparent, rgba(240,235,225,0.08) 30%, rgba(240,235,225,0.08) 70%, transparent)",
-        }}
-      />
     </section>
   );
 }

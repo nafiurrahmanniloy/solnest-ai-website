@@ -4,6 +4,10 @@ import { motion } from 'framer-motion'
 import { LightningSplit } from '@/components/ui/lightning-split'
 import { ContainerScroll } from '@/components/ui/container-scroll-animation'
 
+// House motion system
+const EASE: [number, number, number, number] = [0.215, 0.61, 0.355, 1]
+const VIEWPORT = { once: true, margin: '-80px 0px -80px 0px' } as const
+
 // ─── Left panel: WITH AI ──────────────────────────────────────────────────────
 
 function WithAIPanel() {
@@ -12,8 +16,8 @@ function WithAIPanel() {
 			className="relative flex h-full w-full flex-col"
 			style={{
 				background: '#0D0D0B',
-				paddingTop: '5%',
-				paddingBottom: '5%',
+				paddingTop: 'clamp(20px, 3%, 40px)',
+				paddingBottom: 'clamp(20px, 3%, 40px)',
 				paddingLeft: 'clamp(20px, 4.5%, 64px)',
 				paddingRight: '52%',
 			}}
@@ -35,10 +39,10 @@ function WithAIPanel() {
 			<div className="relative z-10 flex flex-col h-full">
 				{/* Badge */}
 				<motion.div
-					initial={{ opacity: 0, y: 10 }}
+					initial={{ opacity: 0, y: 24 }}
 					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: '-40px' }}
-					transition={{ duration: 0.5 }}
+					viewport={VIEWPORT}
+					transition={{ duration: 0.7, ease: EASE }}
 					className="mb-5 inline-flex items-center gap-2"
 					style={{
 						background: 'rgba(192,82,43,0.10)',
@@ -60,14 +64,14 @@ function WithAIPanel() {
 
 				{/* Headline */}
 				<motion.h3
-					initial={{ opacity: 0, y: 16 }}
+					initial={{ opacity: 0, y: 24 }}
 					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: '-40px' }}
-					transition={{ duration: 0.6, delay: 0.06 }}
+					viewport={VIEWPORT}
+					transition={{ duration: 0.7, delay: 0.06, ease: EASE }}
 					style={{
 						fontFamily: 'var(--font-display)', fontWeight: 300,
-						fontSize: 'clamp(18px, 1.9vw, 34px)',
-						lineHeight: 1.1, color: '#F0EBE1',
+						fontSize: 'var(--fs-display-sm, clamp(19px, 1.6vw, 26px))',
+						lineHeight: 1.2, color: '#F0EBE1',
 						letterSpacing: '-0.02em', marginBottom: '8px',
 					}}
 				>
@@ -78,11 +82,11 @@ function WithAIPanel() {
 				<motion.p
 					initial={{ opacity: 0 }}
 					whileInView={{ opacity: 1 }}
-					viewport={{ once: true, margin: '-40px' }}
-					transition={{ duration: 0.5, delay: 0.1 }}
+					viewport={VIEWPORT}
+					transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
 					style={{
 						fontFamily: 'var(--font-body)', fontWeight: 300,
-						fontSize: 'clamp(12px, 0.85vw, 13px)', lineHeight: 1.7,
+						fontSize: 'var(--fs-body, clamp(14px, 0.95vw, 16px))', lineHeight: 1.7,
 						color: 'rgba(212,204,184,0.65)', marginBottom: '14px',
 					}}
 				>
@@ -93,8 +97,8 @@ function WithAIPanel() {
 				<motion.div
 					initial={{ scaleX: 0, opacity: 0 }}
 					whileInView={{ scaleX: 1, opacity: 1 }}
-					viewport={{ once: true, margin: '-40px' }}
-					transition={{ duration: 0.75, delay: 0.14 }}
+					viewport={VIEWPORT}
+					transition={{ duration: 0.7, delay: 0.14, ease: EASE }}
 					style={{
 						height: '1px',
 						background: 'linear-gradient(to right, rgba(192,82,43,0.5), rgba(201,168,76,0.25), transparent)',
@@ -108,10 +112,10 @@ function WithAIPanel() {
 
 					{/* TIME block */}
 					<motion.div
-						initial={{ opacity: 0, y: 22 }}
+						initial={{ opacity: 0, y: 24 }}
 						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true, margin: '-40px' }}
-						transition={{ duration: 0.6, delay: 0.16, ease: [0.215, 0.61, 0.355, 1.0] }}
+						viewport={VIEWPORT}
+						transition={{ duration: 0.7, delay: 0.16, ease: EASE }}
 						style={{
 							flex: 1,
 							display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -129,12 +133,12 @@ function WithAIPanel() {
 						<motion.span
 							initial={{ opacity: 0, scale: 0.88 }}
 							whileInView={{ opacity: 1, scale: 1 }}
-							viewport={{ once: true }}
+							viewport={VIEWPORT}
 							transition={{ duration: 0.5, delay: 0.22, ease: [0.34, 1.56, 0.64, 1] }}
 							style={{
 								display: 'block',
 								fontFamily: 'var(--font-display)', fontWeight: 300,
-								fontSize: 'clamp(38px, 4vw, 74px)',
+								fontSize: 'clamp(32px, 3.4vw, 60px)',
 								lineHeight: 1, letterSpacing: '-0.04em',
 								color: '#E86A3A',
 								textShadow: '0 0 40px rgba(232,106,58,0.5), 0 0 80px rgba(232,106,58,0.25)',
@@ -144,7 +148,7 @@ function WithAIPanel() {
 						</motion.span>
 						<span style={{
 							fontFamily: 'var(--font-body)', fontWeight: 300,
-							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
+							fontSize: 'var(--fs-body, clamp(14px, 0.95vw, 16px))', lineHeight: 1.6,
 							color: 'rgba(212,204,184,0.6)', marginTop: '5px', display: 'block',
 						}}>
 							Per week reclaimed, guest messages, pricing updates, and scheduling run themselves.
@@ -153,10 +157,10 @@ function WithAIPanel() {
 
 					{/* MONEY block */}
 					<motion.div
-						initial={{ opacity: 0, y: 22 }}
+						initial={{ opacity: 0, y: 24 }}
 						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true, margin: '-40px' }}
-						transition={{ duration: 0.6, delay: 0.28, ease: [0.215, 0.61, 0.355, 1.0] }}
+						viewport={VIEWPORT}
+						transition={{ duration: 0.7, delay: 0.28, ease: EASE }}
 						style={{
 							flex: 1,
 							display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -173,12 +177,12 @@ function WithAIPanel() {
 						<motion.span
 							initial={{ opacity: 0, scale: 0.88 }}
 							whileInView={{ opacity: 1, scale: 1 }}
-							viewport={{ once: true }}
+							viewport={VIEWPORT}
 							transition={{ duration: 0.5, delay: 0.34, ease: [0.34, 1.56, 0.64, 1] }}
 							style={{
 								display: 'block',
 								fontFamily: 'var(--font-display)', fontWeight: 300,
-								fontSize: 'clamp(38px, 4vw, 74px)',
+								fontSize: 'clamp(32px, 3.4vw, 60px)',
 								lineHeight: 1, letterSpacing: '-0.04em',
 								color: '#D4B84E',
 								textShadow: '0 0 40px rgba(212,184,78,0.5), 0 0 80px rgba(212,184,78,0.22)',
@@ -188,7 +192,7 @@ function WithAIPanel() {
 						</motion.span>
 						<span style={{
 							fontFamily: 'var(--font-body)', fontWeight: 300,
-							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
+							fontSize: 'var(--fs-body, clamp(14px, 0.95vw, 16px))', lineHeight: 1.6,
 							color: 'rgba(212,204,184,0.6)', marginTop: '5px', display: 'block',
 						}}>
 							Extra per month, dynamic pricing, instant lead capture, zero missed bookings.
@@ -200,18 +204,16 @@ function WithAIPanel() {
 				<motion.a
 					initial={{ opacity: 0 }}
 					whileInView={{ opacity: 1 }}
-					viewport={{ once: true }}
-					transition={{ duration: 0.5, delay: 0.45 }}
+					viewport={VIEWPORT}
+					transition={{ duration: 0.7, delay: 0.4, ease: EASE }}
 					href="#how"
-					className="group"
+					className="group vdi-cta-link"
 					style={{
 						display: 'inline-flex', alignItems: 'center', gap: '8px',
 						fontFamily: 'var(--font-condensed)', fontWeight: 600,
 						fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase',
-						color: '#C0522B', textDecoration: 'none',
-						borderBottom: '1px solid rgba(192,82,43,0.35)', paddingBottom: '3px',
+						textDecoration: 'none', paddingBottom: '3px',
 						marginTop: '18px', width: 'fit-content',
-						transition: 'border-color 0.3s',
 					}}
 				>
 					Stop doing it all yourself →
@@ -229,8 +231,8 @@ function WithoutAIPanel() {
 			className="relative flex h-full w-full flex-col"
 			style={{
 				background: '#0A0A08',
-				paddingTop: '5%',
-				paddingBottom: '5%',
+				paddingTop: 'clamp(20px, 3%, 40px)',
+				paddingBottom: 'clamp(20px, 3%, 40px)',
 				paddingLeft: '57%',
 				paddingRight: 'clamp(20px, 4.5%, 64px)',
 			}}
@@ -269,8 +271,8 @@ function WithoutAIPanel() {
 				<h3
 					style={{
 						fontFamily: 'var(--font-display)', fontWeight: 300,
-						fontSize: 'clamp(18px, 1.9vw, 34px)',
-						lineHeight: 1.1, color: 'rgba(210,195,180,0.72)',
+						fontSize: 'var(--fs-display-sm, clamp(19px, 1.6vw, 26px))',
+						lineHeight: 1.2, color: 'rgba(210,195,180,0.72)',
 						letterSpacing: '-0.02em', marginBottom: '8px',
 					}}
 				>
@@ -280,7 +282,7 @@ function WithoutAIPanel() {
 
 				<p style={{
 					fontFamily: 'var(--font-body)', fontWeight: 300,
-					fontSize: 'clamp(12px, 0.85vw, 13px)', lineHeight: 1.7,
+					fontSize: 'var(--fs-body, clamp(14px, 0.95vw, 16px))', lineHeight: 1.7,
 					color: 'rgba(180,170,155,0.55)', marginBottom: '14px',
 				}}>
 					Missed calls at 2am. Leads going cold. Reviews unanswered for days.
@@ -298,10 +300,10 @@ function WithoutAIPanel() {
 
 					{/* TIME block */}
 					<motion.div
-						initial={{ opacity: 0, x: 18 }}
-						whileInView={{ opacity: 1, x: 0 }}
-						viewport={{ once: true, margin: '-40px' }}
-						transition={{ duration: 0.6, delay: 0.16, ease: [0.215, 0.61, 0.355, 1.0] }}
+						initial={{ opacity: 0, y: 24 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={VIEWPORT}
+						transition={{ duration: 0.7, delay: 0.16, ease: EASE }}
 						style={{
 							flex: 1,
 							display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -319,12 +321,12 @@ function WithoutAIPanel() {
 						<motion.span
 							initial={{ opacity: 0 }}
 							whileInView={{ opacity: 1 }}
-							viewport={{ once: true }}
-							transition={{ duration: 0.75, delay: 0.22 }}
+							viewport={VIEWPORT}
+							transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
 							style={{
 								display: 'block',
 								fontFamily: 'var(--font-display)', fontWeight: 300,
-								fontSize: 'clamp(38px, 4vw, 74px)',
+								fontSize: 'clamp(32px, 3.4vw, 60px)',
 								lineHeight: 1, letterSpacing: '-0.04em',
 								color: 'rgba(200,120,100,0.42)',
 							}}
@@ -333,8 +335,8 @@ function WithoutAIPanel() {
 						</motion.span>
 						<span style={{
 							fontFamily: 'var(--font-body)', fontWeight: 300,
-							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
-							color: 'rgba(180,170,155,0.52)', marginTop: '5px', display: 'block',
+							fontSize: 'var(--fs-body, clamp(14px, 0.95vw, 16px))', lineHeight: 1.6,
+							color: 'rgba(180,170,155,0.55)', marginTop: '5px', display: 'block',
 						}}>
 							Per week burned, copy-pasting messages, manually adjusting prices, chasing guests.
 						</span>
@@ -342,10 +344,10 @@ function WithoutAIPanel() {
 
 					{/* MONEY block */}
 					<motion.div
-						initial={{ opacity: 0, x: 18 }}
-						whileInView={{ opacity: 1, x: 0 }}
-						viewport={{ once: true, margin: '-40px' }}
-						transition={{ duration: 0.6, delay: 0.28, ease: [0.215, 0.61, 0.355, 1.0] }}
+						initial={{ opacity: 0, y: 24 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={VIEWPORT}
+						transition={{ duration: 0.7, delay: 0.28, ease: EASE }}
 						style={{
 							flex: 1,
 							display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -362,12 +364,12 @@ function WithoutAIPanel() {
 						<motion.span
 							initial={{ opacity: 0 }}
 							whileInView={{ opacity: 1 }}
-							viewport={{ once: true }}
-							transition={{ duration: 0.75, delay: 0.34 }}
+							viewport={VIEWPORT}
+							transition={{ duration: 0.7, delay: 0.34, ease: EASE }}
 							style={{
 								display: 'block',
 								fontFamily: 'var(--font-display)', fontWeight: 300,
-								fontSize: 'clamp(38px, 4vw, 74px)',
+								fontSize: 'clamp(32px, 3.4vw, 60px)',
 								lineHeight: 1, letterSpacing: '-0.04em',
 								color: 'rgba(200,120,100,0.42)',
 								textDecoration: 'line-through',
@@ -379,8 +381,8 @@ function WithoutAIPanel() {
 						</motion.span>
 						<span style={{
 							fontFamily: 'var(--font-body)', fontWeight: 300,
-							fontSize: 'clamp(12px, 0.78vw, 12.5px)', lineHeight: 1.6,
-							color: 'rgba(180,170,155,0.52)', marginTop: '5px', display: 'block',
+							fontSize: 'var(--fs-body, clamp(14px, 0.95vw, 16px))', lineHeight: 1.6,
+							color: 'rgba(180,170,155,0.55)', marginTop: '5px', display: 'block',
 						}}>
 							Leaked every month, underpriced nights, lost leads, guests who booked your competitor instead.
 						</span>
@@ -391,14 +393,14 @@ function WithoutAIPanel() {
 				<motion.p
 					initial={{ opacity: 0 }}
 					whileInView={{ opacity: 1 }}
-					viewport={{ once: true }}
-					transition={{ duration: 0.6, delay: 0.4 }}
+					viewport={VIEWPORT}
+					transition={{ duration: 0.7, delay: 0.4, ease: EASE }}
 					style={{
 						fontFamily: 'var(--font-body)', fontWeight: 400,
-						fontSize: 'clamp(12px, 0.85vw, 13px)', fontStyle: 'italic',
+						fontSize: 'var(--fs-body, clamp(14px, 0.95vw, 16px))', fontStyle: 'italic',
 						color: '#E8C9B8',
 						lineHeight: 1.7,
-						marginTop: '18px',
+						marginTop: '12px',
 						padding: '8px 12px',
 						background: 'rgba(200,80,60,0.08)',
 						borderLeft: '2px solid rgba(200,100,80,0.45)',
@@ -443,7 +445,7 @@ function MobileComparisonCard({ type }: { type: 'with' | 'without' }) {
 
 			<h3 style={{
 				fontFamily: 'var(--font-display)', fontWeight: 300,
-				fontSize: '22px', lineHeight: 1.15,
+				fontSize: 'var(--fs-display-sm, clamp(19px, 1.6vw, 26px))', lineHeight: 1.2,
 				color: isWith ? '#F0EBE1' : 'rgba(210,195,180,0.72)',
 				marginBottom: '12px',
 			}}>
@@ -519,14 +521,20 @@ const AUTOMATION_ITEMS = [
 
 function WhatWeAutomateStrip() {
 	return (
-		<div className="px-5 md:px-6 py-12 md:py-16" style={{ background: '#0D0D0B' }}>
+		<div
+			className="px-5 md:px-6"
+			style={{
+				paddingTop: 'var(--strip-pad, clamp(40px, 5vw, 80px))',
+				paddingBottom: 'var(--strip-pad, clamp(40px, 5vw, 80px))',
+			}}
+		>
 			<div className="mx-auto" style={{ maxWidth: '1100px' }}>
 				{/* Eyebrow */}
 				<motion.div
-					initial={{ opacity: 0, y: 10 }}
+					initial={{ opacity: 0, y: 24 }}
 					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: '-40px' }}
-					transition={{ duration: 0.5, ease: [0.215, 0.61, 0.355, 1.0] }}
+					viewport={VIEWPORT}
+					transition={{ duration: 0.7, ease: EASE }}
 					className="flex items-center gap-2 mb-6 md:mb-8 justify-center md:justify-start"
 				>
 					<div style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#C9A84C' }} />
@@ -544,10 +552,10 @@ function WhatWeAutomateStrip() {
 					{AUTOMATION_ITEMS.map((item, i) => (
 						<motion.div
 							key={item.title}
-							initial={{ opacity: 0, y: 16 }}
+							initial={{ opacity: 0, y: 24 }}
 							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true, margin: '-40px' }}
-							transition={{ duration: 0.5, delay: 0.06 * i, ease: [0.215, 0.61, 0.355, 1.0] }}
+							viewport={VIEWPORT}
+							transition={{ duration: 0.7, delay: Math.min(i * 0.06, 0.3), ease: EASE }}
 							className="flex-1"
 							style={{
 								minWidth: '220px',
@@ -567,7 +575,7 @@ function WhatWeAutomateStrip() {
 							</h4>
 							<p style={{
 								fontFamily: 'var(--font-body)', fontWeight: 300,
-								fontSize: '12.5px', lineHeight: 1.6,
+								fontSize: 'var(--fs-caption, 13px)', lineHeight: 1.6,
 								color: 'rgba(212,204,184,0.55)',
 							}}>
 								{item.description}
@@ -580,18 +588,18 @@ function WhatWeAutomateStrip() {
 				<motion.div
 					initial={{ opacity: 0 }}
 					whileInView={{ opacity: 1 }}
-					viewport={{ once: true, margin: '-40px' }}
-					transition={{ duration: 0.5, delay: 0.3 }}
+					viewport={VIEWPORT}
+					transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
 					className="mt-6 md:mt-8 text-center md:text-left"
 				>
 					<a
 						href="#services"
-						className="group inline-flex items-center gap-2"
+						className="group inline-flex items-center gap-2 link-underline focus-ring vdi-see-link"
 						style={{
 							fontFamily: 'var(--font-condensed)', fontWeight: 600,
 							fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase',
 							color: '#C0522B', textDecoration: 'none',
-							borderBottom: '1px solid rgba(192,82,43,0.35)', paddingBottom: '3px',
+							paddingBottom: '3px',
 						}}
 					>
 						See what we build →
@@ -606,10 +614,39 @@ function WhatWeAutomateStrip() {
 
 export function VDIvsVWASection() {
 	return (
-		<section className="relative w-full overflow-hidden" style={{ background: '#0D0D0B' }}>
+		<section className="relative w-full overflow-hidden" style={{ background: '#12110E' }}>
+
+			{/* Link hover / focus states (hover-only effects gated behind fine pointers) */}
+			<style>{`
+				.vdi-cta-link {
+					color: #C0522B;
+					border-bottom: 1px solid rgba(192,82,43,0.35);
+					transition: border-color 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), color 0.25s cubic-bezier(0.215, 0.61, 0.355, 1);
+				}
+				@media (hover: hover) and (pointer: fine) {
+					.vdi-cta-link:hover { border-color: rgba(192,82,43,0.9); color: #E86A3A; }
+				}
+				.vdi-cta-link:focus-visible, .vdi-see-link:focus-visible {
+					outline: 2px solid #C9A84C;
+					outline-offset: 3px;
+				}
+			`}</style>
+
+			{/* Static rust accent glow */}
+			<div
+				aria-hidden="true"
+				className="pointer-events-none absolute inset-0"
+				style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(192,82,43,0.07), transparent 60%)' }}
+			/>
 
 			{/* ── Mobile version ── */}
-			<div className="md:hidden px-5 py-16">
+			<div
+				className="md:hidden px-5"
+				style={{
+					paddingTop: 'var(--section-pad, clamp(80px, 10vw, 144px))',
+					paddingBottom: 'var(--section-pad, clamp(80px, 10vw, 144px))',
+				}}
+			>
 				<div className="text-center mb-8">
 					<div className="inline-flex items-center gap-2 mb-4" style={{
 						background: 'rgba(192,82,43,0.07)',
@@ -627,7 +664,8 @@ export function VDIvsVWASection() {
 					</div>
 					<h2 style={{
 						fontFamily: 'var(--font-display)', fontWeight: 300,
-						fontSize: '32px', lineHeight: 1.08, color: '#F0EBE1',
+						fontSize: 'var(--fs-display-xl, clamp(40px, 6vw, 96px))',
+						lineHeight: 1.05, color: '#F0EBE1',
 						letterSpacing: '-0.02em',
 					}}>
 						Still doing it{' '}
@@ -667,8 +705,8 @@ export function VDIvsVWASection() {
 								className="text-center mb-4"
 								style={{
 									fontFamily: 'var(--font-display)', fontWeight: 300,
-									fontSize: 'clamp(41px, 6vw, 106px)',
-									lineHeight: 1.04, color: '#F0EBE1',
+									fontSize: 'var(--fs-display-xl, clamp(40px, 6vw, 96px))',
+									lineHeight: 1.05, color: '#F0EBE1',
 									letterSpacing: '-0.03em',
 								}}
 							>
@@ -680,8 +718,8 @@ export function VDIvsVWASection() {
 								className="text-center mb-6"
 								style={{
 									fontFamily: 'var(--font-body)', fontWeight: 300,
-									fontSize: 'clamp(16px, 1.02vw, 19px)', lineHeight: 1.75,
-									color: 'rgba(212,204,184,0.52)', maxWidth: '580px',
+									fontSize: 'var(--fs-body-lg, clamp(16px, 1.1vw, 19px))', lineHeight: 1.6,
+									color: 'rgba(212,204,184,0.55)', maxWidth: '580px',
 								}}
 							>
 								While you&apos;re sleeping, your competitor&apos;s AI is answering leads, adjusting prices, and booking guests. The gap between &quot;doing it manually&quot; and &quot;running AI&quot; isn&apos;t closing, it&apos;s accelerating.
