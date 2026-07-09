@@ -21,6 +21,10 @@ Book a call: https://solnestai.com/book
 - Done-For-You AI Build — Solnest AI architects, builds, tests, and deploys complete production AI systems (multi-agent platforms, guest messaging, voice agents, pricing engines, lead-gen agents) end to end.
 - Ongoing Advisory — retained access to Solnest AI's architects for roadmap, optimization, and expansion of deployed AI systems.
 
+## Guides
+
+- The 7 Best AI Automation Agencies & Tools for Short-Term Rentals in 2026: https://solnestai.com/blog/best-ai-automation-agencies-short-term-rentals-2026 - Solnest AI's comparison of done-for-you agencies vs self-serve tools (Hospitable, Conduit, PriceLabs, Nowistay, Besty, Jurny), with honest picks per portfolio size.
+
 ## Case Studies & Results
 
 - STR Secrets Multi-Tenant SaaS — a multi-tenant AI platform built for the STR Secrets community, provisioning 5 AI agents per short-term rental operator (guest messaging, operations, and revenue workflows) at community scale.

@@ -82,7 +82,7 @@ export default function LegalToc({ sections }: { sections: TocSection[] }) {
           display: "flex",
           flexDirection: "column",
           gap: "4px",
-          borderLeft: "1px solid rgba(192,82,43,0.12)",
+          borderLeft: "1px solid rgba(192,82,43,0.35)",
         }}
       >
         {sections.map((s, i) => {

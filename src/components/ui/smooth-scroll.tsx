@@ -21,6 +21,8 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       smoothWheel: true,
       wheelMultiplier: 1,
       touchMultiplier: 2,
+      // Without this, Lenis swallows same-page #anchor clicks (TOC, nav links)
+      anchors: { offset: -110 },
     });
 
     lenisRef.current = lenis;
