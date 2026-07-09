@@ -29,8 +29,7 @@ const itemVariants = {
 
 type CaseKey = keyof typeof caseStudies;
 
-const FLAGSHIP_KEYS = ["strsecrets", "legacyrnr", "westproperties", "somos", "automationstack"] as const;
-const LEDGER_KEYS = ["medspa", "medspafinance", "restaurant", "dental", "realestate"] as const;
+const FLAGSHIP_KEYS = ["strsecrets", "legacyrnr", "westproperties", "somos", "automationstack", "medspa", "medspafinance", "restaurant", "dental", "realestate"] as const;
 
 // ─── Data: capabilities (ruled list, cross-referenced to the builds) ──────
 
@@ -605,97 +604,6 @@ function FlagshipChapter({ id, index }: { id: CaseKey; index: number }) {
   );
 }
 
-// ─── Ledger row: compact engagement, opens the shared modal ────────────────
-
-function LedgerRow({
-  id,
-  index,
-  onOpen,
-}: {
-  id: CaseKey;
-  index: number;
-  onOpen: (id: CaseKey) => void;
-}) {
-  const cs = caseStudies[id];
-  const hero = cs.results[0];
-
-  return (
-    <motion.div variants={itemVariants}>
-      <button
-        type="button"
-        onClick={() => onOpen(id)}
-        className="work-ledger-row focus-ring"
-        aria-label={`Open case study: ${cs.title}`}
-        style={{
-          ["--acc" as string]: cs.color,
-          ["--acc-rgb" as string]: cs.colorRgb,
-        }}
-      >
-        <span
-          className="work-ledger-index"
-          aria-hidden="true"
-          style={{
-            fontFamily: "var(--font-condensed)", fontWeight: 600,
-            fontSize: "clamp(18px, 1.6vw, 24px)", letterSpacing: "0.04em",
-            color: "rgba(192,82,43,0.4)", lineHeight: 1,
-          }}
-        >
-          {String(index).padStart(2, "0")}
-        </span>
-
-        <span style={{ minWidth: 0 }}>
-          <span
-            style={{
-              display: "block",
-              fontFamily: "var(--font-display)", fontWeight: 300,
-              fontSize: "var(--fs-display-sm, clamp(19px, 1.6vw, 26px))",
-              lineHeight: 1.15, letterSpacing: "-0.01em", color: "#F0EBE1",
-              marginBottom: "6px", textWrap: "balance",
-            }}
-          >
-            {cs.title}
-          </span>
-          <span
-            style={{
-              display: "block",
-              fontFamily: "var(--font-body)", fontWeight: 300,
-              fontSize: "14px", lineHeight: 1.6,
-              color: "rgba(212,204,184,0.55)", maxWidth: "56ch",
-            }}
-          >
-            {cs.headline}
-          </span>
-        </span>
-
-        <span className="work-ledger-stat" style={{ textAlign: "right" }}>
-          <StatValue value={hero.stat} accent={cs.color} />
-          <span
-            style={{
-              display: "block",
-              fontFamily: "var(--font-condensed)", fontWeight: 500,
-              fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase",
-              color: "rgba(212,204,184,0.45)", marginTop: "5px",
-            }}
-          >
-            {hero.label}
-          </span>
-        </span>
-
-        <span
-          className="work-ledger-arrow"
-          aria-hidden="true"
-          style={{
-            fontFamily: "var(--font-body)", fontWeight: 300,
-            fontSize: "20px", color: "rgba(212,204,184,0.45)", lineHeight: 1,
-          }}
-        >
-          →
-        </span>
-      </button>
-    </motion.div>
-  );
-}
-
 // ─── Capability row: ruled typography, no boxes ────────────────────────────
 
 function CapabilityRow({ cap }: { cap: (typeof capabilities)[0] }) {
@@ -1053,66 +961,15 @@ export default function WorkPage() {
       </section>
 
       {/* ── 01 / Flagship chapters ── */}
-      <SectionRule label="01 / Flagship Builds" />
+      <SectionRule label="01 / The Builds" />
       <section style={{ background: "#0D0D0B" }}>
         {FLAGSHIP_KEYS.map((id, i) => (
           <FlagshipChapter key={id} id={id} index={i} />
         ))}
       </section>
 
-      {/* ── 02 / More engagements: the ledger ── */}
-      <SectionRule label="02 / More Engagements" />
-      <section style={{ background: "#0D0D0B", paddingTop: "clamp(56px, 7vw, 88px)", paddingBottom: "clamp(64px, 8vw, 104px)" }}>
-        <div className="max-w-[1400px] mx-auto px-4 md:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
-            variants={containerVariants}
-            className="mb-10 md:mb-12"
-          >
-            <motion.div variants={itemVariants}>
-              <Eyebrow label="More Engagements" />
-            </motion.div>
-            <motion.h2
-              variants={itemVariants}
-              style={{
-                fontFamily: "var(--font-display)", fontWeight: 300,
-                fontSize: "var(--fs-display-md, clamp(26px, 2.6vw, 44px))", lineHeight: 1.12,
-                color: "#F0EBE1", maxWidth: "760px", textWrap: "balance",
-              }}
-            >
-              Smaller systems, <span style={{ fontStyle: "italic", color: "#C0522B" }}>same discipline.</span>
-            </motion.h2>
-            <motion.p
-              variants={itemVariants}
-              style={{
-                fontFamily: "var(--font-body)", fontWeight: 300, fontSize: "15px",
-                lineHeight: 1.7, color: "rgba(212,204,184,0.55)", maxWidth: "560px",
-                marginTop: "12px",
-              }}
-            >
-              Open any row for the full case study: what it replaced, what it does now, and how it was built.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
-            variants={containerVariants}
-          >
-            {LEDGER_KEYS.map((id, i) => (
-              <div key={id} className={i === LEDGER_KEYS.length - 1 ? "work-ledger-last" : undefined}>
-                <LedgerRow id={id} index={i + FLAGSHIP_KEYS.length + 1} onOpen={openCase} />
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
       {/* ── 03 / Capabilities: ruled list, no boxes ── */}
-      <SectionRule label="03 / Capabilities" />
+      <SectionRule label="02 / Capabilities" />
       <section className="relative overflow-hidden" style={{ background: "#0D0D0B", paddingTop: "clamp(56px, 7vw, 88px)", paddingBottom: "clamp(64px, 8vw, 96px)" }}>
         <div
           aria-hidden="true"
@@ -1157,7 +1014,7 @@ export default function WorkPage() {
       </section>
 
       {/* ── 04 / Tools band ── */}
-      <SectionRule label="04 / Tooling" />
+      <SectionRule label="03 / Tooling" />
       <section className="relative" style={{ background: "#0D0D0B", paddingTop: "clamp(56px, 7vw, 80px)", paddingBottom: "clamp(56px, 7vw, 80px)" }}>
         <div className="max-w-[1400px] mx-auto px-4 md:px-8 mb-10">
           <motion.div
@@ -1181,7 +1038,7 @@ export default function WorkPage() {
       </section>
 
       {/* ── 05 / Final CTA ── */}
-      <SectionRule label="05 / Start" />
+      <SectionRule label="04 / Start" />
       <section className="relative overflow-hidden" style={{ background: "#0D0D0B", paddingTop: "clamp(64px, 9vw, 110px)", paddingBottom: "clamp(72px, 10vw, 120px)" }}>
         <div
           aria-hidden="true"
