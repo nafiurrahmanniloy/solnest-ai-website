@@ -640,7 +640,7 @@ function LedgerRow({
             color: "rgba(192,82,43,0.4)", lineHeight: 1,
           }}
         >
-          {`0${index}`}
+          {String(index).padStart(2, "0")}
         </span>
 
         <span style={{ minWidth: 0 }}>
@@ -1104,7 +1104,7 @@ export default function WorkPage() {
           >
             {LEDGER_KEYS.map((id, i) => (
               <div key={id} className={i === LEDGER_KEYS.length - 1 ? "work-ledger-last" : undefined}>
-                <LedgerRow id={id} index={i + 4} onOpen={openCase} />
+                <LedgerRow id={id} index={i + FLAGSHIP_KEYS.length + 1} onOpen={openCase} />
               </div>
             ))}
           </motion.div>
