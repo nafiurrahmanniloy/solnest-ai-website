@@ -189,7 +189,16 @@ export function WebinarPage() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const nextWebinar = new Date("2026-04-16T18:00:00Z");
+  // Rolling schedule: next Wednesday, 2:00 PM Eastern. Computed on the client
+  // because this page is statically prerendered - a build-time date goes stale.
+  const [webinarDay, setWebinarDay] = useState("Next Wednesday");
+  useEffect(() => {
+    const et = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+    let add = (3 - et.getDay() + 7) % 7;
+    if (add === 0 && et.getHours() >= 14) add = 7;
+    et.setDate(et.getDate() + add);
+    setWebinarDay(et.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }));
+  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -363,7 +372,7 @@ export function WebinarPage() {
                       <line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
                   ),
-                  text: "Wednesday, April 16, 2026",
+                  text: webinarDay,
                 },
                 {
                   icon: (
@@ -372,7 +381,7 @@ export function WebinarPage() {
                       <polyline points="12 6 12 12 16 14" />
                     </svg>
                   ),
-                  text: "2:00 PM EST / 11:00 AM PST",
+                  text: "2:00 PM ET / 11:00 AM PT",
                 },
                 {
                   icon: (
