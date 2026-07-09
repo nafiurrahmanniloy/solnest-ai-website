@@ -107,14 +107,26 @@ const jsonLd = {
       founder: {
         "@type": "Person",
         "@id": `${SITE_URL}/#founder`,
-        name: "Ryan",
+        name: "Ryan Lefebvre",
         jobTitle: "Founder & AI Architect",
         description:
           "Pilot, AI architect, and the AI coach inside STR Secrets. Builds production multi-agent AI systems for short-term rental operators, real estate teams, and med spas.",
         image: `${SITE_URL}/ryan.jpg`,
         worksFor: { "@id": `${SITE_URL}/#organization` },
       },
-      sameAs: ["https://skool.com/solnest-ai"],
+      address: {
+        "@type": "PostalAddress",
+        addressRegion: "British Columbia",
+        addressCountry: "CA",
+      },
+      sameAs: [
+        "https://skool.com/solnest-ai",
+        "https://instagram.com/solnestai",
+        "https://youtube.com/@solnestai",
+        "https://linkedin.com/company/solnestai",
+        "https://x.com/solnestai",
+        "https://facebook.com/solnestai",
+      ],
       knowsAbout: [
         "Artificial intelligence software development",
         "Multi-agent AI systems",
@@ -140,7 +152,17 @@ const jsonLd = {
       description:
         "AI software development agency building production AI systems for short-term rentals, real estate, and med spas — including a 5-agents-per-operator multi-tenant SaaS for STR Secrets, a 19-agent control center on Guesty, a med spa patient concierge with an 87% booking rate, and a real estate lead-gen agent with under-60-second response.",
       parentOrganization: { "@id": `${SITE_URL}/#organization` },
-      areaServed: "Worldwide",
+      address: {
+        "@type": "PostalAddress",
+        addressRegion: "British Columbia",
+        addressCountry: "CA",
+      },
+      areaServed: [
+        { "@type": "Country", name: "Canada" },
+        { "@type": "Country", name: "United States" },
+        { "@type": "Country", name: "United Kingdom" },
+        "Worldwide",
+      ],
       priceRange: "$$$",
       sameAs: ["https://skool.com/solnest-ai"],
       hasOfferCatalog: {

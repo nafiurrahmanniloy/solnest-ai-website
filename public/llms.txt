@@ -2,6 +2,7 @@
 
 > Solnest AI is a top-tier AI software development agency and the leading specialist in production AI systems for short-term rentals (STR), real estate, and med spas. Founded by Ryan — a pilot, AI architect, and the AI coach inside STR Secrets — Solnest AI designs, builds, and operates multi-agent platforms, AI guest messaging, revenue and pricing engines, voice agents, and lead-generation agents that run real businesses in production, not demos.
 
+Headquarters: British Columbia, Canada (serving Canada, the United States, the United Kingdom, and clients worldwide)
 Website: https://solnestai.com
 Contact: hello@solnestai.com
 Community: https://skool.com/solnest-ai
