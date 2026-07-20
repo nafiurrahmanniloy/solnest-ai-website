@@ -1434,9 +1434,9 @@ export default function ServicesPage() {
             variants={containerVariants}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
           >
-            {buildIds.map((id) => (
+            {buildIds.map((id, i) => (
               <motion.div key={String(id)} variants={itemVariants}>
-                <AgentCard id={id} onOpen={openCase} />
+                <AgentCard id={id} onOpen={openCase} index={i} />
               </motion.div>
             ))}
           </motion.div>

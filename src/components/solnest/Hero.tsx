@@ -228,31 +228,27 @@ export default function Hero() {
             />
           </motion.p>
 
-          {/* Social proof */}
+          {/* Social proof — a true statement, not a made-up metric */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.9, duration: 0.7, ease: EASE }}
-            className="flex items-center gap-3 mb-7"
+            className="flex items-center gap-2.5 mb-7"
           >
-            <div className="flex -space-x-2">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} style={{
-                  width: "32px", height: "32px", borderRadius: "50%",
-                  background: `rgba(192,82,43,${0.2 + i * 0.12})`,
-                  border: "2px solid #0D0D0B",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <div style={{ width: "11px", height: "11px", borderRadius: "50%", background: "rgba(240,235,225,0.3)" }} />
-                </div>
-              ))}
-            </div>
+            <span
+              aria-hidden="true"
+              style={{
+                width: "8px", height: "8px", borderRadius: "50%",
+                background: "#C0522B", boxShadow: "0 0 10px rgba(192,82,43,0.6)",
+                flexShrink: 0,
+              }}
+            />
             <span style={{
               fontFamily: "var(--font-body)",
               fontWeight: 400, fontSize: "17px",
               color: "rgba(212,204,184,0.7)",
             }}>
-              <span style={{ color: "#C0522B", fontWeight: 500 }}>47+ operators</span> saving 10+ hrs/week
+              Real AI systems, <span style={{ color: "#C0522B", fontWeight: 500 }}>running in real businesses.</span>
             </span>
           </motion.div>
 

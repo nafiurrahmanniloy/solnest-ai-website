@@ -20,7 +20,7 @@
   --fs-display-md: clamp(26px, 2.6vw, 44px); /* Card h3 (Fork, ServiceCard, Builds, modal) — lh 1.15 */
   --fs-display-sm: clamp(19px, 1.6vw, 26px); /* Small card titles (AgentCard, IndustryCard…) — lh 1.2 */
   --fs-body-lg: clamp(16px, 1.1vw, 19px);    /* Lead paragraphs — lh 1.6 */
-  --fs-body: clamp(14px, 0.95vw, 16px);      /* Default body/card copy — lh 1.6; 14px floor */
+  --fs-body: clamp(16px, 1vw, 17px);         /* Default body/card copy — lh 1.6; 16px floor for readability */
   --fs-caption: 13px;                        /* Meta, footnotes, chips (12px floor for chips only) */
 
   /* Vertical rhythm — the only two section paddings on the site. */

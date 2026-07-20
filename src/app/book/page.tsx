@@ -1,179 +1,33 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
 import Nav from "@/components/solnest/Nav";
 import Footer from "@/components/solnest/Footer";
 
-type Step = "date" | "time" | "details" | "confirmed";
-
 const EASE: [number, number, number, number] = [0.215, 0.61, 0.355, 1];
 
-interface Slots {
-  [date: string]: string[];
-}
+/**
+ * Book / Build Session scheduler.
+ *
+ * Embeds the GoHighLevel "Build session with Ryan" calendar widget. GHL serves
+ * the real availability (mirrored from Ryan's Google Calendar by the n8n
+ * availability-sync automation), generates a unique Zoom link per booking, and
+ * collects the $229 via the GHL Stripe payment on the calendar - book + pay + Zoom
+ * all happen in one widget. No API key lives in this site.
+ *
+ * The widget URL is iframe-embeddable (no X-Frame-Options / frame-ancestors).
+ * Calendar id: IDw0I3vaMUJH0rpF6cAA. Override via NEXT_PUBLIC_BOOKING_EMBED_URL.
+ *
+ * NOTE: the calendar must have live payments enabled (isLivePaymentMode) before
+ * this takes real money; until that flip it books in Stripe test mode.
+ */
+const BOOKING_URL =
+  process.env.NEXT_PUBLIC_BOOKING_EMBED_URL ||
+  "https://api.leadconnectorhq.com/widget/booking/IDw0I3vaMUJH0rpF6cAA";
 
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr + "T12:00:00");
-  return d.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function formatTime(isoStr: string) {
-  const d = new Date(isoStr);
-  return d.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-    timeZone: "America/Los_Angeles",
-  });
-}
-
-function getNextWeeks(): string[] {
-  const dates: string[] = [];
-  const now = new Date();
-  const start = new Date(now);
-  start.setDate(start.getDate() + 1);
-
-  for (let i = 0; i < 21; i++) {
-    const d = new Date(start);
-    d.setDate(d.getDate() + i);
-    const day = d.getDay();
-    if (day >= 1 && day <= 5) {
-      dates.push(d.toISOString().split("T")[0]);
-    }
-  }
-  return dates;
-}
-
-function BookPageContent() {
-  const searchParams = useSearchParams();
-  // Build Session is the only active flow (Discovery archived 2026-05-08).
-  // Default to true; legacy callers using `?type=discovery` are also routed here.
-  const isBuildSession = searchParams.get("type") !== "discovery";
-  const stripeSessionId = searchParams.get("session_id") || "";
-
-  const [step, setStep] = useState<Step>("date");
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [slots, setSlots] = useState<Slots>({});
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [form, setForm] = useState({
-    firstName: searchParams.get("firstName") || "",
-    lastName: searchParams.get("lastName") || "",
-    email: searchParams.get("email") || "",
-    phone: searchParams.get("phone") || "",
-    notes: searchParams.get("project") || "",
-  });
-
-  const dates = getNextWeeks();
-  const startDate = dates[0];
-  const endDate = dates[dates.length - 1];
-
-  const fetchSlots = useCallback(async () => {
-    setLoading(true);
-    try {
-      const calendarParam = isBuildSession ? "&calendar=build" : "";
-      const res = await fetch(
-        `/api/booking/slots?startDate=${startDate}&endDate=${endDate}${calendarParam}`
-      );
-      const data = await res.json();
-      setSlots(data.slots || {});
-    } catch {
-      console.error("Failed to fetch slots");
-    } finally {
-      setLoading(false);
-    }
-  }, [startDate, endDate, isBuildSession]);
-
-  useEffect(() => {
-    fetchSlots();
-  }, [fetchSlots]);
-
-  const handleSubmit = async () => {
-    if (!selectedSlot) return;
-    setSubmitting(true);
-    setErrorMsg(null);
-
-    try {
-      const res = await fetch("/api/booking/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          selectedSlot,
-          calendar: isBuildSession ? "build" : undefined,
-          durationMinutes: isBuildSession ? 60 : 30,
-          stripeSessionId: stripeSessionId || undefined,
-        }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setStep("confirmed");
-      } else {
-        const ghlMessage =
-          data?.details?.message ||
-          (Array.isArray(data?.details?.message) && data.details.message.join(", ")) ||
-          data?.details?.error ||
-          data?.error ||
-          "Something went wrong. Please try again.";
-        console.error("Booking failed:", data);
-        setErrorMsg(String(ghlMessage));
-      }
-    } catch (err) {
-      console.error("Booking error:", err);
-      setErrorMsg("Network error. Please check your connection and try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const selectedDateSlots = selectedDate ? slots[selectedDate] || [] : [];
-
-  const inputStyle: React.CSSProperties = {
-    width: "100%",
-    padding: "14px 16px",
-    fontFamily: "var(--font-body)",
-    fontSize: "15px",
-    color: "#F0EBE1",
-    background: "rgba(240,235,225,0.04)",
-    border: "1px solid rgba(192,82,43,0.2)",
-    borderRadius: "2px",
-    caretColor: "#C0522B",
-    transition: "border-color 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
-  };
-
+export default function BookPage() {
   return (
     <main style={{ background: "#0D0D0B", minHeight: "100vh", color: "#F0EBE1" }}>
-      <style>{`
-        @media (hover: hover) and (pointer: fine) {
-          .book-slot:hover:not(:disabled):not([data-selected]) {
-            border-color: rgba(192,82,43,0.4) !important;
-            background: rgba(192,82,43,0.06) !important;
-          }
-          .book-submit:hover:not(:disabled) {
-            filter: brightness(1.08);
-            transform: translateY(-1px);
-          }
-        }
-        .book-slot:focus-visible,
-        .book-submit:focus-visible,
-        .book-focus:focus-visible {
-          outline: 2px solid #C9A84C;
-          outline-offset: 3px;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .book-slot, .book-submit, .book-focus { transition: none !important; }
-          .book-submit:hover:not(:disabled) { transform: none; }
-        }
-      `}</style>
       <Nav />
 
       {/* Hero */}
@@ -194,11 +48,11 @@ function BookPageContent() {
             transform: "translate(-50%, -50%)",
             width: "800px",
             height: "600px",
+            maxWidth: "100%",
             background: "radial-gradient(ellipse, rgba(192,82,43,0.08) 0%, transparent 70%)",
             pointerEvents: "none",
           }}
         />
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -256,782 +110,105 @@ function BookPageContent() {
               padding: "0 24px",
             }}
           >
-            60 minutes, one on one with Ryan. Choose a time that works and we
-            will send your Google Meet details.
+            60 minutes, one on one with Ryan. Choose a time that works, pay securely,
+            and we will send your meeting details.
           </p>
         </motion.div>
       </section>
 
-      {/* Booking flow */}
+      {/* Booking widget — centered, framed */}
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
-        style={{ maxWidth: "720px", margin: "0 auto", padding: "0 24px 80px" }}
+        transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
+        style={{ padding: "8px 20px 72px" }}
       >
-        {/* Step indicators */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "32px",
-            marginBottom: "40px",
-          }}
-        >
-          {(["date", "time", "details"] as Step[]).map((s, i) => {
-            const labels = ["Pick a Day", "Choose a Time", "Your Details"];
-            const isActive = step === s;
-            const isPast =
-              (s === "date" && (step === "time" || step === "details" || step === "confirmed")) ||
-              (s === "time" && (step === "details" || step === "confirmed")) ||
-              (s === "details" && step === "confirmed");
+        <div style={{ maxWidth: "920px", margin: "0 auto" }}>
+          <div
+            style={{
+              position: "relative",
+              borderRadius: "16px",
+              overflow: "hidden",
+              border: "1px solid rgba(192,82,43,0.18)",
+              background: "#0F0F0D",
+              boxShadow: "0 24px 64px rgba(0,0,0,0.45), 0 0 0 1px rgba(192,82,43,0.05)",
+            }}
+          >
+            {/* top accent line */}
+            <div
+              aria-hidden="true"
+              style={{
+                height: "2px",
+                background: "linear-gradient(to right, transparent, rgba(192,82,43,0.6), rgba(201,168,76,0.4), transparent)",
+              }}
+            />
 
-            return (
-              <button
-                key={s}
-                onClick={() => {
-                  if (isPast) setStep(s);
-                }}
-                className="book-focus"
+            {BOOKING_URL ? (
+              <iframe
+                src={BOOKING_URL}
+                title="Book your Build Session with Ryan"
+                loading="lazy"
                 style={{
-                  background: "none",
+                  width: "100%",
+                  height: "760px",
                   border: "none",
-                  cursor: isPast ? "pointer" : "default",
+                  display: "block",
+                  background: "#fff",
+                }}
+              />
+            ) : (
+              // Graceful state until the GHL calendar URL is provided.
+              <div
+                style={{
+                  minHeight: "420px",
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
-                  gap: "8px",
-                  padding: "10px 2px",
-                  opacity: isActive ? 1 : isPast ? 0.7 : 0.3,
-                  transition: "opacity 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  padding: "56px 28px",
+                  gap: "18px",
                 }}
               >
-                <span
-                  style={{
-                    width: "24px",
-                    height: "24px",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "11px",
-                    fontFamily: "var(--font-condensed)",
-                    fontWeight: 600,
-                    background: isActive
-                      ? "#C0522B"
-                      : isPast
-                      ? "rgba(192,82,43,0.3)"
-                      : "rgba(240,235,225,0.08)",
-                    color: isActive || isPast ? "#F0EBE1" : "rgba(212,204,184,0.4)",
-                  }}
-                >
-                  {isPast ? (
-                    <svg width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                      <path d="M2.5 7.5L5.8 10.5L11.5 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  ) : (
-                    i + 1
-                  )}
-                </span>
-                <span
-                  style={{
-                    fontFamily: "var(--font-condensed)",
-                    fontWeight: 500,
-                    fontSize: "12px",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    color: isActive ? "#F0EBE1" : "rgba(212,204,184,0.4)",
-                  }}
-                  className="hidden sm:inline"
-                >
-                  {labels[i]}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Card container */}
-        <div
-          style={{
-            borderRadius: "2px",
-            border: "1px solid rgba(192,82,43,0.15)",
-            background: "rgba(18,18,16,0.6)",
-            backdropFilter: "blur(20px)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(192,82,43,0.08) inset",
-            padding: "40px",
-            minHeight: "360px",
-          }}
-        >
-          <AnimatePresence mode="wait">
-            {/* STEP 1: Date selection */}
-            {step === "date" && (
-              <motion.div
-                key="date"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3, ease: EASE }}
-              >
-                <h2
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 400,
-                    fontSize: "24px",
-                    marginBottom: "8px",
-                  }}
-                >
-                  Pick a day
-                </h2>
-                <p
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "14px",
-                    color: "rgba(212,204,184,0.5)",
-                    marginBottom: "28px",
-                  }}
-                >
-                  Available weekdays for the next 3 weeks (Pacific Time)
-                </p>
-
-                {loading ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      padding: "60px 0",
-                    }}
-                  >
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      style={{
-                        width: "24px",
-                        height: "24px",
-                        border: "2px solid rgba(192,82,43,0.2)",
-                        borderTopColor: "#C0522B",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  </div>
-                ) : Object.keys(slots).length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "48px 16px" }}>
-                    <p style={{ fontFamily: "var(--font-body)", fontSize: "15px", color: "rgba(212,204,184,0.7)", lineHeight: 1.7, maxWidth: "440px", margin: "0 auto 18px" }}>
-                      Live availability isn&apos;t loading right now. Email{" "}
-                      <a href="mailto:hello@solnestai.com" style={{ color: "#C0522B", textDecoration: "underline", textUnderlineOffset: "2px" }}>hello@solnestai.com</a>{" "}
-                      and we&apos;ll get you booked, or try again in a moment.
-                    </p>
-                    <button
-                      onClick={fetchSlots}
-                      className="book-focus"
-                      style={{ fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#C0522B", background: "transparent", border: "1px solid rgba(192,82,43,0.4)", borderRadius: "9999px", padding: "12px 24px", minHeight: "44px", cursor: "pointer" }}
-                    >
-                      Retry
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
-                      gap: "10px",
-                    }}
-                  >
-                    {dates.map((date) => {
-                      const hasSlots = slots[date] && slots[date].length > 0;
-                      const isSelected = selectedDate === date;
-
-                      return (
-                        <button
-                          key={date}
-                          disabled={!hasSlots}
-                          data-selected={isSelected || undefined}
-                          className="book-slot"
-                          onClick={() => {
-                            setSelectedDate(date);
-                            setSelectedSlot(null);
-                            setStep("time");
-                          }}
-                          style={{
-                            padding: "14px 12px",
-                            borderRadius: "2px",
-                            border: isSelected
-                              ? "1px solid #C0522B"
-                              : "1px solid rgba(192,82,43,0.12)",
-                            background: isSelected
-                              ? "rgba(192,82,43,0.12)"
-                              : hasSlots
-                              ? "rgba(240,235,225,0.03)"
-                              : "rgba(240,235,225,0.01)",
-                            cursor: hasSlots ? "pointer" : "not-allowed",
-                            opacity: hasSlots ? 1 : 0.3,
-                            transition: "border-color 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), background 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
-                            textAlign: "center",
-                          }}
-                        >
-                          <div
-                            style={{
-                              fontFamily: "var(--font-condensed)",
-                              fontWeight: 600,
-                              fontSize: "13px",
-                              letterSpacing: "0.06em",
-                              color: isSelected ? "#C0522B" : "#F0EBE1",
-                            }}
-                          >
-                            {formatDate(date)}
-                          </div>
-                          {hasSlots && (
-                            <div
-                              style={{
-                                fontFamily: "var(--font-body)",
-                                fontSize: "11px",
-                                color: "rgba(192,82,43,0.6)",
-                                marginTop: "4px",
-                              }}
-                            >
-                              {slots[date].length} slots
-                            </div>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </motion.div>
-            )}
-
-            {/* STEP 2: Time selection */}
-            {step === "time" && selectedDate && (
-              <motion.div
-                key="time"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3, ease: EASE }}
-              >
-                <button
-                  onClick={() => setStep("date")}
-                  className="book-focus"
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "rgba(212,204,184,0.5)",
-                    fontFamily: "var(--font-condensed)",
-                    fontSize: "12px",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    cursor: "pointer",
-                    marginBottom: "16px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                  }}
-                >
-                  ← Back to dates
-                </button>
-
-                <h2
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 400,
-                    fontSize: "24px",
-                    marginBottom: "4px",
-                  }}
-                >
-                  {formatDate(selectedDate)}
-                </h2>
-                <p
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "14px",
-                    color: "rgba(212,204,184,0.5)",
-                    marginBottom: "28px",
-                  }}
-                >
-                  Choose a 60-minute slot (Pacific Time)
-                </p>
-
                 <div
+                  aria-hidden="true"
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-                    gap: "8px",
-                  }}
-                >
-                  {selectedDateSlots.map((slot) => {
-                    const isSelected = selectedSlot === slot;
-                    return (
-                      <button
-                        key={slot}
-                        data-selected={isSelected || undefined}
-                        className="book-slot"
-                        onClick={() => {
-                          setSelectedSlot(slot);
-                          setStep("details");
-                        }}
-                        style={{
-                          padding: "12px 8px",
-                          minHeight: "44px",
-                          borderRadius: "2px",
-                          border: isSelected
-                            ? "1px solid #C0522B"
-                            : "1px solid rgba(192,82,43,0.15)",
-                          background: isSelected
-                            ? "rgba(192,82,43,0.12)"
-                            : "rgba(240,235,225,0.03)",
-                          cursor: "pointer",
-                          transition: "border-color 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), background 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
-                          fontFamily: "var(--font-condensed)",
-                          fontWeight: 500,
-                          fontSize: "14px",
-                          letterSpacing: "0.04em",
-                          color: isSelected ? "#C0522B" : "#F0EBE1",
-                          textAlign: "center",
-                        }}
-                      >
-                        {formatTime(slot)}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {selectedDateSlots.length === 0 && (
-                  <p
-                    style={{
-                      fontFamily: "var(--font-body)",
-                      fontSize: "14px",
-                      color: "rgba(212,204,184,0.4)",
-                      textAlign: "center",
-                      padding: "40px 0",
-                    }}
-                  >
-                    No available slots for this day. Try another date.
-                  </p>
-                )}
-              </motion.div>
-            )}
-
-            {/* STEP 3: Contact details */}
-            {step === "details" && (
-              <motion.div
-                key="details"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3, ease: EASE }}
-              >
-                <button
-                  onClick={() => setStep("time")}
-                  className="book-focus"
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "rgba(212,204,184,0.5)",
-                    fontFamily: "var(--font-condensed)",
-                    fontSize: "12px",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    cursor: "pointer",
-                    marginBottom: "16px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                  }}
-                >
-                  ← Back to times
-                </button>
-
-                <h2
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 400,
-                    fontSize: "24px",
-                    marginBottom: "4px",
-                  }}
-                >
-                  Almost there
-                </h2>
-                <p
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "14px",
-                    color: "rgba(212,204,184,0.5)",
-                    marginBottom: "28px",
-                  }}
-                >
-                  {selectedDate && formatDate(selectedDate)} at{" "}
-                  {selectedSlot && formatTime(selectedSlot)} PT - 60 min on Google Meet
-                </p>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label
-                        style={{
-                          fontFamily: "var(--font-condensed)",
-                          fontSize: "11px",
-                          fontWeight: 600,
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "rgba(212,204,184,0.5)",
-                          marginBottom: "6px",
-                          display: "block",
-                        }}
-                      >
-                        First Name *
-                      </label>
-                      <input
-                        type="text"
-                        value={form.firstName}
-                        onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-                        style={inputStyle}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "rgba(192,82,43,0.5)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "rgba(192,82,43,0.2)";
-                        }}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label
-                        style={{
-                          fontFamily: "var(--font-condensed)",
-                          fontSize: "11px",
-                          fontWeight: 600,
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "rgba(212,204,184,0.5)",
-                          marginBottom: "6px",
-                          display: "block",
-                        }}
-                      >
-                        Last Name *
-                      </label>
-                      <input
-                        type="text"
-                        value={form.lastName}
-                        onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                        style={inputStyle}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "rgba(192,82,43,0.5)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "rgba(192,82,43,0.2)";
-                        }}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label
-                        style={{
-                          fontFamily: "var(--font-condensed)",
-                          fontSize: "11px",
-                          fontWeight: 600,
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "rgba(212,204,184,0.5)",
-                          marginBottom: "6px",
-                          display: "block",
-                        }}
-                      >
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        value={form.email}
-                        onChange={(e) => setForm({ ...form, email: e.target.value })}
-                        style={inputStyle}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "rgba(192,82,43,0.5)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "rgba(192,82,43,0.2)";
-                        }}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label
-                        style={{
-                          fontFamily: "var(--font-condensed)",
-                          fontSize: "11px",
-                          fontWeight: 600,
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "rgba(212,204,184,0.5)",
-                          marginBottom: "6px",
-                          display: "block",
-                        }}
-                      >
-                        Phone
-                      </label>
-                      <input
-                        type="tel"
-                        value={form.phone}
-                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                        style={inputStyle}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "rgba(192,82,43,0.5)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "rgba(192,82,43,0.2)";
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      style={{
-                        fontFamily: "var(--font-condensed)",
-                        fontSize: "11px",
-                        fontWeight: 600,
-                        letterSpacing: "0.14em",
-                        textTransform: "uppercase",
-                        color: "rgba(212,204,184,0.5)",
-                        marginBottom: "6px",
-                        display: "block",
-                      }}
-                    >
-                      What&apos;s your biggest operational bottleneck?
-                    </label>
-                    <textarea
-                      value={form.notes}
-                      onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                      rows={3}
-                      style={{
-                        ...inputStyle,
-                        resize: "vertical",
-                        minHeight: "80px",
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.borderColor = "rgba(192,82,43,0.5)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.borderColor = "rgba(192,82,43,0.2)";
-                      }}
-                      placeholder="Tell Ryan what you're working on so he can prepare..."
-                    />
-                  </div>
-
-                  {errorMsg && (
-                    <div
-                      role="alert"
-                      style={{
-                        padding: "12px 16px",
-                        borderRadius: "2px",
-                        background: "rgba(192,82,43,0.1)",
-                        border: "1px solid rgba(192,82,43,0.5)",
-                        fontFamily: "var(--font-body)",
-                        fontSize: "13px",
-                        color: "#C0522B",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {errorMsg}
-                    </div>
-                  )}
-
-                  <button
-                    onClick={handleSubmit}
-                    disabled={!form.firstName || !form.lastName || !form.email || submitting}
-                    aria-disabled={!form.firstName || !form.lastName || !form.email || submitting}
-                    className="book-submit book-focus"
-                    style={{
-                      marginTop: "8px",
-                      padding: "16px 32px",
-                      borderRadius: "9999px",
-                      border: "none",
-                      background: form.firstName && form.lastName && form.email
-                        ? "#C0522B"
-                        : "rgba(192,82,43,0.3)",
-                      color: "#F0EBE1",
-                      fontFamily: "var(--font-condensed)",
-                      fontWeight: 600,
-                      fontSize: "14px",
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      cursor: form.firstName && form.lastName && form.email ? "pointer" : "not-allowed",
-                      transition: "background 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.25s cubic-bezier(0.215, 0.61, 0.355, 1), filter 0.25s cubic-bezier(0.215, 0.61, 0.355, 1)",
-                      boxShadow: "0 0 30px rgba(192,82,43,0.25)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "10px",
-                      width: "100%",
-                    }}
-                  >
-                    {submitting ? (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        style={{
-                          width: "18px",
-                          height: "18px",
-                          border: "2px solid rgba(240,235,225,0.3)",
-                          borderTopColor: "#F0EBE1",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    ) : (
-                      <>
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                          <line x1="16" y1="2" x2="16" y2="6" />
-                          <line x1="8" y1="2" x2="8" y2="6" />
-                          <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                        Confirm Booking
-                      </>
-                    )}
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {/* STEP 4: Confirmation */}
-            {step === "confirmed" && (
-              <motion.div
-                key="confirmed"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, ease: EASE }}
-                style={{ textAlign: "center", padding: "40px 0" }}
-              >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5, ease: EASE }}
-                  style={{
-                    width: "64px",
-                    height: "64px",
+                    width: "48px",
+                    height: "48px",
                     borderRadius: "50%",
-                    background: "rgba(192,82,43,0.15)",
+                    border: "1px solid rgba(192,82,43,0.4)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    margin: "0 auto 24px",
+                    color: "#C0522B",
                   }}
                 >
-                  <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#C0522B"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </motion.div>
-
-                <h2
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 400,
-                    fontSize: "28px",
-                    marginBottom: "12px",
-                  }}
-                >
-                  You&apos;re booked
-                </h2>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+                </div>
                 <p
                   style={{
                     fontFamily: "var(--font-body)",
-                    fontSize: "15px",
-                    color: "rgba(212,204,184,0.6)",
-                    maxWidth: "400px",
-                    margin: "0 auto 32px",
+                    fontWeight: 300,
+                    fontSize: "16px",
                     lineHeight: 1.7,
+                    color: "rgba(212,204,184,0.7)",
+                    maxWidth: "440px",
                   }}
                 >
-                  {selectedDate && formatDate(selectedDate)} at{" "}
-                  {selectedSlot && formatTime(selectedSlot)} PT - check your email for the
-                  Google Meet link and calendar invite.
-                </p>
-
-                <div
-                  style={{
-                    padding: "20px 28px",
-                    borderRadius: "2px",
-                    background: "rgba(192,82,43,0.06)",
-                    border: "1px solid rgba(192,82,43,0.15)",
-                    display: "inline-block",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: "var(--font-condensed)",
-                      fontWeight: 600,
-                      fontSize: "11px",
-                      letterSpacing: "0.18em",
-                      textTransform: "uppercase",
-                      color: "rgba(212,204,184,0.4)",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Build Session with Ryan
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "18px",
-                      color: "#F0EBE1",
-                    }}
-                  >
-                    {selectedDate && formatDate(selectedDate)} at{" "}
-                    {selectedSlot && formatTime(selectedSlot)} PT
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-body)",
-                      fontSize: "13px",
-                      color: "rgba(212,204,184,0.4)",
-                      marginTop: "4px",
-                    }}
-                  >
-                    60 min - Google Meet
-                  </div>
-                </div>
-
-                <div style={{ marginTop: "32px" }}>
+                  The booking calendar is being connected. Email{" "}
                   <a
-                    href="/"
-                    style={{
-                      fontFamily: "var(--font-condensed)",
-                      fontWeight: 600,
-                      fontSize: "13px",
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: "#C0522B",
-                      textDecoration: "none",
-                    }}
+                    href="mailto:hello@solnestai.com?subject=Build%20Session"
+                    style={{ color: "#C0522B", textDecoration: "underline", textUnderlineOffset: "2px" }}
                   >
-                    ← Back to Solnest AI
-                  </a>
-                </div>
-              </motion.div>
+                    hello@solnestai.com
+                  </a>{" "}
+                  and we will get you booked right away.
+                </p>
+              </div>
             )}
-          </AnimatePresence>
-        </div>
+          </div>
 
-        {/* Trust indicators */}
-        {step !== "confirmed" && (
+          {/* Trust stats */}
           <div
             style={{
               display: "flex",
@@ -1044,7 +221,7 @@ function BookPageContent() {
             {[
               { num: "60", label: "Minute Session" },
               { num: "1:1", label: "With Ryan" },
-              { num: "100%", label: "Honest Advice" },
+              { num: "$229", label: "Credited to a Build" },
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -1080,18 +257,10 @@ function BookPageContent() {
               </motion.div>
             ))}
           </div>
-        )}
+        </div>
       </motion.section>
 
       <Footer />
     </main>
-  );
-}
-
-export default function BookPage() {
-  return (
-    <Suspense fallback={<main style={{ background: "#0D0D0B", minHeight: "100vh" }} />}>
-      <BookPageContent />
-    </Suspense>
   );
 }

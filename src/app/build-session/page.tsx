@@ -200,7 +200,7 @@ function BuildSessionContent() {
               What&apos;s included
             </div>
             {[
-              "60 min 1:1 with Ryan on Google Meet",
+              "60 min 1:1 with Ryan on Zoom",
               "One specific problem - solved or roadmapped",
               "Implementation guidance, not theory",
               "Recording + summary sent after the call",

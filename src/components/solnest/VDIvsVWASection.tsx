@@ -540,7 +540,7 @@ function WhatWeAutomateStrip() {
 					<div style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#C9A84C' }} />
 					<span style={{
 						fontFamily: 'var(--font-condensed)', fontWeight: 600,
-						fontSize: '11px', letterSpacing: '0.24em',
+						fontSize: '12px', letterSpacing: '0.22em',
 						textTransform: 'uppercase', color: '#C9A84C',
 					}}>
 						What We Automate
@@ -567,16 +567,16 @@ function WhatWeAutomateStrip() {
 						>
 							<h4 style={{
 								fontFamily: 'var(--font-condensed)', fontWeight: 600,
-								fontSize: '11.5px', letterSpacing: '0.06em',
+								fontSize: '15px', letterSpacing: '0.06em',
 								textTransform: 'uppercase', color: '#F0EBE1',
-								marginBottom: '6px',
+								marginBottom: '8px',
 							}}>
 								{item.title}
 							</h4>
 							<p style={{
-								fontFamily: 'var(--font-body)', fontWeight: 300,
-								fontSize: 'var(--fs-caption, 13px)', lineHeight: 1.6,
-								color: 'rgba(212,204,184,0.55)',
+								fontFamily: 'var(--font-body)', fontWeight: 400,
+								fontSize: '16px', lineHeight: 1.6,
+								color: 'rgba(212,204,184,0.8)',
 							}}>
 								{item.description}
 							</p>
@@ -597,7 +597,7 @@ function WhatWeAutomateStrip() {
 						className="group inline-flex items-center gap-2 link-underline focus-ring vdi-see-link"
 						style={{
 							fontFamily: 'var(--font-condensed)', fontWeight: 600,
-							fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase',
+							fontSize: '13px', letterSpacing: '0.18em', textTransform: 'uppercase',
 							color: '#C0522B', textDecoration: 'none',
 							paddingBottom: '3px',
 						}}

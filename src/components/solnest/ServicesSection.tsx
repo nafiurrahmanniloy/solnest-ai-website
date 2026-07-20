@@ -93,24 +93,31 @@ const industries = [
     name: "Local Service Businesses",
     description: "Missed-call capture, quotes, and scheduling on autopilot.",
   },
+  {
+    num: "09",
+    name: "Your Industry",
+    description: "If it runs on leads, bookings, and follow-ups, we build for it.",
+  },
 ];
 
 // Whispering-tail treatment: a ruled index row, not a box. Hairline rules ARE
 // the design for secondary content — rust condensed index, name, one-liner.
-function IndustryRow({ industry }: { industry: (typeof industries)[0] }) {
+function IndustryRow({ industry, catchAll = false }: { industry: (typeof industries)[0]; catchAll?: boolean }) {
   const [hovered, setHovered] = useState(false);
   return (
     <motion.div
       variants={itemVariants}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className={catchAll ? "md:col-span-2" : undefined}
       style={{
         display: "grid",
         gridTemplateColumns: "38px minmax(0,1fr) auto",
         alignItems: "baseline",
         gap: "14px",
-        padding: "18px 2px",
+        padding: catchAll ? "24px 2px 20px" : "18px 2px",
         borderBottom: "1px solid rgba(240,235,225,0.10)",
+        ...(catchAll ? { borderTop: "1px solid rgba(192,82,43,0.22)" } : {}),
       }}
     >
       <span
@@ -120,21 +127,22 @@ function IndustryRow({ industry }: { industry: (typeof industries)[0] }) {
           fontSize: "12px",
           letterSpacing: "0.2em",
           fontVariantNumeric: "tabular-nums",
-          color: hovered ? "#C0522B" : "rgba(192,82,43,0.55)",
+          color: catchAll || hovered ? "#C0522B" : "rgba(192,82,43,0.55)",
           transition: `color 0.25s ${EASE_CSS}`,
         }}
       >
-        {industry.num}
+        #{industry.num}
       </span>
       <div style={{ minWidth: 0 }}>
         <h4
           style={{
             fontFamily: "var(--font-display)",
             fontWeight: 300,
-            fontSize: "clamp(18px, 1.4vw, 23px)",
+            fontStyle: catchAll ? "italic" : "normal",
+            fontSize: "clamp(20px, 1.5vw, 24px)",
             lineHeight: 1.25,
             letterSpacing: "-0.01em",
-            color: hovered ? "#F0EBE1" : "rgba(240,235,225,0.78)",
+            color: catchAll ? "#C0522B" : hovered ? "#F0EBE1" : "rgba(240,235,225,0.78)",
             transition: `color 0.25s ${EASE_CSS}`,
             marginBottom: "4px",
           }}
@@ -145,9 +153,9 @@ function IndustryRow({ industry }: { industry: (typeof industries)[0] }) {
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 300,
-            fontSize: "13.5px",
+            fontSize: "15px",
             lineHeight: 1.6,
-            color: "rgba(212,204,184,0.5)",
+            color: catchAll ? "rgba(212,204,184,0.78)" : "rgba(212,204,184,0.62)",
           }}
         >
           {industry.description}
@@ -158,7 +166,7 @@ function IndustryRow({ industry }: { industry: (typeof industries)[0] }) {
         style={{
           color: "#C0522B",
           fontSize: "14px",
-          opacity: hovered ? 1 : 0.3,
+          opacity: catchAll || hovered ? 1 : 0.3,
           transform: hovered ? "translateX(4px)" : "translateX(0)",
           transition: `opacity 0.25s ${EASE_CSS} 40ms, transform 0.25s ${EASE_CSS} 40ms`,
         }}
@@ -1394,11 +1402,13 @@ function RecentBuildsCarousel({ ids, onOpen }: { ids: CaseStudyKey[]; onOpen: (i
               data-slide
               variants={itemVariants}
               style={{
-                flex: i === 0 ? "0 0 min(88vw, clamp(420px, 48%, 640px))" : "0 0 clamp(280px, 31%, 420px)",
+                // Uniform slide width: a clean, even filmstrip so every card's
+                // stat rail lines up card-to-card (no over-wide featured card).
+                flex: "0 0 clamp(280px, 84vw, 380px)",
                 scrollSnapAlign: "start",
               }}
             >
-              <AgentCard id={id} onOpen={onOpen} index={i} featured={i === 0} />
+              <AgentCard id={id} onOpen={onOpen} index={i} />
             </motion.div>
           ))}
         </motion.div>
@@ -1795,7 +1805,7 @@ export function ServicesSection() {
         }}
       />
 
-      <div className="relative z-10 max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="relative z-10 max-w-[1360px] mx-auto px-5 md:px-8">
 
         {/* Header */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-center mb-12 md:mb-16">
@@ -1874,8 +1884,8 @@ export function ServicesSection() {
 
           <motion.p variants={itemVariants} style={{
             fontFamily: "var(--font-body)", fontWeight: 300,
-            fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))", lineHeight: 1.6,
-            color: "rgba(212,204,184,0.6)", maxWidth: "620px", marginBottom: "32px",
+            fontSize: "clamp(17px, 1.3vw, 20px)", lineHeight: 1.6,
+            color: "rgba(212,204,184,0.72)", maxWidth: "620px", marginBottom: "32px",
             textWrap: "pretty",
           }}>
             Short-term rentals are where we started. The same AI systems, agents, revenue
@@ -1885,7 +1895,7 @@ export function ServicesSection() {
           {/* Ruled index list: hairline rows, no boxes */}
           <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-16" style={{ borderTop: "1px solid rgba(240,235,225,0.10)" }}>
             {industries.map((industry) => (
-              <IndustryRow key={industry.num} industry={industry} />
+              <IndustryRow key={industry.num} industry={industry} catchAll={industry.num === "09"} />
             ))}
           </div>
         </motion.div>
@@ -1945,6 +1955,60 @@ export function ServicesSection() {
             ids={Object.keys(caseStudies) as CaseStudyKey[]}
             onOpen={openCase}
           />
+        </div>
+
+        {/* Section break — gives the engagement offers their own identity so they
+            don't blend into the Recent Builds carousel above */}
+        <div
+          className="mb-12 md:mb-16"
+          style={{ borderTop: "1px solid rgba(240,235,225,0.10)", paddingTop: "clamp(52px, 6.5vw, 96px)" }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+            transition={{ duration: 0.7, ease: [0.215, 0.61, 0.355, 1.0] }}
+            className="flex items-center gap-3.5 mb-6"
+          >
+            <div style={{ width: "34px", height: "1px", backgroundColor: "#C0522B" }} />
+            <span style={{
+              fontFamily: "var(--font-condensed)", fontWeight: 600, fontSize: "12px",
+              letterSpacing: "0.26em", textTransform: "uppercase", color: "#C0522B",
+            }}>
+              Ways To Work Together
+            </span>
+          </motion.div>
+
+          <motion.h3
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.215, 0.61, 0.355, 1.0] }}
+            style={{
+              fontFamily: "var(--font-display)", fontWeight: 300,
+              fontSize: "var(--fs-display-md, clamp(26px, 2.6vw, 44px))",
+              lineHeight: 1.15, color: "#F0EBE1", marginBottom: "12px",
+              maxWidth: "760px", textWrap: "balance",
+            }}
+          >
+            Pick your{" "}
+            <span style={{ fontStyle: "italic", color: "#C0522B" }}>starting point.</span>
+          </motion.h3>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.215, 0.61, 0.355, 1.0] }}
+            style={{
+              fontFamily: "var(--font-body)", fontWeight: 300,
+              fontSize: "var(--fs-body-lg, clamp(16px, 1.1vw, 19px))",
+              lineHeight: 1.6, color: "rgba(212,204,184,0.7)",
+              maxWidth: "620px", textWrap: "pretty",
+            }}
+          >
+            Start with an audit, hand the whole build to Ryan&apos;s team, or keep him in your corner month to month.
+          </motion.p>
         </div>
 
         {/* 3 cards */}
