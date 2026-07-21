@@ -1322,8 +1322,8 @@ function RecentBuildsCarousel({ ids, onOpen }: { ids: CaseStudyKey[]; onOpen: (i
     if (!track) return;
     const slides = Array.from(track.querySelectorAll<HTMLElement>("[data-slide]"));
     if (slides.length === 0) return;
-    // Slides have mixed widths (featured first slide), so find the nearest
-    // slide origin instead of dividing by a fixed step.
+    // Find the nearest slide origin instead of dividing by a fixed step, so
+    // this stays correct even if slide widths ever vary.
     const base = slides[0].offsetLeft;
     let idx = 0;
     let best = Infinity;
