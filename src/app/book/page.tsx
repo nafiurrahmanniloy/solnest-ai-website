@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Script from "next/script";
 import Nav from "@/components/solnest/Nav";
 import Footer from "@/components/solnest/Footer";
 
@@ -144,18 +145,32 @@ export default function BookPage() {
             />
 
             {BOOKING_URL ? (
-              <iframe
-                src={BOOKING_URL}
-                title="Book your Build Session with Ryan"
-                loading="lazy"
-                style={{
-                  width: "100%",
-                  height: "760px",
-                  border: "none",
-                  display: "block",
-                  background: "#fff",
-                }}
-              />
+              <>
+                <iframe
+                  src={BOOKING_URL}
+                  title="Book your Build Session with Ryan"
+                  loading="lazy"
+                  scrolling="no"
+                  id="ghl-booking-widget"
+                  style={{
+                    width: "100%",
+                    // Generous initial height + scrolling:no so the calendar never
+                    // shows an inner scrollbar. GHL's form_embed.js then resizes the
+                    // iframe to the widget's exact content height at every step
+                    // (calendar -> payment), so the box grows/shrinks to fit and
+                    // never scrolls internally.
+                    height: "1100px",
+                    border: "none",
+                    display: "block",
+                    background: "#fff",
+                    overflow: "hidden",
+                  }}
+                />
+                <Script
+                  src="https://link.msgsndr.com/js/form_embed.js"
+                  strategy="afterInteractive"
+                />
+              </>
             ) : (
               // Graceful state until the GHL calendar URL is provided.
               <div
